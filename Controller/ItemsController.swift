@@ -137,7 +137,16 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
             print("MOVE")
             if let indexPath = indexPath, let newIndexPath = newIndexPath, let anObject = anObject as? Items {
                 let openItemsCount = fetchItems().filter({ $0.isComplete == false }).count
-                if openItemsCount == 0 || openItemsCount == 1 {
+                let allItems = fetchItems().count
+                print("ALL ITEMS \(allItems), NewIndexPath: \(newIndexPath.section), \(newIndexPath.row), OldIndex: \(indexPath.section), \(indexPath.row)")
+                let oldsectionsCount = oldSectionsDuringFetchUpdate.count //This is FRC Sections, 2 means there are open and closed
+                let newSectionsCount = sections?.count
+                if oldsectionsCount == 1 && newSectionsCount == 2 {
+                    //Moving the First Item from closed to open
+                    handleOpenItems(in: controller, indexPath: indexPath, newIndexPath: newIndexPath, object: anObject, type: type)
+                }
+                else if oldsectionsCount == 2 && newSectionsCount == 1 {//&& allItems > 1 --neeed this?
+                    //Moving Last Open Item To Closed
                    handleOpenItems(in: controller, indexPath: indexPath, newIndexPath: newIndexPath, object: anObject, type: type)
                 } else {
                     let tableViewIndexPath = updateTableViewIndexPath(from: indexPath)
@@ -192,19 +201,19 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
             switch oldSectionsDuringFetchUpdate.count {
             case 1:
                 if newIndexPath.section == 0 {
-                    //MARK: - Moving First Item from Closed to Reopened;
+                    //Moving First Item from Closed to Reopened;
                     let currentIndexPath = IndexPath(row: indexPath.row, section: 2)
                     let destinationIndexPath = IndexPath(row: newIndexPath.row, section: 1)
                     delegate?.controller?(controller, didChange: object, at: currentIndexPath, for: type, newIndexPath: destinationIndexPath)
                 }
                 else if newIndexPath.section == 1 {
-                    //MARK: - Moving first item to closed if only two items in open section
+                    //Moving first item to closed if only two items in open section
                     let currentIndexPath = updateTableViewIndexPath(from: indexPath)
                     let destinationIndexPath = updateTableViewIndexPath(from: newIndexPath)
                     delegate?.controller?(controller, didChange: object, at: currentIndexPath, for: type, newIndexPath: destinationIndexPath)
                 }
             case 2:
-                //MARK: - Moving item from open to closed -> When closed section exists
+                //Moving item from open to closed -> When closed section exists
                 let currentIndexPath = updateTableViewIndexPath(from: indexPath)
                 let destinationIndexPath = updateTableViewIndexPath(from: newIndexPath)
                 delegate?.controller?(controller, didChange: object, at: currentIndexPath, for: type, newIndexPath: destinationIndexPath)
@@ -235,6 +244,27 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
     }//oo
     
 }//
+
+enum FinalItem: Int {
+    case lastOpenItemToClosed
+    case lastClosedItemToOpen
+    
+    var handle: Int {
+        switch self {
+        case .lastOpenItemToClosed:
+            
+            print("perform last open to closed")
+        case .lastClosedItemToOpen:
+            print("Perform last closed to open")
+        }
+        return 0
+    }
+    
+    static func handleLastOpenItem(controller: NSFetchedResultsController<NSFetchRequestResult>, didChange: Any, oldIndex: IndexPath, newIndex: IndexPath, type: NSFetchedResultsChangeType) {
+        
+    }
+}
+
 /*
  class ItemsController: NSObject {
      

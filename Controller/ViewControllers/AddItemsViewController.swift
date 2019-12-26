@@ -124,16 +124,8 @@ extension AddItemsToListViewController: UITableViewDataSource {
             switch section {
             case 0: return 1
             case 1: return openItemsFor(section: .ToDo)
-//                if fetchItems().count > 0 {//??
-//                    if let section = Int(ItemsSection.ToDo.rawValue), let controller = itemsController, let openSections = controller.sections {
-//                        return openSections[section].numberOfObjects
-//                    }
-//                }
             case 2: return itemsController.showCompletedButton()
             case 3: return openItemsFor(section: .Completed)
-//                if let controller = itemsController, let completedSections = controller.sections, let section = Int(ItemsSection.Completed.rawValue) {
-//                    return completedSections[section].numberOfObjects
-//                }
             default: return 0
             }
         }
@@ -141,10 +133,6 @@ extension AddItemsToListViewController: UITableViewDataSource {
     
     func getSectionsCount() -> Int? {
         if itemsController.allItemsAreComplete() { return 3 }
-//        guard let itemsController = itemsController else { return 1 }
-//        if checkIfItemsAreAllComplete(items: itemsController.fetchItems()) {
-//            return 3
-//        }
         else {
             switch self.itemsSectionCount() {
             case 0: return 1
@@ -156,14 +144,10 @@ extension AddItemsToListViewController: UITableViewDataSource {
     }
     
     func handleOnlyCompletedItemsRowsInSection(section: Int, items: [Items]) -> Int {
-        //guard let itemsController = itemsController else { return 1 }
         switch section {
         case 0: return 1
         case 1: return 1
         case 2: return completedItemsFor(section: section)
-            //completedItemsForSection
-//            let fetchedResultsControllerIndex = 0
-//            return itemsController.sections[fetchedResultsControllerIndex].numberOfObjects
         default: return 4
         }
     }
@@ -171,7 +155,6 @@ extension AddItemsToListViewController: UITableViewDataSource {
     func openItemsFor(section: ItemsSection) -> Int {
         //See if there's problems here, fetchItems().count isn't in completed items for section
         if itemsController.fetchItems().count > 0 {
-            //if let controller = itemsController, let sections = controller.sections {
             if let sections = itemsController.sections {
                 switch section {
                 case .ToDo:
@@ -181,7 +164,6 @@ extension AddItemsToListViewController: UITableViewDataSource {
                     let completedSection = Int(section.rawValue)
                     return sections[completedSection!].numberOfObjects
                 }
-                //}
             }
         }
         return 0
@@ -190,21 +172,18 @@ extension AddItemsToListViewController: UITableViewDataSource {
     func completedItemsFor(section: Int) -> Int {
         var items = 0
         if itemsController.fetchItems().count > 0 {
-            //if let controller = itemsController, let sections = controller.sections {
             if let sections = itemsController.sections {
-                items = sections[section].numberOfObjects
+                //FRC Section will be 0  here, only closed Items when this gets called.
+                items = sections[0].numberOfObjects
             }
-            //}
         }
         return items
     }
     
     func itemsSectionCount() -> Int {
-        //if let controller = itemsController, let sections = controller.sections {
         if let sections = itemsController.sections {
             return sections.count
         }
-        //}
         return 1
     }
      //MARK: - TABLEVIEW ROWS
