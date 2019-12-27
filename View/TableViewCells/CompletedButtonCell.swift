@@ -54,5 +54,9 @@ class CompletedButtonCell: UITableViewCell {
         completedButtonFunction()
     }
     
-    
+    func configure(isCompletedShowing: Bool, tableView: UITableView) {
+        whenShowCompletedTapped {
+            <#code#>
+        }
+    }
 }

@@ -50,5 +50,8 @@ class ItemAddedCell: ItemsBaseCell {
         flaggedButton.anchor(top: safeAreaLayoutGuide.topAnchor, leading: itemLabel.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 0, bottom: 5, right: 0), size: .init(width: 40, height: 40))
     }
 
+    func configureCell() {
+        
+    }
 }
 

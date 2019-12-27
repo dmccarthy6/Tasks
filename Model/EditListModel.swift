@@ -23,7 +23,7 @@ class EditListModel {
 }
 
 enum EditListLabels: String {
-    case edit = "Edit List"
+    case edit = "Edit Title"
     case share = "Share"
     
 }

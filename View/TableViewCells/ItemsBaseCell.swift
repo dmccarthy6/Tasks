@@ -45,6 +45,37 @@ class ItemsBaseCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //
+    func configure(controller: ItemsController, tableIndexPath: IndexPath, frcSection: Int, tableView: UITableView) {
+        let fetchedResultsControllerIndexPath = IndexPath(row: tableIndexPath.row, section: frcSection)
+        
+        if let sections = controller.sections, let itemAtIndex = controller.itemsControllerItemAtIndexPath(indexPath: fetchedResultsControllerIndexPath, sections: sections) {
+            let isItemFlagged = itemAtIndex.isFlagged
+            itemLabel.text = itemAtIndex.item
+            flaggedButton.setImage((itemAtIndex.isFlagged ? FlagImage.FilledFlag : FlagImage.EmptyFlag), for: .normal)
+            flaggedButton.tintColor = isItemFlagged ?  Colors.tasksRed : Colors.tasksYellow
+            tableView.reloadData()
+            
+            whenFlaggedButtonTapped {
+                [unowned self] in
+                itemAtIndex.isFlagged = !isItemFlagged
+                //TO-DO: Fix This
+                CoreDataManager.shared.setItemFavorite(item: <#T##Items#>, status: <#T##Bool#>)
+                self.flaggedButton.setImage((itemAtIndex.isFlagged ? FlagImage.EmptyFlag : FlagImage.EmptyFlag), for: .normal)
+                self.flaggedButton.tintColor = isItemFlagged ? Colors.tasksRed : Colors.tasksYellow
+                tableView.reloadData()
+            }
+            whenCompletedButtonTapped {
+                [unowned self] in
+                CoreDataManager.shared.setCompletedStatus(item: <#T##Items#>)
+                
+                if controller.getCompletedItemsCount() == 0 {
+                    
+                }
+            }
+        }
+        
+    }
     
     //MARK: Button Functions
     func setButtonTargets() {

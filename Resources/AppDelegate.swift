@@ -10,7 +10,6 @@ import UIKit
 import CoreData
 import UserNotifications
 import TasksFramework
-import CoreData
 import CloudKit
 
 

@@ -74,7 +74,7 @@ class EditItemViewController: UIViewController, CoreDataManagerViewController {
         if let item = items {
             navigationItem.title = item.item
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-            navigationItem.rightBarButtonItem?.isEnabled = false
+            doneButton(isEnabled: false)
         }
     }
     
@@ -85,10 +85,15 @@ class EditItemViewController: UIViewController, CoreDataManagerViewController {
         let reminderCell = tableView.cellForRow(at: reminderIndexPath) as! MenuCell
         CoreDataManager.shared.setItemAlert(item: items!, alert: sender.date)
         reminderCell.valueLabel.text = stringDate
+        doneButton(isEnabled: true)
     }
     
     func toggleDatePicker(datePicker: UIDatePicker) {
         datePicker.isHidden = !datePicker.isHidden
+    }
+    
+    func doneButton(isEnabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = isEnabled
     }
     
     //MARK: - Setting Due Date To Core Data through Delegate
@@ -129,10 +134,9 @@ extension EditItemViewController: UITableViewDataSource {
         let reminderDatePickerCell = ReminderDatePickerCell(style: .default, reuseIdentifier: reminderDatePickerID)
         
         if indexPath.section == 0 {
-            let editItemTextFieldCell = EditItemCell(style: .default, reuseIdentifier: editItemCellID)
-            editItemTextFieldCell.editListTitleTextField.delegate = self
+            let editItemTextFieldCell: EditItemCell = EditItemCell(style: .default, reuseIdentifier: editItemCellID)
             guard let safeItems = items else { return UITableViewCell() }
-            editItemTextFieldCell.editListTitleTextField.text = safeItems.item
+            editItemTextFieldCell.configure(text: safeItems.item!, delegate: self)
             return editItemTextFieldCell
         }
         if indexPath.section == 1 {
@@ -193,7 +197,6 @@ extension EditItemViewController: UITableViewDelegate {
                     let itemTitle = items.item!
                     AddCalendarEvent(viewController: self, title: itemTitle, startDate: Date(), endDate: Date(), item: items)
                 }
-                
             }
         }
     }
@@ -253,7 +256,7 @@ extension EditItemViewController: UITextFieldDelegate {
         if textField.text != "" {
             let updatedItem = textField.text!
             CoreDataManager.shared.updateItem(item: items!, text: updatedItem)
-            navigationItem.rightBarButtonItem?.isEnabled = true
+            doneButton(isEnabled: true)
             textField.resignFirstResponder()
             return true
         }

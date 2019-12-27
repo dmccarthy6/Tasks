@@ -53,7 +53,7 @@ class EditListMenu: NSObject {
     }
     
     @objc func showEditListMenu() {
-        if let window = UIApplication.shared.keyWindow {
+        if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
             window.addSubview(overlayView)
             window.addSubview(tableView)
             menuIsShowing = true
@@ -74,11 +74,15 @@ class EditListMenu: NSObject {
         }
     }
     
+    @objc func showEditListMenuIpad() {
+        
+    }
+    
     @objc func handleDismiss() {
         menuIsShowing = false
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 2, options: .curveEaseOut, animations: {
             self.overlayView.alpha = 0
-            if let window = UIApplication.shared.keyWindow {
+            if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
                 let tabBarOffset = window.getTabBarSize()!
                 let y = window.frame.height - tabBarOffset
                 self.tableView.frame = CGRect(x: 0, y: y, width: self.tableView.frame.width, height: 0) //window.frame.height //self.tableView.frame.height-tabBarOffset
@@ -91,7 +95,7 @@ class EditListMenu: NSObject {
         let nav = UINavigationController(rootViewController: editVC)
         handleDismiss()
         
-        let window = UIApplication.shared.keyWindow
+        let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first
         let viewController = window?.visibleViewController()
         editVC.list = list
         viewController?.present(nav, animated: true, completion: nil)

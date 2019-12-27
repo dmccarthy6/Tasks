@@ -18,7 +18,6 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
 
     private var viewController: UIViewController
     private var tableView: UITableView
-    //var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     private var listTitle: String?
     private var tableViewDelegate: UITableViewDelegate
     var traitCollection: UITraitCollection
@@ -53,19 +52,18 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let addListCell = TextFieldCell(style: .default, reuseIdentifier: ListTableCellID.ListTextCellID.rawValue)
-        addListCell.cellTextField.setTextFieldPlaceholder(placeHolderText: .Title)
-        addListCell.cellTextField.delegate = self
-       
+        addListCell.configure(placeholder: .Title, delegate: self, backgroundColor: Colors.tasksGray)
+        
         if indexPath.section == 0 {
             addListCell.backgroundColor = .systemGray3
             return addListCell
         }
         else if indexPath.section == 1 {
-            let listCell = tableView.dequeueReusableCell(withIdentifier: ListTableCellID.ListAddedCellID.rawValue, for: indexPath) as! ListTitleCell
-            let list = getListAtIndexPath(indexPath: indexPath)
+            let listCell: ListTitleCell = tableView.dequeueReusableCell(for: indexPath)
+            if let list = getListAtIndexPath(indexPath: indexPath) {
             //Fetch Core Data, if any:
-            listCell.titleLabel.text = list?.title
-            //handleTraitAndOS(for: addListCell, listCell: listCell)
+            listCell.configure(listTitle: list.title!)
+            }
             return listCell
         }
         
@@ -73,8 +71,8 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     }
  
     func registerTableViewCells() {
-        tableView.register(ListTitleCell.self, forCellReuseIdentifier: ListTableCellID.ListAddedCellID.rawValue)
-        tableView.register(TextFieldCell.self, forCellReuseIdentifier: ListTableCellID.ListTextCellID.rawValue)
+        tableView.registerCell(cellClass: ListTitleCell.self)
+        tableView.registerCell(cellClass: TextFieldCell.self)
     }
     
 }//
@@ -82,8 +80,6 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
 extension MainListsDataSource: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        let lists = getListsCount()
-        //let lists = fetchedResultsController?.fetchedObjects as! [List]
         let count = getListsCount()
         let title = textField.text
         ValidateTextField.shared.validateAndSave(viewController, textField: textField, title: title, item: nil, list: nil, order: count)
@@ -123,7 +119,8 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
             }
             let frcIndex = IndexPath(row: indexPath.row, section: 1)
             let titleCell = tableView.cellForRow(at: frcIndex) as? EditItemCell
-            titleCell?.editListTitleTextField.text = managedObject.title
+            titleCell?.configure(text: managedObject.title!, delegate: nil)
+//            titleCell?.editListTitleTextField.text = managedObject.title
             tableView.reloadRows(at: [frcIndex], with: .automatic)
             
         case .delete:

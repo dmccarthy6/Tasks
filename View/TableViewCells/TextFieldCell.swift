@@ -12,13 +12,13 @@ import UIKit
 class TextFieldCell: UITableViewCell {
     //MARK - Set Up Basic Text Field Cells; Set Cell Background Color in View Controllers
     
-    var textFieldCellButton: UIButton = {
+    private var textFieldCellButton: UIButton = {
         let button = UIButton(frame: CGRect(x: 3, y: 0, width: 40, height: 40))
         button.imageView?.contentMode = .scaleAspectFit
         return button
     }()
     
-    var cellTextField: UITextField = {
+    private var cellTextField: UITextField = {
         let textField = UITextField()
         textField.layer.cornerRadius = 7
         textField.layer.borderWidth = 1
@@ -44,7 +44,7 @@ class TextFieldCell: UITableViewCell {
     }
     
     //MARK: - Set Up UI
-    func createTextFieldCell() {
+    private func createTextFieldCell() {
         contentView.addSubview(cellTextField)
         cellTextField.addSubview(textFieldCellButton)
         selectionStyle = .none
@@ -54,11 +54,11 @@ class TextFieldCell: UITableViewCell {
         addConstraints()
     }
     
-    func addConstraints() {
+    private func addConstraints() {
         cellTextField.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 1, bottom: 0, right: 1), size: .init(width: bounds.size.width, height: bounds.size.height))
     }
     
-    func textFieldForIOS13() {
+    private func textFieldForIOS13() {
         if #available(iOS 13.0, *) {
             cellTextField.backgroundColor = .tertiarySystemBackground
             textFieldCellButton.backgroundColor = .tertiarySystemBackground
@@ -69,6 +69,16 @@ class TextFieldCell: UITableViewCell {
             textFieldCellButton.backgroundColor = .clear
             cellTextField.textColor = .black
         }
+    }
+    
+    func configure(placeholder: CellPlaceholder, delegate: UITextFieldDelegate?, backgroundColor: UIColor) {
+        self.cellTextField.placeholder = placeholder.rawValue
+        self.cellTextField.delegate = delegate
+        self.cellTextField.backgroundColor = backgroundColor
+    }
+    
+    func setTextFieldText(listTitle: String) {
+        self.cellTextField.text = listTitle
     }
 }
 

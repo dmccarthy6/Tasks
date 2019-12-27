@@ -24,7 +24,7 @@ extension List {
     @NSManaged public var recordID: Data?
     @NSManaged public var reminderDate: String?
     @NSManaged public var title: String?
-    @NSManaged public var items: Items?
+    @NSManaged public var items: NSSet?
 
 }
 

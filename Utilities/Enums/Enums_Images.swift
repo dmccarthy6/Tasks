@@ -6,7 +6,6 @@
 //  Copyright © 2019 Dylan . All rights reserved.
 //
 
-import Foundation
 import UIKit
 
 enum Images {
@@ -21,8 +20,10 @@ enum Images {
     static let ListIcon = UIImage(named: "ListIcon")
     static let MoreVerticalIcon = UIImage(named: "MoreVertical")
     static let PlusIcon = UIImage(named: "Plus")
+    static let SaveIcon = UIImage(named: "SaveIcon")
     static let ShareIcon = UIImage(named: "Share")
     static let SyncIcon = UIImage(named: "Sync")
+    //System Images -- iOS 13
     static let SystemShareIcon = UIImage(systemName: "square.and.arrow.up")
     static let CheckCircleFill = UIImage(systemName: "checkmark.circle.fill")
     

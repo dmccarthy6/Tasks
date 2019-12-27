@@ -46,15 +46,15 @@ class MenuCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func createMenuCell() {
+    private func createMenuCell() {
         selectionStyle = .none
         addSubview(iconImageView)
         addSubview(titleLabel)
         setConstraints()
     }
-    
+    //width: iconImageView.image?.size.width ?? 0.0, height: iconImageView.image?.size.height ?? 0.0))
     func setConstraints() {
-        iconImageView.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: titleLabel.leadingAnchor, padding: .init(top: 0, left: 5, bottom: 0, right: 5), size: .init(width: iconImageView.image?.size.width ?? 0.0, height: iconImageView.image?.size.height ?? 0.0))
+        iconImageView.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: titleLabel.leadingAnchor, padding: .init(top: 0, left: 5, bottom: 0, right: 5), size: .init(width: 50, height: 50))
         titleLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: iconImageView.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: titleLabel.leadingAnchor, padding: .init(top: 0, left: 10, bottom: 0, right: 0), size: .init(width: frame.size.width/2, height: cellHeight))
         if valueLabel.text != "" {
             addSubview(valueLabel)
@@ -79,4 +79,13 @@ class MenuCell: UITableViewCell {
         iconImageView.backgroundColor = Colors.tasksRed
     }
     
+    func configure(image: UIImage, tintColor: UIColor, text: String, value: String?) {
+        self.imageView?.image = image
+        self.imageView?.tintColor = tintColor
+        self.textLabel?.text = text
+        
+        if let value = value {
+            self.valueLabel.text = value
+        }
+    }
 }

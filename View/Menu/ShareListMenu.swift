@@ -47,7 +47,7 @@ class ShareListMenuLauncher: NSObject {
     
     
     @objc func showShareMenu() {
-        if let window = UIApplication.shared.keyWindow {
+        if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
             window.addSubview(overlayView)
             window.addSubview(tableView)
             isMenuShowing = true
@@ -73,7 +73,7 @@ class ShareListMenuLauncher: NSObject {
         isMenuShowing = false
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             self.overlayView.alpha = 0
-            if let window = UIApplication.shared.keyWindow {
+            if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
                 let tabBarOffset = window.getTabBarSize()!
                 let y = window.frame.height - tabBarOffset
                 self.tableView.frame = CGRect(x: 0, y: y, width: self.tableView.frame.width, height: 0)
@@ -119,8 +119,8 @@ extension ShareListMenuLauncher: UITableViewDelegate {
         let cell = menuData[indexPath.row]
         if cell.label == EditListLabels.share {
             
-            if let items = list?.items  {
-                OpenShareExtension(items: [items])
+            if let items = list?.items?.allObjects as? [Items]  {
+                OpenShareExtension(items: items)
             }
 //            if let items = list?.items?.allObjects as? [Items] {
 //                OpenShareExtension(items: items)

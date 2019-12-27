@@ -29,23 +29,20 @@ class AddItemsToListViewController: UIViewController, CoreDataManagerViewControl
         addItemsTableView.dataSource = self
         addItemsTableView.separatorStyle = .singleLine
         addItemsTableView.tableFooterView = UIView()
-        addItemsTableView.register(TextFieldCell.self, forCellReuseIdentifier: ItemsCellID.ItemTextFieldCellID.rawValue)
-        addItemsTableView.register(ItemAddedCell.self, forCellReuseIdentifier: ItemsCellID.OpenItemCell.rawValue)
-        addItemsTableView.register(CompletedButtonCell.self, forCellReuseIdentifier: ItemsCellID.CompletedButtonCell.rawValue)
-        addItemsTableView.register(CompletedItemsCell.self, forCellReuseIdentifier: ItemsCellID.CompletedItemsCell.rawValue)
+        addItemsTableView.registerCell(cellClass: TextFieldCell.self)
+        addItemsTableView.registerCell(cellClass: ItemAddedCell.self)
+        addItemsTableView.registerCell(cellClass: CompletedButtonCell.self)
+        addItemsTableView.registerCell(cellClass: CompletedItemsCell.self)
         return addItemsTableView
     }()
-    
     fileprivate lazy var fetchedResultsControllerDelegate: ItemsFetchedResultsControllerDelegate = {
         let delegate = ItemsFetchedResultsControllerDelegate(tableView: self.tableView)
         return delegate
     }()
-    
     fileprivate lazy var itemsController: ItemsController = {
         let id = String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)
         let controller = ItemsController(id: id!)
-            return controller
-        
+        return controller
     }()
     
     //MARK: - Life Cycle
@@ -190,23 +187,23 @@ extension AddItemsToListViewController: UITableViewDataSource {
     func populateNumberOfRowsInTableSection(indexPath: IndexPath) -> UITableViewCell {
         if itemsController.allItemsAreComplete() { return populateOnlyCompletedRowsInTable(tvIndexPath: indexPath) }
             if indexPath.section == 0 {
-                let textFieldCell = tableView.dequeueReusableCell(withIdentifier: ItemsCellID.ItemTextFieldCellID.rawValue, for: indexPath) as! TextFieldCell
-                configureTextFieldCell(textFieldCell, tableIndexPath: indexPath)
+                let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: indexPath)
+                textFieldCell.configure(placeholder: .Item, delegate: self, backgroundColor: Colors.tasksRed)
                 return textFieldCell
             }
             if indexPath.section == 1 {
-                let openItemsCell = tableView.dequeueReusableCell(withIdentifier: ItemsCellID.OpenItemCell.rawValue, for: indexPath) as! ItemAddedCell
+                let openItemsCell: ItemAddedCell = tableView.dequeueReusableCell(for: indexPath)
                 let activeFRCSection = Int(ItemsSection.ToDo.rawValue)!
                 configureItemsCells(openItemsCell, tableIndexPath: indexPath, frcSection: activeFRCSection)
                 return openItemsCell
             }
             if indexPath.section == 2 {
-                let completedButtonCell = tableView.dequeueReusableCell(withIdentifier: ItemsCellID.CompletedButtonCell.rawValue, for: indexPath) as! CompletedButtonCell
+                let completedButtonCell: CompletedButtonCell = tableView.dequeueReusableCell(for: indexPath)
                 configureCompletedButtonCell(completedButtonCell, tableIndexPath: indexPath)
                 return completedButtonCell
             }
             else {
-                let completedItemsCell = tableView.dequeueReusableCell(withIdentifier: ItemsCellID.CompletedItemsCell.rawValue, for: indexPath) as! CompletedItemsCell
+                let completedItemsCell: CompletedItemsCell = tableView.dequeueReusableCell(for: indexPath)
                 if isCompletedShowing! {
                     let completedItemsSection = Int(ItemsSection.Completed.rawValue)!
                     configureItemsCells(completedItemsCell, tableIndexPath: indexPath, frcSection: completedItemsSection)
@@ -219,15 +216,15 @@ extension AddItemsToListViewController: UITableViewDataSource {
     func populateOnlyCompletedRowsInTable(tvIndexPath: IndexPath) -> UITableViewCell {
         switch tvIndexPath.section {
         case 0:
-            let textFieldCell = tableView.dequeueReusableCell(withIdentifier: ItemsCellID.ItemTextFieldCellID.rawValue, for: tvIndexPath) as! TextFieldCell
-            configureTextFieldCell(textFieldCell, tableIndexPath: tvIndexPath)
+            let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: tvIndexPath)
+            textFieldCell.configure(placeholder: .Item, delegate: self, backgroundColor: Colors.tasksRed)
             return textFieldCell
         case 1:
-            let completedButtonCell = tableView.dequeueReusableCell(withIdentifier: ItemsCellID.CompletedButtonCell.rawValue, for: tvIndexPath) as! CompletedButtonCell
+            let completedButtonCell: CompletedButtonCell = tableView.dequeueReusableCell(for: tvIndexPath)
             configureCompletedButtonCell(completedButtonCell, tableIndexPath: tvIndexPath)
             return completedButtonCell
         case 2:
-            let completedItemsCell = tableView.dequeueReusableCell(withIdentifier: ItemsCellID.CompletedItemsCell.rawValue, for: tvIndexPath) as! CompletedItemsCell
+            let completedItemsCell: CompletedItemsCell = tableView.dequeueReusableCell(for: tvIndexPath)
             if isCompletedShowing! {
                 let completedItemsSection = 0
                 configureItemsCells(completedItemsCell, tableIndexPath: tvIndexPath, frcSection: completedItemsSection)
@@ -240,12 +237,6 @@ extension AddItemsToListViewController: UITableViewDataSource {
     }
     
     //MARK: - Configuring Cells
-    func configureTextFieldCell(_ cell: TextFieldCell, tableIndexPath: IndexPath) {
-        cell.cellTextField.setTextFieldPlaceholder(placeHolderText: .Item)
-        cell.backgroundColor = Colors.tasksRed
-        cell.cellTextField.delegate = self
-    }
-    
     func configureCompletedButtonCell(_ cell: CompletedButtonCell, tableIndexPath: IndexPath) {
         cell.whenShowCompletedTapped {
             [unowned self] in
@@ -328,14 +319,13 @@ extension AddItemsToListViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField.tag == 0 {
             if let itemAdded = textField.text {
-                guard let listTitle = listTitle else { fatalError("NO Title - TextFieldShouldReturn in Additemsvc") }
-                //let items = listTitle.items?.allObjects as? [Items]
-                let items = [listTitle.items]
-                let order = items.count 
-                ValidateTextField.shared.validateAndSave(self, textField: textField, title: nil, item: itemAdded, list: listTitle, order: order)
-                textField.text = ""
-                textField.resignFirstResponder()
-                tableView.reloadData()
+                if let listTitle = listTitle {
+                    let items = listTitle.items?.allObjects as? [Items]
+                    let order = items!.count
+                    ValidateTextField.shared.validateAndSave(self, textField: textField, title: nil, item: itemAdded, list: listTitle, order: order)
+                    textField.text = ""
+                    textField.resignFirstResponder()
+                }
             }
         }
         return true

@@ -139,8 +139,8 @@ extension ListsViewController: UITableViewDelegate {
             //TO-TO: Open Share Extensionn
             print("Open Share Extension")
             
-            if let items = list.items {
-                OpenShareExtension(items: [items])
+            if let items = list.items?.allObjects as? [Items] {
+                OpenShareExtension(items: items)
             }
 //            if let items = list.items?.allObjects as? [Items] {
 //                OpenShareExtension(items: items)

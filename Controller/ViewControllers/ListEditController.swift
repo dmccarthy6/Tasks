@@ -18,6 +18,7 @@ class EditListViewController: UIViewController {
         let editListTableView = UITableView()
         editListTableView.dataSource = self
         editListTableView.delegate = self
+        editListTableView.registerCell(cellClass: MenuCell.self)
         editListTableView.separatorStyle = .singleLine
         editListTableView.tableFooterView = UIView()
         return editListTableView
@@ -64,7 +65,7 @@ class EditListViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(handleDone))
         //Setting 'Done' button to false until the user edits the list title -- then it becomes enabled
-        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        doneButton(isEnabled: false)
     }
    
     func setModelData() {
@@ -77,10 +78,15 @@ class EditListViewController: UIViewController {
     }
     
     @objc func handleDone() {
-        let window = UIWindow()
-        let vc = window.visibleViewController()
+//        let window = UIWindow()
+//        let vc = window.visibleViewController()
         Alerts.showNormalAlert(self, title: "List Saved", message: "Your list title has been changed to \(list?.title ?? "nil")")
         dismiss(animated: true, completion: nil)
+    }
+    
+    //MARK: - Helpers
+    func doneButton(isEnabled: Bool) {
+        self.navigationItem.rightBarButtonItem?.isEnabled = isEnabled
     }
 }
 
@@ -97,32 +103,19 @@ extension EditListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let menuCell = tableView.dequeueReusableCell(withIdentifier: menuCellID, for: indexPath) as! MenuCell
-        
+        let menuCell: MenuCell = tableView.dequeueReusableCell(for: indexPath)
         if indexPath.section == 0 {
             let editListCell = EditItemCell(style: .default, reuseIdentifier: editListCellID)
-           createEditListCell(cell: editListCell)
+            editListCell.configure(text: list?.title ?? "", delegate: self)
             return editListCell
         }
         if indexPath.section == 1 {
             let menuData = data[indexPath.row]
-            
-            //menuCell.iconImageView.backgroundColor = Colors.tasksRed
-            menuCell.iconImageView.tintColor = Colors.tasksRed
-            menuCell.iconImageView.image = Images.CheckCircleFill
-            menuCell.titleLabel.text = menuData.label.rawValue
-            
+            menuCell.configure(image: Images.SaveIcon!, tintColor: Colors.tasksRed, text: menuData.label.rawValue, value: nil)
             return menuCell
         }
         return UITableViewCell()
     }
-    
-    func createEditListCell(cell: EditItemCell) {
-        cell.editListTitleTextField.delegate = self
-        cell.editListTitleTextField.text = list?.title
-        cell.editListTitleTextField.borderStyle = .roundedRect
-    }
-    
 }
 
 extension EditListViewController: UITableViewDelegate {
@@ -136,7 +129,7 @@ extension EditListViewController: UITableViewDelegate {
     //Section Header
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
-            let title = "Edit List:"
+            let title = "Edit Title:"
             return title
         }
         else { return "" }
@@ -156,7 +149,7 @@ extension EditListViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
         cellTextColor = .label
         tableView.reloadData()
-        self.navigationItem.rightBarButtonItem?.isEnabled = true
+        doneButton(isEnabled: true)
         return true
     }
     
