@@ -9,11 +9,9 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 ## Tasks Images
 **Updated images coming soon!
 
-Images from the app currently on the store:
-
 ### App Store Link:
 [![Download on App Store](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
-**Note, this is the old version of Tasks, not the new improved version. The new version will be released soon!
+**Application hasn't been updated on the store yet. Working on the final improvements. I expect this to be released in early 2020!
 ***
 ## Technologies: 
 * UITableView - Using UITableView for the list views in the project. 
@@ -22,6 +20,7 @@ Images from the app currently on the store:
 * CloudKit: Used NSPersistentCloudKitContainer to perform Core Data/CloudKit Sync.
 * Today Extension: Use the today widget to view any items that have a reminder date set for that day.
 * Share Extension: Share tasks via share window.
+* Custom Animations: Custom animations used on the TabBar menu. 
 
 ***
 ## Requirements:
@@ -43,6 +42,6 @@ Tasks is a to-do list application built to help me keep up to date on my daily t
 * Added support for iOS 13.0 and Dark Mode!
 ***
 ## Current Tasks Images -- These will be updated with current version soon.
-![Tasks Home](Screenshots/TasksBlankHomeGithub.png)![Tasks Add Title](Screenshots/TasksAddingTitleGithub.png) ![Tasks Home With Added List](Screenshots/HomeWithListAddedGithub.png) ![Tasks With Items Added](Screenshots/TasksListWithItemsGithub.png)![Tasks Adding Reminder](Screenshots/TasksAddingReminderGithub.png) 
+![Tasks Home](Images/TasksBlankHomeGithub.png)![Tasks Add Title](Images/TasksAddingTitleGithub.png) ![Tasks Home With Added List](Images/HomeWithListAddedGithub.png) ![Tasks With Items Added](Images/TasksListWithItemsGithub.png)![Tasks Adding Reminder](Images/TasksAddingReminderGithub.png) 
 
 
