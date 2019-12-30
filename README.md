@@ -1,6 +1,10 @@
 # Tasks
-Improving Tasks Application. Updating UI/UX Improving the code, Adding Support for iOS 13.0.
-
+***
+## Updates In Version 2.0:
+* adding NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
+* Updated and simplified the User Interface in order to improve the User Experience.
+* Added today and share extensions to improve User Experience.
+* Added support for iOS 13.0 and Dark Mode!
 
 ## Description:
 A to-do list application that syncs to-do's across all your iOS Devices. Add reminders for important tasks, For things you really can't forget you can add them to your calendar right from the app. This application is written in Swift 5.1.
@@ -11,7 +15,8 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 
 ### App Store Link:
 [![Download on App Store](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
-**Application hasn't been updated on the store yet. Working on the final improvements. I expect this to be released in early 2020!
+
+#### **Updated version expected to be released to app store in early 2020!
 ***
 ## Technologies: 
 * UITableView - Using UITableView for the list views in the project. 
@@ -33,15 +38,10 @@ I am an iOS Developer from Northern CA. I focus on writing applications in Swift
 
 ***
 ## About This Project: 
-Tasks is a to-do list application built to help me keep up to date on my daily tasks. I am using this project to demonstrate my iOS development skills. 
+Tasks is a to-do list application built to help me keep up to date on my daily tasks. I'm updating the project because the current version doesn't reflect my abilities as a developer any more. I decided to refactor the code utilizing protocols, and implementing methods that better reflect MVC. I built the views programatically on this version (previous version used Interface Builder). 
 
-### What are the updates from the current version?
-* adding NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
-* Updated and simplified the User Interface in order to improve the User Experience.
-* Added today and share extensions to improve User Experience.
-* Added support for iOS 13.0 and Dark Mode!
 ***
-## Current Tasks Images -- These will be updated with current version soon.
+## *** Current Version Images ***
 ![Tasks Home With Added List](Images/HomeWithListAddedGithub.png) ![Tasks With Items Added](Images/TasksListWithItemsGithub.png)![Tasks Adding Reminder](Images/TasksAddingReminderGithub.png) 
 
 
