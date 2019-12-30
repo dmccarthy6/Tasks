@@ -37,10 +37,9 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
   * Final refactoring to improve code stability.
 
 ***
-## Tasks Images
-**Updated images coming soon! -- See below for current Tasks Images
+## Screenshots:
+**See below for current Tasks Images. Updated images coming soon!
 
-### App Store:
 [![Download on App Store](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
 
 #### **Updated version expected to be released to app store in early 2020!
@@ -53,7 +52,7 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 ## About The Developer:
 I am an iOS Developer from Northern CA. I focus on writing applications in Swift and Objective-C. To learn more about me, you can check out my [portfolio](https://dylanmccarthyios.com).
 ***
-## *** Current Version Images ***
+## *** Current Version Screenshots: ***
 ![Tasks Home With Added List](Images/HomeWithListAddedGithub.png) ![Tasks With Items Added](Images/TasksListWithItemsGithub.png)![Tasks Adding Reminder](Images/TasksAddingReminderGithub.png) 
 
 
