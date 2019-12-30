@@ -1,6 +1,6 @@
 # Tasks
 ***
-## Updates In Version 2.0:
+## Updates Coming In Version 2.0:
 * adding NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
 * Updated and simplified the User Interface in order to improve the User Experience.
 * Added today and share extensions to improve User Experience.
@@ -12,7 +12,7 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 
 ***
 ## Tasks Images
-**Updated images coming soon!
+**Updated images coming soon! -- See below for current Tasks Images
 
 ### App Store:
 [![Download on App Store](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
@@ -27,7 +27,7 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 * **Today Extension:** Use the today widget to view any items that have a reminder date set for that day.
 * **Share Extension:** Share tasks via share window.
 * **Custom Animations:** Custom animations used on custom menus that appear and disappear from the TabBarController.  
-* **Programatic UI:** Built the UI programatically without the use of Xib's or Storyboards
+* **Programatic UI:** Built the UI programatically without the use of Xib's or Storyboards.
 
 ***
 ## Requirements:
