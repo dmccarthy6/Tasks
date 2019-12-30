@@ -11,14 +11,6 @@
 A to-do list application that syncs to-do's across all your iOS Devices. Add reminders for important tasks, For things you really can't forget you can add them to your calendar right from the app. This application is written in Swift 5.1.
 
 ***
-## Tasks Images
-**Updated images coming soon! -- See below for current Tasks Images
-
-### App Store:
-[![Download on App Store](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
-
-#### **Updated version expected to be released to app store in early 2020!
-***
 ## Technologies: 
 * **UITableView:** Using UITableView for the list views in the project. 
 * **UITabBarController:** TabBarController used to display menus to share or edit lists. 
@@ -30,6 +22,23 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 * **Programatic UI:** Built the UI programatically without the use of Xib's or Storyboards.
 
 ***
+## About This Project: 
+- **Why did I make this?** I wanted a to-do list application that made it easier to stay on top of my tasks (don't we all?). I wanted the ability to add items to my calendar which would help me avoid snoozing items until I forgot about them. I also built this application to get a deeper dive into Core Data and CloudKit frameworks.  
+
+- **What Did I Learn?** With this update I refactored almost the entire application to better reflect what I've learned as a developer since I first released Tasks. I focused on making the application adhere towards MVC. I also implemented a protocol for my database to abstract that functionality. Built a framework to hold my Core Data stack in order to provide Core Data access to both my today widget and my application.
+
+- **What am I working on now?** I'm focusing on the UI currently to improve the look and feel of the application. While I'm not a designer myself, I'm trying to focus on the appearance. 
+
+***
+## Tasks Images
+**Updated images coming soon! -- See below for current Tasks Images
+
+### App Store:
+[![Download on App Store](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
+
+#### **Updated version expected to be released to app store in early 2020!
+
+***
 ## Requirements:
 * iOS 13.0+
 * Xcode 10+
@@ -37,14 +46,6 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 ***
 ## About The Developer:
 I am an iOS Developer from Northern CA. I focus on writing applications in Swift and/or Objective-C. To learn more about me you can check out my [portfolio](https://dylanmccarthyios.com).
-
-***
-## About This Project: 
-- **Why did I make this?** I wanted a to-do list application that made it easier to stay on top of my tasks (don't we all?). I wanted the ability to add items to my calendar which would help me avoid snoozing items until I forgot about them. I also built this application to get a deeper dive into Core Data and CloudKit frameworks.  
-
-- **What Did I Learn?** With this update I refactored almost the entire application to better reflect what I've learned as a developer since I first released Tasks. I focused on making the application adhere towards MVC. I also implemented a protocol for my database to abstract that functionality. Built a framework to hold my Core Data stack in order to provide Core Data access to both my today widget and my application.
-
-- **What am I working on now?** I'm focusing on the UI currently to improve the look and feel of the application. While I'm not a designer myself, I'm trying to focus on the appearance. 
 
 ***
 ## *** Current Version Images ***
