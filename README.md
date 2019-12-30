@@ -1,5 +1,5 @@
 # Tasks
-***
+
 ## Updates Coming In Version 2.0:
 * Adding NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
 * Updated and simplified the User Interface to improve the User Experience.
