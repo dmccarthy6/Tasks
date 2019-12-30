@@ -41,7 +41,8 @@ Tasks is a to-do list application built to help me keep up to date on my daily t
 * Updated and simplified the User Interface in order to improve the User Experience.
 * Added today and share extensions to improve User Experience.
 * Added support for iOS 13.0 and Dark Mode!
-
-
+***
+## Current Tasks Images -- These will be updated with current version soon.
+![Tasks Home](Screenshots/TasksBlankHomeGithub.png)![Tasks Add Title](Screenshots/TasksAddingTitleGithub.png) ![Tasks Home With Added List](Screenshots/HomeWithListAddedGithub.png) ![Tasks With Items Added](Screenshots/TasksListWithItemsGithub.png)![Tasks Adding Reminder](Screenshots/TasksAddingReminderGithub.png) 
 
 
