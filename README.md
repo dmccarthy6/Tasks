@@ -1,7 +1,7 @@
 # Tasks
 ***
 ## Updates Coming In Version 2.0:
-* adding NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
+* Adding NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
 * Updated and simplified the User Interface to improve the User Experience.
 * Added today and share extensions to improve User Experience.
 * Added support for iOS 13.0 and Dark Mode!
