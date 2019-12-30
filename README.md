@@ -14,19 +14,20 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 ## Tasks Images
 **Updated images coming soon!
 
-### App Store Link:
+### App Store:
 [![Download on App Store](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
 
 #### **Updated version expected to be released to app store in early 2020!
 ***
 ## Technologies: 
-* UITableView - Using UITableView for the list views in the project. 
-* UITabBarController
-* Core Data: Core Data used for local persistence. Save lists, tasks, reminders, and due dates all using Core Data.
-* CloudKit: Used NSPersistentCloudKitContainer to perform Core Data/CloudKit Sync.
-* Today Extension: Use the today widget to view any items that have a reminder date set for that day.
-* Share Extension: Share tasks via share window.
-* Custom Animations: Custom animations used on the TabBar menu. 
+* **UITableView:** Using UITableView for the list views in the project. 
+* **UITabBarController:** TabBarController used to display menus to share or edit lists. 
+* **Core Data:** Core Data used for local persistence. Save lists, tasks, reminders, and due dates all using Core Data.
+* **CloudKit:** Used NSPersistentCloudKitContainer to perform Core Data/CloudKit Sync.
+* **Today Extension:** Use the today widget to view any items that have a reminder date set for that day.
+* **Share Extension:** Share tasks via share window.
+* **Custom Animations:** Custom animations used on custom menus that appear and disappear from the TabBarController.  
+* **Programatic UI:** Built the UI programatically without the use of Xib's or Storyboards
 
 ***
 ## Requirements:
@@ -39,7 +40,11 @@ I am an iOS Developer from Northern CA. I focus on writing applications in Swift
 
 ***
 ## About This Project: 
-Tasks is a to-do list application built to help me keep up to date on my daily tasks. I'm updating the project because the current version doesn't reflect my abilities as a developer any more. I decided to refactor the code utilizing protocols, and implementing methods that better reflect MVC. I built the views programatically on this version (previous version used Interface Builder). 
+- **Why did I make this?** I wanted a to-do list application that made it easier to stay on top of my tasks (don't we all?). I wanted the ability to add items to my calendar which would help me avoid snoozing items until I forgot about them. I also built this application to get a deeper dive into Core Data and CloudKit frameworks.  
+
+- **What Did I Learn?** With this update I refactored almost the entire application to better reflect what I've learned as a developer since I first released Tasks. I focused on making the application adhere towards MVC. I also implemented a protocol for my database to abstract that functionality. Built a framework to hold my Core Data stack in order to provide Core Data access to both my today widget and my application.
+
+- **What am I working on now?** I'm focusing on the UI currently to improve the look and feel of the application. While I'm not a designer myself, I'm trying to focus on the appearance. 
 
 ***
 ## *** Current Version Images ***
