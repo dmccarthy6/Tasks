@@ -23,9 +23,9 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 
 ***
 ## About This Project: 
-- **Why did I make this?** I wanted a to-do list application that made it easier to stay on top of my tasks (don't we all?). I wanted the ability to add items to my calendar which would help me avoid snoozing items until I forgot about them. I also built this application to get a deeper dive into Core Data and CloudKit frameworks.  
+- **Why did I make Tasks?** I wanted a to-do list application that made it easier to stay on top of my tasks (don't we all?). I wanted the ability to add items to my calendar which would help me avoid snoozing items until I forgot about them. I also built this application to get a deeper dive into Core Data and CloudKit frameworks.  
 
-- **What Did I Learn?** With this update I refactored almost the entire application to better reflect what I've learned as a developer since I first released Tasks.
+- **What have I learned so far?** With this update I refactored almost the entire application to better reflect what I've learned as a developer since I first released Tasks.
   * I have gained a greater understanding of planning out the App architecture and basic functionality from the start! 
   * I used programatic UI that helped me conform to MVC. 
   * Implemented a protocol for my Core Data database to abstract database functionality to the protocol. 
