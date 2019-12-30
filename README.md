@@ -5,6 +5,7 @@
 * Updated and simplified the User Interface in order to improve the User Experience.
 * Added today and share extensions to improve User Experience.
 * Added support for iOS 13.0 and Dark Mode!
+***
 
 ## Description:
 A to-do list application that syncs to-do's across all your iOS Devices. Add reminders for important tasks, For things you really can't forget you can add them to your calendar right from the app. This application is written in Swift 5.1.
