@@ -2,7 +2,7 @@
 ***
 ## Updates Coming In Version 2.0:
 * adding NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
-* Updated and simplified the User Interface in order to improve the User Experience.
+* Updated and simplified the User Interface to improve the User Experience.
 * Added today and share extensions to improve User Experience.
 * Added support for iOS 13.0 and Dark Mode!
 ***
@@ -28,9 +28,9 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 - **What Did I Learn?** With this update I refactored almost the entire application to better reflect what I've learned as a developer since I first released Tasks.
   * I have gained a greater understanding of planning out the App architecture and basic functionality from the start! 
   * I used programatic UI that helped me conform to MVC. 
-  * Implemented a protocol for my Core Data database in order to abstract database functionality to the protocol. 
+  * Implemented a protocol for my Core Data database to abstract database functionality to the protocol. 
   Used a 
-  * Moved my Core Data stack to a framework in order to access the stack from my main application and the today widget.
+  * Moved my Core Data stack to a framework to access the stack from my main application and the today widget.
 
 - **Whats Next?** 
   * UI! Currently working on updating the user interface to improve the look and feel of the application.
