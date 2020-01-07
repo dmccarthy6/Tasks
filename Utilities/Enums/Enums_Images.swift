@@ -23,9 +23,8 @@ enum Images {
     static let SaveIcon = UIImage(named: "SaveIcon")
     static let ShareIcon = UIImage(named: "Share")
     static let SyncIcon = UIImage(named: "Sync")
+    
     //System Images -- iOS 13
-    static let SystemShareIcon = UIImage(systemName: "square.and.arrow.up")
-    static let CheckCircleFill = UIImage(systemName: "checkmark.circle.fill")
     
 }
 
@@ -34,3 +33,33 @@ enum FlagImage {
     static let FilledFlag = UIImage(systemName: "flag.fill")
 }
 
+enum SystemImages {
+    static let SystemShareIcon = UIImage(systemName: "square.and.arrow.up")
+    static let CheckCircleFill = UIImage(systemName: "checkmark.circle.fill")
+    static let CircleBlank = UIImage(systemName: "circle")
+    static let CircleWithCheck = UIImage(systemName: "checkmark.circle.fill")
+    static let Star = UIImage(systemName: "star")
+    static let StarFill = UIImage(systemName: "star.fill")
+    static let ListIcon = UIImage(systemName: "list.dash")
+    static let AddListIcon = UIImage(systemName: "text.badge.plus")
+    static let Plus = UIImage(systemName: "plus")
+}
+
+enum ListIcons: CaseIterable {
+    
+    static var count: Int { return allCases.count } 
+    
+    static let listDash = UIImage(systemName: "list.dash")
+    static let linkCircle = UIImage(systemName: "link.circle")
+    static let mapPinCircle = UIImage(systemName: "mappin.circle.fill")
+    static let moonCircle = UIImage(systemName: "moon.circle.fill")
+    static let airplane = UIImage(systemName: "airplane")
+    static let carFill = UIImage(systemName: "car.fill")
+    static let wifi = UIImage(systemName: "wifi")
+    static let boltCircle = UIImage(systemName: "bolt.circle.fill")
+    static let cartFill = UIImage(systemName: "cart.fill")
+    static let bandageFill = UIImage(systemName: "bandage.fill")
+    static let personCircle = UIImage(systemName: "person.crop.circle.fill")
+    static let phoneCircle = UIImage(systemName: "phone.circle.fill")
+    static let envelopeCircle = UIImage(systemName: "envelope.circle.fill")
+}

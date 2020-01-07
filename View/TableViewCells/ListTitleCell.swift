@@ -1,29 +1,33 @@
-//
-//  ListTitleCell.swift
-//  Tasks
-//
-//  Created by Dylan  on 12/3/19.
-//  Copyright © 2019 Dylan . All rights reserved.
-//
+
 
 import Foundation
 import UIKit
 
-class ListTitleCell: UITableViewCell {
+final class ListTitleCell: UITableViewCell {
     
     private var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
+        label.textColor = .label
         label.font = DynamicFonts.Title3Dynamic
         return label
     }()
     
     private var listImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.image = Images.ListIcon
-        return iv
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        imageView.image = SystemImages.ListIcon
+        imageView.tintColor = .label
+        imageView.contentMode = .scaleAspectFit
+        return imageView
     }()
     
+    private var listItemsCountLabel: UILabel = {
+        let label = UILabel()
+        label.font = DynamicFonts.BodyDynamic
+        label.textColor = .label
+        label.backgroundColor = .blue
+        return label
+    }()
     
     //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -37,21 +41,31 @@ class ListTitleCell: UITableViewCell {
     }
     
     //MARK: -
-    func createListTitleCell() {
+    private func createListTitleCell() {
         addSubview(listImageView)
         addSubview(titleLabel)
+        //addSubview(listItemsCountLabel)
         addConstraints()
         handleTableCellForIOS13()
         selectionStyle = .none
     }
     
     private func addConstraints() {
-        let listImage = Images.ListIcon! //Force Unwrapping?!?
-        listImageView.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: titleLabel.leadingAnchor, padding: .init(top: 0, left: 3, bottom: 0, right: 0), size: .init(width: listImage.size.width, height: listImage.size.height))
-        titleLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: listImageView.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: contentView.frame.size.width, height: contentView.frame.size.width))
+        listImageView.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: titleLabel.leadingAnchor, padding: .init(top: 0, left: 10, bottom: 0, right: 15), size: .init(width: 30, height: 30))
+        titleLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: listImageView.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: contentView.frame.size.width, height: contentView.frame.size.height))
+//        listItemsCountLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: titleLabel.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 5, bottom: 0, right: 10), size: .init(width: 20, height: -40))
     }
     
     func configure(listTitle: String) {
         titleLabel.text = listTitle
+        
+        accessoryType = .disclosureIndicator
+        
+    }
+    
+    //Let user set the image for the list label?
+    func configureListImage(image: UIImage, tintColor: UIColor) {
+        listImageView.image = image
+        listImageView.tintColor = tintColor
     }
 }

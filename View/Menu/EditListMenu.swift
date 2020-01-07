@@ -22,7 +22,7 @@ class EditListMenu: NSObject {
     
     lazy var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .plain)
-        tv.backgroundColor = Colors.tasksRed
+        tv.registerCell(cellClass: MenuCell.self)
         tv.dataSource = self
         tv.delegate = self
         tv.separatorStyle = .singleLine
@@ -34,13 +34,12 @@ class EditListMenu: NSObject {
     var list: List?
     var menuData: [EditListModel] = []
     var menuIsShowing: Bool = false
-    let menuID = "MenuCell"
     let tabBar = TasksTabBarController()
     
     
     override init() {
         super.init()
-        registerTableViewCells()
+
         setMenuData()
     }
     
@@ -48,9 +47,7 @@ class EditListMenu: NSObject {
         menuData.append(EditListModel(image: Images.EditIcon!, label: .edit))
     }
     
-    func registerTableViewCells() {
-        tableView.register(MenuCell.self, forCellReuseIdentifier: menuID)
-    }
+    
     
     @objc func showEditListMenu() {
         if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
@@ -112,13 +109,17 @@ extension EditListMenu: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let menuCell = tableView.dequeueReusableCell(withIdentifier: menuID, for: indexPath) as! MenuCell
-        menuCell.backgroundColor = Colors.tasksRed
-        menuCell.setMenuCellColors()
-
+        //let menuCell = tableView.dequeueReusableCell(withIdentifier: menuID, for: indexPath) as! MenuCell
+        let menuCell: MenuCell = tableView.dequeueReusableCell(for: indexPath)
         let data = menuData[indexPath.row]
-        menuCell.titleLabel.text = data.label.rawValue
-        menuCell.iconImageView.image = data.image
+        menuCell.configure(image: data.image, tintColor: Colors.tasksRed, text: data.label.rawValue)
+        
+        //menuCell.backgroundColor = Colors.tasksRed
+        //menuCell.setMenuCellColors()
+
+        
+//        menuCell.titleLabel.text = data.label.rawValue
+//        menuCell.iconImageView.image = data.image
         
         return menuCell
     }

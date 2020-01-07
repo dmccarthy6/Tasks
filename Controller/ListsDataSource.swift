@@ -52,10 +52,10 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let addListCell = TextFieldCell(style: .default, reuseIdentifier: ListTableCellID.ListTextCellID.rawValue)
-        addListCell.configure(placeholder: .Title, delegate: self, backgroundColor: Colors.tasksGray)
+        addListCell.configure(placeholder: .Title, delegate: self, backgroundColor: .systemGray)
         
         if indexPath.section == 0 {
-            addListCell.backgroundColor = .systemGray3
+            //addListCell.backgroundColor = .systemGray3
             return addListCell
         }
         else if indexPath.section == 1 {
@@ -101,7 +101,6 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
         switch type {
             
         case .insert:
-            
             print("MainVCData - FetchedResultsControllerDelegate - INSERT HIT")
             guard let newIndexPath = newIndexPath else {
                 fatalError("IndexPath Error - FRC MainVC .Insert")
@@ -110,7 +109,6 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
             tableView.insertRows(at: [frcIndexPath], with: .fade)
             
         case .update:
-            
             print("MainVCData - FetchedResultsControllerDelegate - UPDATE HIT")
             guard let indexPath = indexPath,
                 let managedObject = anObject as? List else {
@@ -118,24 +116,26 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
                     return
             }
             let frcIndex = IndexPath(row: indexPath.row, section: 1)
-            let titleCell = tableView.cellForRow(at: frcIndex) as? EditItemCell
-            titleCell?.configure(text: managedObject.title!, delegate: nil)
-//            titleCell?.editListTitleTextField.text = managedObject.title
+            
+            if let editedTitleCell = tableView.cellForRow(at: frcIndex) as? EditItemCell {
+                editedTitleCell.configure(text: managedObject.title!, delegate: nil)
+            }
+            if let insertedTitleCell = tableView.cellForRow(at: frcIndex) as? ListTitleCell {
+                print("FRC Section: \(frcIndex.section), FRC Row: \(frcIndex.row) ")
+                insertedTitleCell.configure(listTitle: managedObject.title!)
+            }
             tableView.reloadRows(at: [frcIndex], with: .automatic)
             
         case .delete:
-            
             print("MainVCData - FetchedResultsControllerDelegate - DELETE HIT")
             guard let indexPath = indexPath else {
                 fatalError("MainViewController = Indexpath on Delete is NIL")
             }
             let tableViewSection = IndexPath(row: indexPath.row, section: 1)
-            guard let list = listsFetchedResultsController?.object(at: indexPath) as? List else { return }
-            //OLD: guard let list = fetchedResultsController?.object(at: indexPath) as? List else { return }
+            //guard let list = listsFetchedResultsController?.object(at: indexPath) as? List else { return }
             tableView.deleteRows(at: [tableViewSection], with: .fade)
             
         case .move:
-            
             print("MainVCData - Move")
             guard let destinationIndexPath = newIndexPath,
                 let originIndexPath = indexPath else {

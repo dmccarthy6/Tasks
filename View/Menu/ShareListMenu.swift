@@ -24,6 +24,7 @@ class ShareListMenuLauncher: NSObject {
         tableView.backgroundColor = Colors.tasksRed
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.registerCell(cellClass: MenuCell.self)
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = .white
         tableView.tableFooterView = UIView()
@@ -41,7 +42,6 @@ class ShareListMenuLauncher: NSObject {
     
     override init() {
         super.init()
-        registerTableViewCells()
         setMenuData()
     }
     
@@ -86,10 +86,6 @@ class ShareListMenuLauncher: NSObject {
         menuData.append(EditListModel(image: Images.ShareIcon!, label: .share))
     }
     
-    func registerTableViewCells() {
-        tableView.register(MenuCell.self, forCellReuseIdentifier: shareCellID)
-    }
-    
 }
 extension ShareListMenuLauncher: UITableViewDataSource {
     //MARK: - TableView Data Source Methods:
@@ -102,13 +98,13 @@ extension ShareListMenuLauncher: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let shareMenuCell = tableView.dequeueReusableCell(withIdentifier: shareCellID, for: indexPath) as? MenuCell
-        shareMenuCell?.setMenuCellColors()
-        
+        //let shareMenuCell = tableView.dequeueReusableCell(withIdentifier: shareCellID, for: indexPath) as? MenuCell
+        let shareMenuCell: MenuCell = tableView.dequeueReusableCell(for: indexPath)
         let cellData = menuData[indexPath.row]
-        shareMenuCell?.titleLabel.text = cellData.label.rawValue
-        shareMenuCell?.iconImageView.image = cellData.image
-        return shareMenuCell!
+        shareMenuCell.configure(image: cellData.image, tintColor: nil, text: cellData.label.rawValue)
+//        shareMenuCell?.titleLabel.text = cellData.label.rawValue
+//        shareMenuCell?.iconImageView.image = cellData.image
+        return shareMenuCell
     }
     
 }
@@ -122,9 +118,6 @@ extension ShareListMenuLauncher: UITableViewDelegate {
             if let items = list?.items?.allObjects as? [Items]  {
                 OpenShareExtension(items: items)
             }
-//            if let items = list?.items?.allObjects as? [Items] {
-//                OpenShareExtension(items: items)
-//            }
         }
     }
 }

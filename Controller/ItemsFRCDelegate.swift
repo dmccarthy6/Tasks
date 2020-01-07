@@ -99,28 +99,19 @@ extension ItemsFetchedResultsControllerDelegate {
     }
     
     func handleSectionsInserted(controller: NSFetchedResultsController<NSFetchRequestResult>, sectionIndex: Int) -> IndexSet {
-        let allItems = (controller.fetchedObjects as? [Items])!.count
-        let open = (controller.fetchedObjects as? [Items])?.filter({ $0.isComplete == false })
-        let closed = (controller.fetchedObjects as? [Items])?.filter({ $0.isComplete })
-        
-        let closingOnlyOpenItem = open?.count == 0 && closed?.count == 1
-        let addingFirstItemToClosed = allItems == 1 && open!.count >= 1 && closed?.count == 1
-        let movingFirstClosedItemToOpen = open?.count == 1 && closed!.count >= 0
-        
+        let items = allItems(for: controller)
+        let openItems = openItemsCount(for: controller)
+        let closedItems = closedItemsCount(for: controller)
         let completedButtonIndex = 2
         
         if sectionIndex == 1 {
-            //Adding Section 1 when First item is added to a list
-            if addingFirstItemToClosed { return [sectionIndex] }
-            //Closing only Open Item, Adding Sections 2 & 3 respectively that will become sections 1 & 2
-            if closingOnlyOpenItem {
-                print("CLOSING ONLY OPEN ITEM -- INSERTING SECTION(S): \(completedButtonIndex), & \(sectionIndex) ")
-                return [completedButtonIndex, sectionIndex]
-            }
-            //Moving First closed item to open (0 open)
-            if movingFirstClosedItemToOpen {
-                print("MOVING FIRST CLOSED ITEM TO OPEN -- INSERTING SECTION(S): \(completedButtonIndex), & \(sectionIndex) ")
+            if addingFirstItemToNewList(openItems: openItems, closedItems: closedItems, allItems: items) || movingFirstItemFromClosedToEmptyOpenSection(open: openItems, closed: closedItems, items: items) {
+                //Adding first item to new list. Adding tableview section 0 -- creating list.
                 return [sectionIndex]
+            }
+            else if closingOnlyOpenItemInList(open: openItems, closed: closedItems, items: items) {
+                //Adding First and only list item to closed.
+                return [completedButtonIndex, sectionIndex]
             }
         }
         if sectionIndex == 3 {
@@ -132,29 +123,89 @@ extension ItemsFetchedResultsControllerDelegate {
     }
     
     func handleSectionsDeleted(controller: NSFetchedResultsController<NSFetchRequestResult>, sectionIndex: Int) -> IndexSet {
-        let open = (controller.fetchedObjects as? [Items])?.filter({ $0.isComplete == false })
-        let closed = (controller.fetchedObjects as? [Items])?.filter({ $0.isComplete })
-        let closingOnlyOpenItem = open?.count == 0 && closed?.count == 1
-        let movingLastClosedItemToOpen = open!.count > 0 && closed?.count == 0
-        
+        let openItems = openItemsCount(for: controller)
+        let closedItems = closedItemsCount(for: controller)
+        let items = allItems(for: controller)
         let completedButtonIndex = 2
         
         if sectionIndex == 1 {
-            if closingOnlyOpenItem {
+            if closingOnlyOpenItemInList(open: openItems, closed: closedItems, items: items) {
                 return [sectionIndex]
             }
-            else if movingLastClosedItemToOpen {
+            else if movingLastCompletedItemToOpen(open: openItems, closed: closedItems, allItems: items) {
+                //Hit when only item in list is moved from closed to open -- section index is 1 here not 3
                 return [completedButtonIndex, sectionIndex]
             }
         }
         else if sectionIndex == 3 {
-            if movingLastClosedItemToOpen {
-                //Delete Button Section & Closed Items Section
+            //This gets hit when moving last item from closed to open
+            if movingLastCompletedItemToOpen(open: openItems, closed: closedItems, allItems: items) {
                 return [completedButtonIndex, sectionIndex]
             }
         }
         return [sectionIndex]
     }
     
+    //MARK: - Helpers
+    func openItemsCount(for controller: NSFetchedResultsController<NSFetchRequestResult>) -> Int {
+        if let openCount = (controller.fetchedObjects as? [Items])?.filter({ $0.isComplete == false }).count {
+            return openCount
+        }
+        else {
+            return 0
+        }
+    }
+    
+    func closedItemsCount(for controller: NSFetchedResultsController<NSFetchRequestResult>) -> Int {
+        if let closedCount = (controller.fetchedObjects as? [Items])?.filter({ $0.isComplete }).count {
+            return closedCount
+        }
+        else { return 0 }
+    }
+    
+    func allItems(for controller: NSFetchedResultsController<NSFetchRequestResult>) -> Int {
+        if let allItems = (controller.fetchedObjects as? [Items]) {
+            let allItemsCount = allItems.count
+            return allItemsCount
+        }
+        else { return 0 }
+    }
+    
+    func addingFirstItemToNewList(openItems: Int, closedItems: Int, allItems: Int) -> Bool {
+        if (openItems == 1 && closedItems == 0) && allItems == 1 {
+            //We are adding first list item = all items == 1 and there are no closed items.
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    func closingOnlyOpenItemInList(open: Int, closed: Int, items: Int) -> Bool {
+        if open == 0 && closed == 1 {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    func movingFirstItemFromClosedToEmptyOpenSection(open: Int, closed: Int, items: Int) -> Bool {
+        if open == 1 && closed >= 0 {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
+    func movingLastCompletedItemToOpen(open: Int, closed: Int, allItems: Int) -> Bool {
+        if open > 0  && closed == 0 {
+            return true
+        }
+        else {
+            return false
+        }
+    }
     
 }//

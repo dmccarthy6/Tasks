@@ -13,6 +13,7 @@ class EditItemCell: UITableViewCell {
     private let editListTitleTextField: UITextField = {
         let addTitleTextField = UITextField()
         addTitleTextField.font = DynamicFonts.Title1Dynamic
+        addTitleTextField.textColor = .label
         addTitleTextField.adjustsFontForContentSizeCategory = true
         return addTitleTextField
     }()
@@ -44,6 +45,7 @@ class EditItemCell: UITableViewCell {
         editListTitleTextField.text = text
         editListTitleTextField.delegate = delegate
         editListTitleTextField.borderStyle = .roundedRect
+        editListTitleTextField.becomeFirstResponder()
     }
 }
 

@@ -13,7 +13,7 @@ import CloudKit
 import EventKit
 import TasksFramework
 
-class EditItemViewController: UIViewController, CoreDataManagerViewController {
+class EditItemViewController: UIViewController, CanWriteToDatabase {
     
     //MARK: - Properties
     lazy var tableView: UITableView = {
@@ -21,28 +21,26 @@ class EditItemViewController: UIViewController, CoreDataManagerViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .singleLine
+        tableView.separatorColor = .secondarySystemBackground
         tableView.tableFooterView = UIView()
+        tableView.registerCell(cellClass: MenuCell.self)
+        tableView.registerCell(cellClass: EditItemCell.self)
+        tableView.registerCell(cellClass: ReminderDatePickerCell.self)
         return tableView
     }()
-    
-    var coreDataManager: CoreDataManager?
-    var modelObjectType: ModelObjectType?
     var items: Items?
     var alertDatePicker: UIDatePicker?
     let cellHeight: CGFloat = 40
     
-    
     //Cell Identifiers
     private let editItemCellID = "EditItemCell"
-    private let menuCellID = "MenuCell"
     private let reminderDatePickerID = "ReminderDatePickerCell"
     
     
-    
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         createTableView()
-        
         checkForUpdate()
     }
     
@@ -59,17 +57,9 @@ class EditItemViewController: UIViewController, CoreDataManagerViewController {
 
     //MARK: - Create TableView
     func createTableView() {
-        setUpView()
-    }
-
-    func setUpView() {
         view.addSubview(tableView)
         
         tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: view.bounds.size.width, height: view.bounds.size.height))
-        //Register TableView Cells
-        tableView.register(EditItemCell.self, forCellReuseIdentifier: editItemCellID)
-        tableView.register(MenuCell.self, forCellReuseIdentifier: menuCellID)
-        tableView.register(ReminderDatePickerCell.self, forCellReuseIdentifier: reminderDatePickerID)
         
         if let item = items {
             navigationItem.title = item.item
@@ -82,9 +72,14 @@ class EditItemViewController: UIViewController, CoreDataManagerViewController {
     @objc func reminderDatePickerChanged(sender: UIDatePicker) {
         let stringDate = sender.date.getReminderDateAsString(pickerDate: sender.date)
         let reminderIndexPath = IndexPath(row: 0, section: 1)
+        
         let reminderCell = tableView.cellForRow(at: reminderIndexPath) as! MenuCell
-        CoreDataManager.shared.setItemAlert(item: items!, alert: sender.date)
-        reminderCell.valueLabel.text = stringDate
+        if let items = items {
+            setAlertOnItem(item: items, alertDate: sender.date)
+            reminderCell.configureValue(value: stringDate)
+        }
+        //CoreDataManager.shared.setItemAlert(item: items!, alert: sender.date)
+        //reminderCell.valueLabel.text = stringDate
         doneButton(isEnabled: true)
     }
     
@@ -100,7 +95,7 @@ class EditItemViewController: UIViewController, CoreDataManagerViewController {
     func eventAdded(event: EKEvent) {
         guard let items = items else { return }
         let eventDate = event.startDate
-        CoreDataManager.shared.setDueDate(item: items, date: eventDate!)
+        setDueDateForItem(item: items, date: eventDate!)
     }
     
     //MARK: - Navigation
@@ -130,7 +125,7 @@ extension EditItemViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let labelCell = tableView.dequeueReusableCell(withIdentifier: menuCellID, for: IndexPath(row: indexPath.row, section: 1)) as! MenuCell
+        let labelCell: MenuCell = tableView.dequeueReusableCell(for: IndexPath(row: indexPath.row, section: 1))
         let reminderDatePickerCell = ReminderDatePickerCell(style: .default, reuseIdentifier: reminderDatePickerID)
         
         if indexPath.section == 0 {
@@ -142,18 +137,9 @@ extension EditItemViewController: UITableViewDataSource {
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                labelCell.titleLabel.text = MenuLabel.reminder.rawValue
-                labelCell.iconImageView.image = Images.BellIcon
-                
+                labelCell.configure(image: Images.BellIcon!, tintColor: nil, text: MenuLabel.reminder.rawValue)
                 if let reminder = items?.reminderDate {
-                    let today = Date()
-                    if reminder.checkIf(reminderDate: reminder, isLessThan: today) {
-                        print("RED REUM - EDIT ITEMS VC")
-                        //TO-DO - RED FONT
-                    } else {
-                        labelCell.valueLabel.text = reminder
-                    }
-                    labelCell.valueLabel.text = reminder
+                    labelCell.configureValue(value: reminder)
                 }
             case 1:
                 let reminderDatePicker = reminderDatePickerCell.alertDatePicker
@@ -161,10 +147,9 @@ extension EditItemViewController: UITableViewDataSource {
                 alertDatePicker?.addTarget(self, action: #selector(reminderDatePickerChanged(sender:)), for: .valueChanged)
                 return reminderDatePickerCell
             case 2:
-                labelCell.titleLabel.text = MenuLabel.dueDate.rawValue
-                labelCell.iconImageView.image = Images.CalendarIcon
+                labelCell.configure(image: Images.CalendarIcon!, tintColor: nil, text: MenuLabel.dueDate.rawValue)
                 if let dueDate = items?.dueDate {
-                    labelCell.valueLabel.text = dueDate
+                    labelCell.configureValue(value: dueDate)
                 }
                 return labelCell
             default: return labelCell
@@ -213,13 +198,13 @@ extension EditItemViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 0 { return 20 }
+        if section == 0 { return 5 }
         else { return 0 }
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section == 0 {
-            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 10))
+            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 5))
             footerView.backgroundColor = Colors.editItemRed
             return footerView
         }

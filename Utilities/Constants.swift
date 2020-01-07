@@ -17,6 +17,18 @@ enum Colors {
     static let tasksGray = UIColor(red: 0.0235, green: 0.0275, blue: 0.0196, alpha: 1.0)
 }
 
+enum ColorsForSelector {
+    static let systemGreen = UIColor.systemGreen
+    static let systemBlue = UIColor.systemBlue
+    static let systemRed = UIColor.systemRed
+    static let systemGray = UIColor.systemGray
+    static let systemPink = UIColor.systemPink
+    static let systemTeal = UIColor.systemTeal
+    static let systemIndigo = UIColor.systemIndigo
+    static let systemOrange = UIColor.systemOrange
+    static let systemPurple = UIColor.systemPurple
+    static let systemYellow = UIColor.systemYellow
+}
 //enum Fonts { -- USING DYNAMIC, can delete this
 //
 //    static let AvenirLight =  UIFont(name: "Avenir Light", size: 18)

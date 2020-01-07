@@ -15,10 +15,21 @@ extension UITableViewCell {
     }
 }
 
+extension UITableViewHeaderFooterView {
+    static var viewReuseIdentifier: String {
+        return String(describing: self)
+    }
+    
+}
+
 extension UITableView {
     
     func registerCell<T: UITableViewCell>(cellClass: T.Type) {
         register(T.self, forCellReuseIdentifier: T.cellReuseIdentifier)
+    }
+    
+    func registerView<T: UITableViewHeaderFooterView>(viewClass: T.Type) {
+     register(T.self, forHeaderFooterViewReuseIdentifier: T.viewReuseIdentifier)
     }
     
     func dequeueReusableCell<T: UITableViewCell>(for indexPath: IndexPath) -> T {
@@ -31,4 +42,17 @@ extension UITableView {
         }
         return cell
     }
+    
+    func dequeueReusableView<T: UITableViewHeaderFooterView>() -> T {
+        let reuseIdentifier = T.viewReuseIdentifier
+        
+        guard let view = dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? T
+            else {
+                assertionFailure("Unable to dequeu view for \(reuseIdentifier)")
+                return T()
+        }
+        return view
+    }
+   
 }
+

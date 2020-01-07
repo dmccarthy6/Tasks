@@ -49,7 +49,7 @@ enum Alerts {
     static func customCloudKitError(errorMessage: String) {
         if !suppressCloudKitEnabledError {
             DispatchQueue.main.async {
-                let cloudKitAlertController = UIAlertController(title: "iCloud Error", message: errorMessage, preferredStyle: .alert)
+                let cloudKitAlertController = UIAlertController(title: "iCloud", message: errorMessage, preferredStyle: .alert)
                 let OKButton = CloudKitPromptButtonType.OK
                 let OKButtonAction = UIAlertAction(title: OKButton.rawValue, style: OKButton.actionStyle()) { (okAction: UIAlertAction) in
                     OKButton.performAction()
@@ -80,6 +80,30 @@ enum Alerts {
         }
     }
     
+    static func editListActionSheet(title: List) {
+        let alertController = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
+        let configureListButton = UIAlertAction(title: "Configure List", style: .default) { (action) in
+            
+            let editListViewControler = EditListViewController()
+            editListViewControler.list = title
+            let navigationController = UINavigationController(rootViewController: editListViewControler)
+            rootVC().present(navigationController, animated: true, completion: nil)
+        }
+        let shareButtonAction = UIAlertAction(title: "Share List", style: .default) { (action) in
+            if let items = title.items?.allObjects as? [Items] {
+                OpenShareExtension(items: items)
+            }
+        }
+        
+        let cancelButtonAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addAction(configureListButton)
+        alertController.addAction(shareButtonAction)
+        alertController.addAction(cancelButtonAction)
+        
+        rootVC().present(alertController, animated: true, completion: nil)
+    }
+    
     static func showAlert(_ viewController: UIViewController, message: String, okAction:( ()-> () )?) {
         Alerts.showAlertWithAction(viewController, title: "Error", message: message, okAction: okAction)
     }
@@ -103,6 +127,18 @@ enum Alerts {
     static func showCloudKitErrorAlert(errorText: String) {
         Alerts.customCloudKitError(errorMessage: errorText)
     }
+    
+    
+    private static func rootVC() -> UIViewController {
+        if let appDelegate = UIApplication.shared.delegate, let appWindow = appDelegate.window!, let rootViewController = appWindow.rootViewController {
+            return rootViewController
+        }
+        else {
+            return UIViewController()
+        }
+    }
+    
+    
 }
 
 enum CalendarAlertsMessage: String {

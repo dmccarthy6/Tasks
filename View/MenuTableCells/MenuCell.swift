@@ -14,19 +14,19 @@ class MenuCell: UITableViewCell {
     
     let cellHeight: CGFloat = 50
 
-    var titleLabel: UILabel = {
+    private var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = DynamicFonts.Title3Dynamic
+        label.font = DynamicFonts.Title1Dynamic
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
     
-    var valueLabel: UILabel = {
+    private var valueLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
         label.numberOfLines = 0
-        label.font = DynamicFonts.Title3Dynamic
+        label.font = DynamicFonts.Title2Dynamic
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
@@ -50,16 +50,17 @@ class MenuCell: UITableViewCell {
         selectionStyle = .none
         addSubview(iconImageView)
         addSubview(titleLabel)
+        addSubview(valueLabel)
         setConstraints()
     }
     //width: iconImageView.image?.size.width ?? 0.0, height: iconImageView.image?.size.height ?? 0.0))
     func setConstraints() {
-        iconImageView.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: titleLabel.leadingAnchor, padding: .init(top: 0, left: 5, bottom: 0, right: 5), size: .init(width: 50, height: 50))
-        titleLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: iconImageView.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: titleLabel.leadingAnchor, padding: .init(top: 0, left: 10, bottom: 0, right: 0), size: .init(width: frame.size.width/2, height: cellHeight))
-        if valueLabel.text != "" {
-            addSubview(valueLabel)
-            valueLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: valueLabel.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 10), size: .init(width: frame.size.width/2, height: cellHeight))
-        }
+        iconImageView.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: titleLabel.leadingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: iconImageView.image?.size.width ?? 50, height: iconImageView.image?.size.height ?? 50))
+        titleLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: iconImageView.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: valueLabel.leadingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: frame.size.width/2, height: cellHeight))
+        //if valueLabel.text != "" {
+            
+            valueLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: titleLabel.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 10), size: .init(width: frame.size.width/2, height: cellHeight))
+        //}
     }
     
     func eventAdded(event: EKEvent) {
@@ -79,13 +80,28 @@ class MenuCell: UITableViewCell {
         iconImageView.backgroundColor = Colors.tasksRed
     }
     
-    func configure(image: UIImage, tintColor: UIColor, text: String, value: String?) {
+    func configure(image: UIImage, tintColor: UIColor?, text: String) {
         self.imageView?.image = image
-        self.imageView?.tintColor = tintColor
+        //self.imageView?.backgroundColor = .systemPink
+        //self.imageView?.tintColor = tintColor
         self.textLabel?.text = text
+    }
+    
+    func configureValue(value: String) {
+        self.valueLabel.text = value
+        handlePastDueDate(reminder: value)
+    }
+    
+    private func handlePastDueDate(reminder: String) {
+        let todaysDate = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M/dd/yy h:m a"
         
-        if let value = value {
-            self.valueLabel.text = value
+        if let reminderDate = formatter.date(from: reminder) {
+            if reminderDate < todaysDate {
+                valueLabel.textColor = Colors.tasksRed
+                valueLabel.font = DynamicFonts.Title2Dynamic
+            }
         }
     }
 }

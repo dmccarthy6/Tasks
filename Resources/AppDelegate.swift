@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.setCoreDataManagerInViews()
         }
         application.registerForRemoteNotifications()
-        
+        setNavigationBarColors()
         return true
     }
     
@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             switch cloudStatus {
             case .available: return
             case .noAccount: Alerts.customCloudKitError(errorMessage: "You are not logged into iCloud. Click settings to enable iCloud for Tasks in order to keep all your devices updated.")
-            case .restricted: Alerts.customCloudKitError(errorMessage: "iCloud account is restricted for this content. Click on settings to update your iCloud settings.")
+            case .restricted: Alerts.customCloudKitError(errorMessage: "iCloud account is restricted for this content. Click on settings below to update your iCloud settings.")
             case .couldNotDetermine: Alerts.customCloudKitError(errorMessage: "Unable to determine iCloud status. Click settings to log into iCloud.")
             @unknown default: return
             }
@@ -62,6 +62,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             print("Remote Notification Permission Granted? - \(granted)")
         }
+    }
+    
+    func setNavigationBarColors() {
+        let navigationBarAppearance = UINavigationBar.appearance()
+        navigationBarAppearance.tintColor = .white
+        navigationBarAppearance.barTintColor = Colors.tasksRed
+        
+        navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     }
     
     //MARK: - Share Extension, open app functions:
@@ -83,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     let idDecoded = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id!) as! String
                     let addItemsVC = AddItemsToListViewController()
                     let navController = UINavigationController(rootViewController: addItemsVC)
-                    addItemsVC.id = idDecoded
+                    //addItemsVC.id = idDecoded
                     window?.rootViewController = navController
                 }
                 catch let error as NSError {
