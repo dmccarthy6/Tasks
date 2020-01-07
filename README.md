@@ -1,16 +1,10 @@
-# TasksUpdated
-Updating Tasks Application.
+# Develop Branch
+***
 
-//Images Here
+## What I'm currently Working On:
 
+* User Interface: Updating the UI to be more user friendly. Correcting some temporary items left in for development.
+* Fixing bug where on the ItemsController screen when you add an item to the closed items section cells are not hiding properly.
 
-Description:
-This is Tasks with a completely new UI/UX -- a whole new look! What's changed from the original? -Improved Core Data functionality. -Utilized new CoreDataAndCloudKitContainer to improve synching. -Added Today and Share extension for increased functionality. -Support for iOS 13 and Dark Mode!
-Technologies:
-* UITableView
-* UITabBarController
-* Core Data
-* CloudKit
-* UICollectionView
-* Today Extension
-* Share Extension
+***
+
