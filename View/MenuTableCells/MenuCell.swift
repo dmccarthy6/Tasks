@@ -2,10 +2,8 @@
 import UIKit
 import EventKit
 
-class MenuCell: UITableViewCell {
-    
-    private let cellHeight: CGFloat = 50
-
+final class MenuCell: UITableViewCell {
+    //MARK: - Properties
     private var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -13,7 +11,6 @@ class MenuCell: UITableViewCell {
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
     private var valueLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
@@ -22,11 +19,12 @@ class MenuCell: UITableViewCell {
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
-    var iconImageView: UIImageView = {
+    private var iconImageView: UIImageView = {
         let imageView = UIImageView()
         return imageView
     }()
+    private let cellHeight: CGFloat = 50
+    
     
     //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -38,21 +36,20 @@ class MenuCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - Helpers
+    //width: iconImageView.image?.size.width ?? 0.0, height: iconImageView.image?.size.height ?? 0.0))
     private func createMenuCell() {
         selectionStyle = .none
         addSubview(iconImageView)
         addSubview(titleLabel)
         addSubview(valueLabel)
-        setConstraints()
-    }
-    //width: iconImageView.image?.size.width ?? 0.0, height: iconImageView.image?.size.height ?? 0.0))
-    func setConstraints() {
+        
         iconImageView.anchor(top: safeAreaLayoutGuide.topAnchor,
                              leading: safeAreaLayoutGuide.leadingAnchor,
                              bottom: safeAreaLayoutGuide.bottomAnchor,
                              trailing: titleLabel.leadingAnchor,
                              padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                             size: .init(width: iconImageView.image?.size.width ?? 50, height: iconImageView.image?.size.height ?? 50))
+                             size: .init(width: iconImageView.image?.size.width ?? 60, height: iconImageView.image?.size.height ?? 60))
         
         titleLabel.anchor(top: safeAreaLayoutGuide.topAnchor,
                           leading: iconImageView.trailingAnchor,
@@ -69,34 +66,7 @@ class MenuCell: UITableViewCell {
                           size: .init(width: frame.size.width/2, height: cellHeight))
     }
     
-    func eventAdded(event: EKEvent) {
-        guard let startDate = event.startDate else { return }
-        let endDate = event.endDate
-        
-        let stringStartDate = startDate.dateOnlyToString(date: startDate)
-        valueLabel.text = stringStartDate
-    }
-    
-//    private func setMenuCellColors() {
-//        backgroundColor = Colors.tasksRed
-//        titleLabel.backgroundColor = Colors.tasksRed
-//        titleLabel.textColor = .label
-//        valueLabel.backgroundColor = Colors.tasksRed
-//        valueLabel.textColor = .label
-//        iconImageView.backgroundColor = Colors.tasksRed
-//    }
-    
-    func configure(image: UIImage, tintColor: UIColor?, text: String) {
-        self.imageView?.image = image
-        self.textLabel?.text = text
-    }
-    
-    func configureValue(value: String) {
-        self.valueLabel.text = value
-        handlePastDueDate(reminder: value)
-    }
-    
-    private func handlePastDueDate(reminder: String) {
+    private func setRedFontIfReminderIsPastDue(reminder: String) {
         let todaysDate = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "M/dd/yy h:m a"
@@ -104,8 +74,27 @@ class MenuCell: UITableViewCell {
         if let reminderDate = formatter.date(from: reminder) {
             if reminderDate < todaysDate {
                 valueLabel.textColor = Colors.tasksRed
-                valueLabel.font = DynamicFonts.Title2Dynamic
+                valueLabel.font = .preferredFont(for: .title2, weight: .bold)
             }
         }
+    }
+    
+    //MARK: - Interface Functions
+    func configure(image: UIImage, tintColor: UIColor?, text: String) {
+        self.imageView?.image = image
+        self.textLabel?.text = text
+    }
+    
+    func configureValue(value: String) {
+        self.valueLabel.text = value
+        setRedFontIfReminderIsPastDue(reminder: value)
+    }
+    
+    func eventAdded(event: EKEvent) {
+        guard let startDate = event.startDate else { return }
+        let endDate = event.endDate
+        
+        let stringStartDate = startDate.dateOnlyToString(date: startDate)
+        valueLabel.text = stringStartDate
     }
 }

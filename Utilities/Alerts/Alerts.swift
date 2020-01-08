@@ -88,6 +88,7 @@ enum Alerts {
             editListViewControler.list = title
             let navigationController = UINavigationController(rootViewController: editListViewControler)
             rootVC().present(navigationController, animated: true, completion: nil)
+            
         }
         let shareButtonAction = UIAlertAction(title: "Share List", style: .default) { (action) in
             if let items = title.items?.allObjects as? [Items] {

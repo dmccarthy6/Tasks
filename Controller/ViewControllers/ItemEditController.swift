@@ -16,7 +16,7 @@ import TasksFramework
 class EditItemViewController: UIViewController, CanWriteToDatabase {
     
     //MARK: - Properties
-    lazy var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.dataSource = self
         tableView.delegate = self
@@ -29,10 +29,8 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         return tableView
     }()
     var items: Items?
-    var alertDatePicker: UIDatePicker?
-    let cellHeight: CGFloat = 40
-    
-    //Cell Identifiers
+    private var alertDatePicker: UIDatePicker?
+    private let cellHeight: CGFloat = 40
     private let editItemCellID = "EditItemCell"
     private let reminderDatePickerID = "ReminderDatePickerCell"
     
@@ -56,7 +54,7 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
     }
 
     //MARK: - Create TableView
-    func createTableView() {
+    private func createTableView() {
         view.addSubview(tableView)
         
         tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: view.bounds.size.width, height: view.bounds.size.height))
@@ -83,16 +81,16 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         doneButton(isEnabled: true)
     }
     
-    func toggleDatePicker(datePicker: UIDatePicker) {
+    private func toggleDatePicker(datePicker: UIDatePicker) {
         datePicker.isHidden = !datePicker.isHidden
     }
     
-    func doneButton(isEnabled: Bool) {
+    private func doneButton(isEnabled: Bool) {
         navigationItem.rightBarButtonItem?.isEnabled = isEnabled
     }
     
     //MARK: - Setting Due Date To Core Data through Delegate
-    func eventAdded(event: EKEvent) {
+    private func eventAdded(event: EKEvent) {
         guard let items = items else { return }
         let eventDate = event.startDate
         setDueDateForItem(item: items, date: eventDate!)
@@ -103,7 +101,7 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         handleDismiss()
     }
     
-    func handleDismiss() {
+    private func handleDismiss() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseIn, animations: {
             self.dismiss(animated: true, completion: nil)
         }) { (success) in
@@ -197,31 +195,31 @@ extension EditItemViewController: UITableViewDelegate {
         return UITableView.automaticDimension
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 0 { return 5 }
-        else { return 0 }
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section == 0 {
-            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 5))
-            footerView.backgroundColor = Colors.editItemRed
-            return footerView
-        }
-        else { return nil }
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Edit Item:"
-        }
-        else { return "" }
-    }
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 { return 20 }
-        else { return 0 }
-        
-    }
+//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+//        if section == 0 { return 5 }
+//        else { return 0 }
+//    }
+//    
+//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+//        if section == 0 {
+//            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 5))
+//            footerView.backgroundColor = Colors.editItemRed
+//            return footerView
+//        }
+//        else { return nil }
+//    }
+//    
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        if section == 0 {
+//            return "Edit Item:"
+//        }
+//        else { return "" }
+//    }
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        if section == 0 { return 20 }
+//        else { return 0 }
+//        
+//    }
     
 //    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 //        if section == 0 {
@@ -234,7 +232,7 @@ extension EditItemViewController: UITableViewDelegate {
 //        }
 //    }
 }
-
+//MARK: - UITextField Delegate Methods
 extension EditItemViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

@@ -1,20 +1,13 @@
-//
-//  ListEditController.swift
-//  Tasks
-//
-//  Created by Dylan  on 12/3/19.
-//  Copyright © 2019 Dylan . All rights reserved.
-//
 
-import Foundation
 import UIKit
 import TasksFramework
 
 final class EditListViewController: UIViewController {
 
     //MARK: - Properties
-    lazy var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let editListTableView = UITableView(frame: view.frame)
+//        let editListTableView = UITableView(frame: .zero, style: .plain)
         editListTableView.dataSource = self
         editListTableView.delegate = self
         editListTableView.registerCell(cellClass: MenuCell.self)
@@ -23,46 +16,72 @@ final class EditListViewController: UIViewController {
         editListTableView.tableFooterView = UIView()
         return editListTableView
     }()
-
-    var data = [EditListMenuModel]()
-    let editListCellID = "EditListCell"
+    private var data = [EditListMenuModel]()
+    private let editListCellID = "EditListCell"
+    private let headerHeight: CGFloat = 55
+    private var tableViewCellHeight: CGFloat = 60
     var list: List?
-    let headerHeight: CGFloat = 55
 
-
-
+    
+    //MARK: - Initializers
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        //hidesBottomBarWhenPushed = true
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    //MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         createView()
         setModelData()
+        
+        navigationItem.createNavigationBar(title: "",
+                                        leftItem: UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel)),
+                                        rightItem: UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(handleDone)))
     }
-
+    
+    /*
+     Using below to creat modal view of the Edit List Controller. Will need to re work this VC to accomplish.
+     */
+    func setModalHeight() {
+        if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
+            window.addSubview(tableView)
+            let numberOfRows: CGFloat = CGFloat(3)
+            let height: CGFloat = numberOfRows * tableViewCellHeight
+            tableView.frame = CGRect(x: 0,
+                                     y: window.frame.height-100.0,
+                                     width: window.frame.width,
+                                     height: height)
+        }
+    }
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         view.handleThemeChange()
         NotificationCenter.default.post(name: .TasksThemeDidChange, object: nil)
     }
-
-    func createView() {
+    
+    //MARK: - Helpers
+    private func createView() {
         view.addSubview(tableView)
-        //\(list?.title ?? "")
-        navigationItem.createNavigationBar(title: "", leftItem: UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel)), rightItem: UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(handleDone)))
-//        //Setting 'Done' button to false until the user edits the list title -- then it becomes enabled
+        
+        navigationItem.createNavigationBar(title: "",
+                                           leftItem: UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel)),
+                                           rightItem: UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(handleDone)))
+
         doneButton(isEnabled: false)
     }
 
-    func setModelData() {
+    private func setModelData() {
         data.append(EditListMenuModel(image: SystemImages.CheckCircleFill!, label: .saveList))
     }
-
+    
+    private func doneButton(isEnabled: Bool) {
+        self.navigationItem.rightBarButtonItem?.isEnabled = isEnabled
+    }
+    
     //MARK: - Button Functions
     @objc func handleCancel() {
         dismiss(animated: true, completion: nil)
@@ -75,13 +94,9 @@ final class EditListViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    //MARK: - Helpers
-    func doneButton(isEnabled: Bool) {
-        self.navigationItem.rightBarButtonItem?.isEnabled = isEnabled
-    }
 }
 
-//MARK: UITableView Data Source Methods
+//MARK: - UITableView Data Source Methods
 extension EditListViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -103,7 +118,9 @@ extension EditListViewController: UITableViewDataSource {
         }
         if indexPath.section == 1 {
             let menuData = data[indexPath.row]
-            menuCell.configure(image: Images.SaveIcon!, tintColor: .white, text: menuData.label.rawValue)
+            menuCell.configure(image: Images.SaveIcon!,
+                               tintColor: .white,
+                               text: menuData.label.rawValue)
             return menuCell
         }
         return UITableViewCell()
@@ -119,21 +136,10 @@ extension EditListViewController: UITableViewDelegate {
         }
     }
     
-    //Section Header    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         switch section {
         case 0:
-            let titleLabel = UILabel(frame: CGRect(x: 10, y: 0, width: tableView.frame.size.width, height: headerHeight))
-            let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: headerHeight))
-            headerView.backgroundColor = .systemBackground
-            titleLabel.textColor = .label
-            titleLabel.font = .preferredFont(for: .title2, weight: .semibold)
-            titleLabel.text = HeaderText.editList.rawValue
-            headerView.addSubview(titleLabel)
-            return headerView
-//            let header = TableHeaderView()
-//            header.configureHeaderView(text: .editList)
-//            return header
+            return createHeaderView()
         case 1: return nil
         default: return nil
         }
@@ -147,6 +153,22 @@ extension EditListViewController: UITableViewDelegate {
         }
     }
     
+    private func createHeaderView() -> UIView {
+        let headerView = UIView(frame: CGRect(x: 0,
+                                              y: 0,
+                                              width: tableView.frame.size.width,
+                                              height: headerHeight))
+        let titleLabel = UILabel(frame: CGRect(x: 10,
+                                               y: 0,
+                                               width: tableView.frame.size.width,
+                                               height: headerHeight))
+        headerView.backgroundColor = .systemBackground
+        titleLabel.textColor = .label
+        titleLabel.font = .preferredFont(for: .title2, weight: .semibold)
+        titleLabel.text = HeaderText.editList.rawValue
+        headerView.addSubview(titleLabel)
+        return headerView
+    }
 }
 
 //MARK: - UITextField Delegate Methods
