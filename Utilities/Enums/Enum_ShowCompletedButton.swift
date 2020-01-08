@@ -11,6 +11,6 @@ import TasksFramework
 
 enum CompletedButtonTitle: String {
     
-    case isHidden = "Show Completed"
-    case notHidden = "Hide Completed"
+    case showCompleted = "Show Completed"
+    case hideCompleted = "Hide Completed"
 }

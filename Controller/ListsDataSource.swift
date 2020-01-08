@@ -1,12 +1,4 @@
-//
-//  ListsDataSource.swift
-//  Tasks
-//
-//  Created by Dylan  on 12/3/19.
-//  Copyright © 2019 Dylan . All rights reserved.
-//
 
-import Foundation
 import UIKit
 import CoreData
 
@@ -14,8 +6,6 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     var listsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var itemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var completedItemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
-    
-
     private var viewController: UIViewController
     private var tableView: UITableView
     private var listTitle: String?
@@ -23,6 +13,7 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     var traitCollection: UITraitCollection
     
     
+    //MARK: - Initializers
     init(viewController: UIViewController, tableView: UITableView, delegate: UITableViewDelegate, traitCollection: UITraitCollection) {
         self.viewController = viewController
         self.tableView = tableView
@@ -36,6 +27,7 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
         listsFetchedResultsController?.delegate = self
     }
     
+    //MARK: - TableView Data Source Methods
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -44,7 +36,7 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
         if section == 0 { return 1 }
         else {
             guard let number = getObjectsAtSection(section: section, frcSection: 0) else {
-                fatalError("ERROR")
+                return 0
             }
             return number
         }
@@ -55,7 +47,6 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
         addListCell.configure(placeholder: .Title, delegate: self, backgroundColor: .systemGray)
         
         if indexPath.section == 0 {
-            //addListCell.backgroundColor = .systemGray3
             return addListCell
         }
         else if indexPath.section == 1 {
@@ -70,6 +61,7 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
         return addListCell
     }
  
+    //MARK: - Helpers
     func registerTableViewCells() {
         tableView.registerCell(cellClass: ListTitleCell.self)
         tableView.registerCell(cellClass: TextFieldCell.self)
@@ -77,12 +69,18 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     
 }//
 
+//MARK: - UITextField Delegate
 extension MainListsDataSource: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         let count = getListsCount()
         let title = textField.text
-        ValidateTextField.shared.validateAndSave(viewController, textField: textField, title: title, item: nil, list: nil, order: count)
+        ValidateTextField.shared.validateAndSave(viewController,
+                                                 textField: textField,
+                                                 title: title,
+                                                 item: nil,
+                                                 list: nil,
+                                                 order: count)
         textField.text = ""
         textField.resignFirstResponder()
         
@@ -90,6 +88,7 @@ extension MainListsDataSource: UITextFieldDelegate {
     }
 }
 
+//MARK: - FetchedResultsController Delegate (Lists)
 extension MainListsDataSource: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -132,7 +131,6 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
                 fatalError("MainViewController = Indexpath on Delete is NIL")
             }
             let tableViewSection = IndexPath(row: indexPath.row, section: 1)
-            //guard let list = listsFetchedResultsController?.object(at: indexPath) as? List else { return }
             tableView.deleteRows(at: [tableViewSection], with: .fade)
             
         case .move:

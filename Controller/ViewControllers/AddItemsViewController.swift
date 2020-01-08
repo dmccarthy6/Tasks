@@ -1,12 +1,8 @@
 
-
 import UIKit
 import CoreData
 import TasksFramework
 
-protocol AreCompletedItemsVisibleProtocol {
-    var isCompletedShowing: Bool { get set }
-}
 
 final class AddItemsToListViewController: UIViewController, CanReadFromDatabase, CanWriteToDatabase {
     //MARK: - Properties
@@ -14,9 +10,8 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
     var itemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var completedItemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var listTitle: List?
-    var isCompletedShowing: Bool = false
-   
-    fileprivate lazy var tableView: UITableView = {
+    private var isCompletedShowing: Bool = false
+    private lazy var tableView: UITableView = {
         let addItemsTableView = UITableView(frame: view.frame, style: .plain)
         addItemsTableView.delegate = self
         addItemsTableView.dataSource = self
@@ -29,11 +24,11 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         addItemsTableView.registerCell(cellClass: CompletedItemsCell.self)
         return addItemsTableView
     }()
-    fileprivate lazy var fetchedResultsControllerDelegate: ItemsFetchedResultsControllerDelegate = {
+    private lazy var fetchedResultsControllerDelegate: ItemsFetchedResultsControllerDelegate = {
         let delegate = ItemsFetchedResultsControllerDelegate(tableView: self.tableView)
         return delegate
     }()
-    fileprivate lazy var itemsController: ItemsController = {
+    private lazy var itemsController: ItemsController = {
         let listTitleID = String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)
         let controller = ItemsController(id: listTitleID!)
         return controller
@@ -52,7 +47,8 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         NotificationCenter.default.post(name: .TasksThemeDidChange, object: nil)
     }
     
-    func configureController() {
+    //MARK: - Helpers
+    private func configureController() {
         itemsController = ItemsController(id: String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)!)
             itemsController.delegate = fetchedResultsControllerDelegate
             let id = String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)
@@ -60,28 +56,25 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
             configureReadItemsController(predicate: pred)
     }
     
-    //MARK: - Functions
-    func setUpView() {
+    private func setUpView() {
         view.addSubview(tableView)
         navigationItem.createNavigationBar(title: "\(listTitle?.title ?? "")",
             leftItem: nil,
-            rightItem: UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), style: .plain, target: self, action: #selector(showEditListController)))
+            rightItem: UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), style: .plain, target: self, action: #selector(showEditListActionSheet)))
     }
-    
+ 
     //MARK: - Button Functions
     @objc func handleCancel() {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func showEditListController() {
-        //This is showing the Edit Controller.
+    @objc func showEditListActionSheet() {
         if let list = listTitle {
             Alerts.editListActionSheet(title: list)
         }
     }
     
-}//CLASS
-
+}
 //MARK: - UITableView Data Source Methods
 extension AddItemsToListViewController: UITableViewDataSource {
     
@@ -101,7 +94,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
     }
     
     //MARK: - TableView Helper Functions -- Sections
-    func checkIfItemsAreAllComplete(items: [Items]) -> Bool {
+    private func checkIfItemsAreAllComplete(items: [Items]) -> Bool {
         let openItemsCount = items.filter({ $0.isComplete == false }).count
         let closedItemsCount = items.filter({ $0.isComplete }).count
         
@@ -111,7 +104,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
         else { return false }
     }
     
-    func getNumberOfRowsForSection(section: Int) -> Int {
+    private func getNumberOfRowsForSection(section: Int) -> Int {
         //Check if we only have completed items, if so, adjust sections accordingly.
         if itemsController.allItemsAreComplete() { return handleOnlyCompletedItemsRowsInSection(section: section, items: itemsController.fetchItems()) }
         else {
@@ -125,7 +118,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
         }
     }
     
-    func getSectionsCount() -> Int? {
+    private func getSectionsCount() -> Int? {
         if itemsController.allItemsAreComplete() { return 3 }
         else {
             switch self.itemsSectionCount() {
@@ -137,7 +130,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
         }
     }
     
-    func handleOnlyCompletedItemsRowsInSection(section: Int, items: [Items]) -> Int {
+    private func handleOnlyCompletedItemsRowsInSection(section: Int, items: [Items]) -> Int {
         switch section {
         case 0: return 1
         case 1: return 1
@@ -146,7 +139,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
         }
     }
     
-    func openItemsFor(section: ItemsSection) -> Int {
+    private func openItemsFor(section: ItemsSection) -> Int {
         if itemsController.fetchItems().count > 0 {
             if let sections = itemsController.sections {
                 switch section {
@@ -162,7 +155,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
         return 0
     }
     
-    func completedItemsFor(section: Int) -> Int {
+    private func completedItemsFor(section: Int) -> Int {
         var items = 0
         if itemsController.fetchItems().count > 0 {
             if let sections = itemsController.sections {
@@ -173,14 +166,14 @@ extension AddItemsToListViewController: UITableViewDataSource {
         return items
     }
     
-    func itemsSectionCount() -> Int {
+    private func itemsSectionCount() -> Int {
         if let sections = itemsController.sections {
             return sections.count
         }
         return 1
     }
      //MARK: - Tableview Helper Functions -- Rows
-    func populateNumberOfRowsInTableSection(indexPath: IndexPath) -> UITableViewCell {
+    private func populateNumberOfRowsInTableSection(indexPath: IndexPath) -> UITableViewCell {
         if itemsController.allItemsAreComplete() { return populateOnlyCompletedRowsInTable(tvIndexPath: indexPath) }
             if indexPath.section == 0 {
                 let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: indexPath)
@@ -192,51 +185,47 @@ extension AddItemsToListViewController: UITableViewDataSource {
             if indexPath.section == 1 {
                 let openItemsCell: ItemAddedCell = tableView.dequeueReusableCell(for: indexPath)
                 let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.ToDo.rawValue)!)
-                if let sections = itemsController.sections, let itemAtIndex = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath,
-                                                                                                                             sections: sections) {
+                if let sections = itemsController.sections, let itemAtIndex = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
                     openItemsCell.configureCell(itemText: itemAtIndex.item!)
-                    openItemsCell.handleFlaggedAndCompletedButtonTapped(for: itemAtIndex, in: itemsController,
-                                                                        isFlagged: itemAtIndex.isFlagged,
-                                                                        isComplete: itemAtIndex.isComplete,
-                                                                        tableView: tableView)
+                    openItemsCell.handleUserTapFlagOrFavoriteButtons(for: itemAtIndex,
+                                                              isFlagged: itemAtIndex.isFlagged,
+                                                              tableView: tableView)
                 }
                 return openItemsCell
             }
-            if indexPath.section == 2 {
+            if indexPath.section == 2 {//SHOW COMPLETED BUTTON
                 let completedButtonCell: CompletedButtonCell = tableView.dequeueReusableCell(for: indexPath)
-                configureCompletedButtonCell(completedButtonCell, tableIndexPath: indexPath)
+                completedButtonCell.setCompletedButtonTitleAfterLastCompletedItemRemoved(completedShowing: isCompletedShowing)
+                handleShowCompletedTapped(for: completedButtonCell)
                 return completedButtonCell
             }
             else if indexPath.section == 3 {//CLOSED ITEMS
                 let completedItemsCell: CompletedItemsCell = tableView.dequeueReusableCell(for: indexPath)
                 if self.isCompletedShowing {
                     let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.Completed.rawValue)!)
-                    if let sections = itemsController.sections, let closedItemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath,
-                                                                                                                                           sections: sections) {
+                    if let sections = itemsController.sections, let closedItemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
                         completedItemsCell.configure(item: closedItemAtIndexPath.item!)
-                        completedItemsCell.handleCompletedFlaggedAndCompletedButtonTapped(for: closedItemAtIndexPath,
-                                                                                          controller: itemsController,
-                                                                                          isFlagged: closedItemAtIndexPath.isFlagged,
-                                                                                          isComplete: closedItemAtIndexPath.isComplete,
-                                                                                          tableView: tableView)
-                        isCompletedShowing = completedItemsCell.showing(controller: itemsController, currentIsShowing: isCompletedShowing)
+                        completedItemsCell.handleUserTapCompletedOrFavorite(for: closedItemAtIndexPath,
+                                                                                isFlagged: closedItemAtIndexPath.isFlagged,
+                                                                                tableView: tableView)
+                        handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: closedItemAtIndexPath)
                     }
                     return completedItemsCell
                 }
-            }
+        }
             return UITableViewCell() 
     }
-        
+
     //If All Items Are Completed; Need to adjust Sections here, FRC will have 1 section '0' and TV will have 3 sections.
-    func populateOnlyCompletedRowsInTable(tvIndexPath: IndexPath) -> UITableViewCell {
+    private func populateOnlyCompletedRowsInTable(tvIndexPath: IndexPath) -> UITableViewCell {
         switch tvIndexPath.section {
         case 0:
             let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: tvIndexPath)
             textFieldCell.configure(placeholder: .Item, delegate: self, backgroundColor: Colors.tasksRed)
             return textFieldCell
-        case 1:
+        case 1: //Completed Button
             let completedButtonCell: CompletedButtonCell = tableView.dequeueReusableCell(for: tvIndexPath)
-            configureCompletedButtonCell(completedButtonCell, tableIndexPath: tvIndexPath)
+            self.handleShowCompletedTapped(for: completedButtonCell)
             return completedButtonCell
         case 2:
             let completedItemsCell: CompletedItemsCell = tableView.dequeueReusableCell(for: tvIndexPath)
@@ -245,12 +234,10 @@ extension AddItemsToListViewController: UITableViewDataSource {
                 if let sections = itemsController.sections, let itemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath,
                                                                                                                                  sections: sections) {
                     completedItemsCell.configure(item: itemAtIndexPath.item!)
-                    completedItemsCell.handleCompletedFlaggedAndCompletedButtonTapped(for: itemAtIndexPath,
-                                                                                      controller: itemsController,
-                                                                                      isFlagged: itemAtIndexPath.isFlagged,
-                                                                                      isComplete: itemAtIndexPath.isComplete,
-                                                                                      tableView: tableView)
-                    isCompletedShowing = completedItemsCell.showing(controller: itemsController, currentIsShowing: isCompletedShowing)
+                    completedItemsCell.handleUserTapCompletedOrFavorite(for: itemAtIndexPath,
+                                                                            isFlagged: itemAtIndexPath.isFlagged,
+                                                                            tableView: tableView)
+                    handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: itemAtIndexPath)
                 }
                 return completedItemsCell
             } else {
@@ -260,23 +247,30 @@ extension AddItemsToListViewController: UITableViewDataSource {
         }
     }
     
-    //MARK: - Configuring Cells
-    func configureCompletedButtonCell(_ cell: CompletedButtonCell, tableIndexPath: IndexPath) {
-        let count = itemsController.getCompletedItemsCount()
-        
-        cell.whenShowCompletedTapped {
-            [unowned self] in
-            self.isCompletedShowing = !self.isCompletedShowing
+    //MARK: - Cell Button Helpers - Toggle Show Completed
+    private func handleShowCompletedTapped(for cell: CompletedButtonCell) {
+        cell.whenShowCompletedTapped { [unowned self] in
+            self.isCompletedShowing.toggle()
             self.tableView.reloadData()
-            print("IS COMPLETED SHOWING? \(self.isCompletedShowing.description)")
             if self.isCompletedShowing {
-                cell.createShowCompletedButton(withTitle: .notHidden)
+                cell.createShowCompletedButton(withTitle: .hideCompleted)
             }
-            else {
-                cell.createShowCompletedButton(withTitle: .isHidden)
+            else if !self.isCompletedShowing {
+                cell.createShowCompletedButton(withTitle: .showCompleted)
             }
         }
     }
+    
+    private func handleCompletedItemsCompletedButtonTapoedFor(completedCell: CompletedItemsCell, item: Items) {
+        completedCell.whenCompletedButtonTapped { [unowned self] in
+            self.setItemCompletedStatus(item: item)
+            if self.itemsController.getCompletedItemsCount() == 0 {
+                self.isCompletedShowing = false
+            }
+            self.tableView.reloadData()
+        }
+    }
+    
 }
 
 //MARK: UITableView Delegate Methods
@@ -300,13 +294,11 @@ extension AddItemsToListViewController: UITableViewDelegate {
 }
 //MARK: - UITextField Delegate Methods
 extension AddItemsToListViewController: UITextFieldDelegate {
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField.tag == 0 {
             if let itemAdded = textField.text {
-                if let listTitle = listTitle {
-                    let items = listTitle.items?.allObjects as? [Items]
-                    let order = items!.count
+                if let listTitle = listTitle, let items = listTitle.items?.allObjects as? [Items] {
+                    let order = items.count
                     ValidateTextField.shared.validateAndSave(self, textField: textField, title: nil, item: itemAdded, list: listTitle, order: order)
                     textField.text = ""
                     textField.resignFirstResponder()

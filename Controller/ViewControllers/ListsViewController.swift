@@ -81,32 +81,6 @@ extension ListsViewController: UITableViewDelegate {
     }
     
     
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 15
-//    }
-//    
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 15))
-//        view.backgroundColor = .lightGray
-//        return view
-//    }
-//    
-//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        if section == 0 {
-//            return 10
-//        }
-//        else {
-//            return 0
-//        }
-//    }
-//    
-//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-//        let view = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: 10))
-//        view.backgroundColor = .lightGray
-//        return view
-//    }
-    
-    
     //MARK: TableView Swipe Actions:
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         if indexPath.section == 0 { return nil }

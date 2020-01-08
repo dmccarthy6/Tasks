@@ -1,10 +1,4 @@
-//
-//  ItemAddedCell.swift
-//  Tasks
-//
-//  Created by Dylan  on 12/3/19.
-//  Copyright © 2019 Dylan . All rights reserved.
-//
+
 
 import UIKit
 
@@ -19,7 +13,6 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
     var completedButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(SystemImages.CircleBlank, for: .normal)
@@ -28,7 +21,6 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         
         return button
     }()
-    
     var flaggedButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(SystemImages.Star, for: .normal)
@@ -38,13 +30,12 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         return button
     }()
     
+    
     //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        configureItemsAddedCell()
-        
-        
+        createCell()
     }
     //Draw Tableview Cell Separator so you can hae them only in the open cells section?
 //    override func draw(_ rect: CGRect) {
@@ -63,27 +54,28 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
     }
     
     //MARK: - Set Up Items Cell
-    private func configureItemsAddedCell() {
-        if #available(iOS 13.0, *) {
-            completedButton.setImage(SystemImages.CircleBlank, for: .normal)
-            completedButton.tintColor = Colors.tasksRed
-            
-            completedButton.backgroundColor = .systemBackground
-            openItemLabel.backgroundColor = .systemBackground
-        }
-        else {
-            completedButton.setImage(Images.CheckBoxBlankRedIcon, for: .normal)
-            
-            completedButton.backgroundColor = .clear
-            openItemLabel.backgroundColor = .clear
-        }
-        
-        selectionStyle = .none
-        setLayout()
-    }
+//    private func configureItemsAddedCell() {
+//        if #available(iOS 13.0, *) {
+//            completedButton.setImage(SystemImages.CircleBlank, for: .normal)
+//            completedButton.tintColor = Colors.tasksRed
+//
+//            completedButton.backgroundColor = .systemBackground
+//            openItemLabel.backgroundColor = .systemBackground
+//        }
+//        else {
+//            completedButton.setImage(Images.CheckBoxBlankRedIcon, for: .normal)
+//
+//            completedButton.backgroundColor = .clear
+//            openItemLabel.backgroundColor = .clear
+//        }
+//
+//        selectionStyle = .none
+//        setLayout()
+//    }
     
     //MARK: - Set Layout Constraints
-    private func setLayout() {
+    private func createCell() {
+        selectionStyle = .none
         //let config = UIImage.SymbolConfiguration(scale: <#T##UIImage.SymbolScale#>)
         contentView.addSubview(completedButton)
         contentView.addSubview(openItemLabel)
@@ -97,12 +89,12 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         completedButton.addTarget(self, action: #selector(completedButtonTapped), for: .touchUpInside)
     }
 
-    //OPEN ITEM CELL
+    //MARK: - Interface
     func configureCell(itemText: String) {
         self.openItemLabel.text = itemText
     }
     
-    func handleFlaggedAndCompletedButtonTapped(for item: Items, in controller: ItemsController, isFlagged: Bool, isComplete: Bool, tableView: UITableView) {
+    func handleUserTapFlagOrFavoriteButtons(for item: Items, isFlagged: Bool, tableView: UITableView) {
         
         whenFlaggedButtonTapped {
             self.setItemAsFlagged(item: item, status: !isFlagged)
@@ -110,7 +102,6 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
             self.flaggedButton.tintColor = isFlagged ? Colors.tasksYellow : Colors.tasksRed
             tableView.reloadData()
         }
-        
         whenCompletedButtonTapped {
             self.setItemCompletedStatus(item: item)
             tableView.reloadData()

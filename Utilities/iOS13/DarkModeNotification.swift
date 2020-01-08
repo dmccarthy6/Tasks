@@ -59,4 +59,6 @@ extension UIView {
 
 extension Notification.Name {
     static let TasksThemeDidChange = Notification.Name("TasksThemeDidChangeNotification")
+    
+    static let CompletedItemsShowing = Notification.Name("CompletedItemsAreShowing")
 }
