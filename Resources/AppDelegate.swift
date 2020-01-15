@@ -15,7 +15,6 @@ import CloudKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var coreDataManager: CoreDataManager?
     var notificationCenter: NotificationCenter?
 
 
@@ -37,28 +36,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    //MARK: - Helper Methods
+    //Check if the user has CK Enabled.
     func checkCloudStatusFor(rootViewController: UIViewController) {
         CKContainer.default().accountStatus { (cloudStatus, error) in
             switch cloudStatus {
             case .available: return
-            case .noAccount: Alerts.customCloudKitError(errorMessage: "You are not logged into iCloud. Click settings to enable iCloud for Tasks in order to keep all your devices updated.")
-            case .restricted: Alerts.customCloudKitError(errorMessage: "iCloud account is restricted for this content. Click on settings below to update your iCloud settings.")
-            case .couldNotDetermine: Alerts.customCloudKitError(errorMessage: "Unable to determine iCloud status. Click settings to log into iCloud.")
+            case .noAccount: Alerts.customCloudKitError(errorMessage: CloudKitErrorMessage.noAccount)
+            case .restricted: Alerts.customCloudKitError(errorMessage: CloudKitErrorMessage.restricted)
+            case .couldNotDetermine: Alerts.customCloudKitError(errorMessage: CloudKitErrorMessage.couldNotDetermine)
             @unknown default: return
             }
         }
     }
     
+    //Reigster For Push Notifications
     func registerForPushNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: []) { (granted, error) in
-            
             if let error = error {
+                if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }),
+                    let rootViewController = window.rootViewController {
+                    Alerts.showNormalAlert(rootViewController,
+                                           title: "Error",
+                                           message: "Unable to register for notifications - \(error.localizedDescription)")
+                }
                 print("Error Granting Push Notifications - \(error.localizedDescription)")
             }
-            print("Remote Notification Permission Granted? - \(granted)")
         }
     }
     
+    //Set Navigation Bar Color
     func setNavigationBarColors() {
         let navigationBarAppearance = UINavigationBar.appearance()
         navigationBarAppearance.tintColor = .white

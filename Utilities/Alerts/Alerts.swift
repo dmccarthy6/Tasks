@@ -46,10 +46,10 @@ enum Alerts {
         DispatchQueue.main.async { vc.present(settingsAlertController, animated: true, completion: nil) }
     }
     
-    static func customCloudKitError(errorMessage: String) {
+    static func customCloudKitError(errorMessage: CloudKitErrorMessage) {
         if !suppressCloudKitEnabledError {
             DispatchQueue.main.async {
-                let cloudKitAlertController = UIAlertController(title: "iCloud", message: errorMessage, preferredStyle: .alert)
+                let cloudKitAlertController = UIAlertController(title: "iCloud", message: errorMessage.message, preferredStyle: .alert)
                 let OKButton = CloudKitPromptButtonType.OK
                 let OKButtonAction = UIAlertAction(title: OKButton.rawValue, style: OKButton.actionStyle()) { (okAction: UIAlertAction) in
                     OKButton.performAction()
@@ -125,7 +125,7 @@ enum Alerts {
     
     //MARK: - CloudKit Errors
     
-    static func showCloudKitErrorAlert(errorText: String) {
+    static func showCloudKitErrorAlert(errorText: CloudKitErrorMessage) {
         Alerts.customCloudKitError(errorMessage: errorText)
     }
     
