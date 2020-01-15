@@ -1,13 +1,12 @@
 
 import UIKit
-import EventKit
 
 final class MenuCell: UITableViewCell {
     //MARK: - Properties
     private var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = DynamicFonts.Title1Dynamic
+        label.font = .preferredFont(for: .title2, weight: .semibold)
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
@@ -15,12 +14,14 @@ final class MenuCell: UITableViewCell {
         let label = UILabel()
         label.textAlignment = .right
         label.numberOfLines = 0
-        label.font = DynamicFonts.Title2Dynamic
+        label.font = .preferredFont(for: .body, weight: .bold)
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
     private var iconImageView: UIImageView = {
-        let imageView = UIImageView()
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .label
         return imageView
     }()
     private let cellHeight: CGFloat = 50
@@ -40,16 +41,16 @@ final class MenuCell: UITableViewCell {
     //width: iconImageView.image?.size.width ?? 0.0, height: iconImageView.image?.size.height ?? 0.0))
     private func createMenuCell() {
         selectionStyle = .none
-        addSubview(iconImageView)
-        addSubview(titleLabel)
-        addSubview(valueLabel)
+        contentView.addSubview(iconImageView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(valueLabel)
         
         iconImageView.anchor(top: safeAreaLayoutGuide.topAnchor,
                              leading: safeAreaLayoutGuide.leadingAnchor,
                              bottom: safeAreaLayoutGuide.bottomAnchor,
                              trailing: titleLabel.leadingAnchor,
-                             padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                             size: .init(width: iconImageView.image?.size.width ?? 60, height: iconImageView.image?.size.height ?? 60))
+                             padding: .init(top: 0, left: 5, bottom: 0, right: 10),
+                             size: .init(width: iconImageView.image?.size.width ?? 30, height: iconImageView.image?.size.height ?? 30))
         
         titleLabel.anchor(top: safeAreaLayoutGuide.topAnchor,
                           leading: iconImageView.trailingAnchor,
@@ -80,21 +81,17 @@ final class MenuCell: UITableViewCell {
     }
     
     //MARK: - Interface Functions
-    func configure(image: UIImage, tintColor: UIColor?, text: String) {
-        self.imageView?.image = image
-        self.textLabel?.text = text
+    func configure(image: UIImage, cellLabelText: EditAllDataLabels) {
+        self.iconImageView.image = image
+        self.titleLabel.text = cellLabelText.rawValue
     }
     
-    func configureValue(value: String) {
-        self.valueLabel.text = value
-        setRedFontIfReminderIsPastDue(reminder: value)
-    }
-    
-    func eventAdded(event: EKEvent) {
-        guard let startDate = event.startDate else { return }
-        let endDate = event.endDate
+    func configureValue(value: String?) {
+        self.valueLabel.text = value ?? "Tap to add"
         
-        let stringStartDate = startDate.dateOnlyToString(date: startDate)
-        valueLabel.text = stringStartDate
+        if let value = value {
+            setRedFontIfReminderIsPastDue(reminder: value)
+        }
     }
+    
 }

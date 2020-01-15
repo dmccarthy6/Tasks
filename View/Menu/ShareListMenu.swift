@@ -83,7 +83,7 @@ class ShareListMenuLauncher: NSObject {
     }
     
     func setMenuData() {
-        menuData.append(EditListModel(image: Images.ShareIcon!, label: .share))
+        menuData.append(EditListModel(image: Images.ShareIcon!, labelText: .shareList))
     }
     
 }
@@ -101,7 +101,7 @@ extension ShareListMenuLauncher: UITableViewDataSource {
         //let shareMenuCell = tableView.dequeueReusableCell(withIdentifier: shareCellID, for: indexPath) as? MenuCell
         let shareMenuCell: MenuCell = tableView.dequeueReusableCell(for: indexPath)
         let cellData = menuData[indexPath.row]
-        shareMenuCell.configure(image: cellData.image, tintColor: nil, text: cellData.label.rawValue)
+        shareMenuCell.configure(image: cellData.image, cellLabelText: cellData.labelText)
 //        shareMenuCell?.titleLabel.text = cellData.label.rawValue
 //        shareMenuCell?.iconImageView.image = cellData.image
         return shareMenuCell
@@ -113,10 +113,10 @@ extension ShareListMenuLauncher: UITableViewDelegate {
     //MARK: UITableView Delegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = menuData[indexPath.row]
-        if cell.label == EditListLabels.share {
+        if cell.labelText == EditAllDataLabels.shareList {
             
             if let items = list?.items?.allObjects as? [Items]  {
-                OpenShareExtension(items: items)
+                OpenShareExtension().showShareExtensionActionSheet(items: items)
             }
         }
     }

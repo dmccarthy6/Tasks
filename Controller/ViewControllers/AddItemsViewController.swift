@@ -60,7 +60,7 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         view.addSubview(tableView)
         navigationItem.createNavigationBar(title: "\(listTitle?.title ?? "")",
             leftItem: nil,
-            rightItem: UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle.fill"), style: .plain, target: self, action: #selector(showEditListActionSheet)))
+            rightItem: UIBarButtonItem(image: SystemImages.elipses!, style: .plain, target: self, action: #selector(showEditListActionSheet)))
     }
  
     //MARK: - Button Functions
@@ -286,7 +286,7 @@ extension AddItemsToListViewController: UITableViewDelegate {
             if let sections = itemsController.sections {
                 let item = self.itemsController.itemsControllerItemAtIndexPath(indexPath: fetchedIndexPath, sections: sections)
                 let editItemController = EditItemViewController()
-                editItemController.items = item
+                editItemController.itemBeingEdited = item
                 self.navigationController?.pushViewController(editItemController, animated: true)
             }
         }

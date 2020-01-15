@@ -9,22 +9,41 @@
 import UIKit
 
 struct OpenShareExtension {
+//    //MARK: - Properties
+//    let items: [Items]
+//    
+//    
+//    //MARK: - Initializer
+//    init(items: [Items]) {
+//        self.items = items
+//        showShareExtension()
+//    }
+//    
+//    
+//    //MARK: -
+//    func showShareExtension() {
+//        let item = items.map({ $0.item! })
+//        
+//        let shareViewController = ShareActivityController(activityItems: item, applicationActivities: nil)
+//        
+//        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }), let controller = window.visibleViewController() {
+//            controller.present(shareViewController, animated: true)
+//        }
+//    }
     
-    let items: [Items]
-    
-    init(items: [Items]) {
-        self.items = items
-        showShareExtension()
+    //MARK: - Open Share Extension
+    func showShareExtensionActionSheet(items: [Items]) {
+        let items = items.compactMap({ $0.item! })
+        let shareViewController = ShareActivityController(activityItems: items, applicationActivities: nil)
+        rootViewController().present(shareViewController, animated: true)
     }
     
-    func showShareExtension() {
-        let item = items.map({ $0.item! })
-        
-        let shareViewController = ShareActivityController(activityItems: item, applicationActivities: nil)
-        
-        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }), let controller = window.visibleViewController() {
-            controller.present(shareViewController, animated: true)
+    
+    //MARK: - Helpers
+    private func rootViewController() -> UIViewController {
+        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }), let rootVC = window.visibleViewController() {
+            return rootVC
         }
+        return UIViewController()
     }
-    
 }

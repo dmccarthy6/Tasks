@@ -6,16 +6,15 @@
 //  Copyright © 2019 Dylan . All rights reserved.
 //
 
-import Foundation
 import UIKit
 import UserNotifications
 
-class Notifications: NSObject {
+final class Notifications: NSObject {
     
     public static let shared = Notifications()
     
     
-    func requestAuthorization() {
+    private func requestAuthorization() {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
             if granted {
@@ -27,7 +26,7 @@ class Notifications: NSObject {
         }
     }
     
-    static func checkNotificationCenterAuthorizationStatus(for viewController: UIViewController) {
+    func checkNotificationCenterAuthorizationStatus(for viewController: UIViewController) {
         let notificationCenter = UNUserNotificationCenter.current()
         
         notificationCenter.getNotificationSettings { (settings) in
@@ -37,10 +36,12 @@ class Notifications: NSObject {
                 break
             case .denied:
                 print("Notifications Denied - (Notifications.swift)")
-                Alerts.showSettingsAlert(viewController, message: "Notifications are Disabled. Click Settings, Notifications, then click on Tasks and select Allow Notifications in order to receive notifications from this app.")
+                Alerts.showSettingsAlert(viewController,
+                                         message: "Notifications are Disabled. Click Settings, Notifications, then click on Tasks and select Allow Notifications in order to receive notifications from this app.")
             case .notDetermined:
                 print("Notification Center Not Determined - Not Set Up? (Notifications.swift)")
-                Alerts.showSettingsAlert(viewController, message: "Notifications are Disabled. Click Settings, Notifications, then click on the Tasks icon and select Allow Notifications")
+                Alerts.showSettingsAlert(viewController,
+                                         message: "Notifications are Disabled. Click Settings, Notifications, then click on the Tasks icon and select Allow Notifications")
             case .provisional:
                 print("Provisiional")
             @unknown default:
@@ -56,7 +57,22 @@ class Notifications: NSObject {
         //Calendar
         let calendar = Calendar(identifier: .gregorian)
         let calendarComponents = calendar.dateComponents(in: .current, from: date)
-        let newComponents = DateComponents(calendar: calendar, timeZone: .current, era: nil, year: nil, month: calendarComponents.month, day: calendarComponents.day, hour: calendarComponents.hour, minute: calendarComponents.minute, second: nil, nanosecond: nil, weekday: nil, weekdayOrdinal: nil, quarter: nil, weekOfMonth: nil, weekOfYear: nil, yearForWeekOfYear: nil)
+        let newComponents = DateComponents(calendar: calendar,
+                                           timeZone: .current,
+                                           era: nil,
+                                           year: nil,
+                                           month: calendarComponents.month,
+                                           day: calendarComponents.day,
+                                           hour: calendarComponents.hour,
+                                           minute: calendarComponents.minute,
+                                           second: nil,
+                                           nanosecond: nil,
+                                           weekday: nil,
+                                           weekdayOrdinal: nil,
+                                           quarter: nil,
+                                           weekOfMonth: nil,
+                                           weekOfYear: nil,
+                                           yearForWeekOfYear: nil)
         
         //Content
         guard let safeItem = item.item, let safeTitle = item.list?.title else {
@@ -70,7 +86,9 @@ class Notifications: NSObject {
         
         //Trigger
         let trigger = UNCalendarNotificationTrigger(dateMatching: newComponents, repeats: false)
-        let request = UNNotificationRequest(identifier: "Task", content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: "Task",
+                                            content: content,
+                                            trigger: trigger)
         
         //Set Alert
         center.removeAllPendingNotificationRequests()
@@ -82,24 +100,27 @@ class Notifications: NSObject {
         registerCategories()
     }
     
-    func registerCategories() {
+    private func registerCategories() {
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         
         let openTasks = UNNotificationAction(identifier: "Open", title: "View Task", options: .foreground)
         let snoozeAction = UNNotificationAction(identifier: "Snooze", title: "Snooze", options: [])
-        let categories = UNNotificationCategory(identifier: "Task", actions: [openTasks, snoozeAction], intentIdentifiers: [], options: [])
+        let categories = UNNotificationCategory(identifier: "Task",
+                                                actions: [openTasks, snoozeAction],
+                                                intentIdentifiers: [],
+                                                options: [])
         
         center.setNotificationCategories([categories])
     }
     
-    func snoozeTask(response: UNNotificationResponse) {//CURRENTLY 5 MIN SNOOZE
+    private func snoozeTask(response: UNNotificationResponse) {//CURRENTLY 5 MIN SNOOZE
         let center = UNUserNotificationCenter.current()
         let snoozeTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 300.0, repeats: false)
         let snoozeRequest = UNNotificationRequest(identifier: "Task", content: response.notification.request.content, trigger: snoozeTrigger)
         center.add(snoozeRequest) { (error) in
             if error != nil {
-                print("Error Snoozing \(error?.localizedDescription)")
+                print("Error Snoozing \(error?.localizedDescription ?? "Nil Error")")
             }
         }
     }

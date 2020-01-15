@@ -8,30 +8,49 @@
 
 import UIKit
 
-class ReminderDatePickerCell: UITableViewCell {
+final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     
+    //MARK: - Properties
     var alertDatePicker: UIDatePicker = {
-        let alertDatePicker = UIDatePicker()
-        alertDatePicker.isHidden = true
-        alertDatePicker.minimumDate = Date()
-        if #available(iOS 13.0, *) { alertDatePicker.backgroundColor = .systemBackground }
-        return alertDatePicker
+        let datePicker = UIDatePicker()
+        datePicker.minimumDate = Date()
+        datePicker.backgroundColor = .systemBackground
+        return datePicker
     }()
-    var datePickerHeight: CGFloat = 200
+    private var datePickerHeight: CGFloat = 200
     
     
+    
+    //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addDatePickersToCell()
+        setupView()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func addDatePickersToCell() {
-        addSubview(alertDatePicker)
+    
+    
+    
+    //MARK: - Helpers
+    private func setupView() {
+        contentView.addSubview(alertDatePicker)
         
-        alertDatePicker.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 5, bottom: 5, right: 5), size: .init(width: frame.size.width, height: datePickerHeight))
+        alertDatePicker.anchor(top: safeAreaLayoutGuide.topAnchor,
+                               leading: safeAreaLayoutGuide.leadingAnchor,
+                               bottom: safeAreaLayoutGuide.bottomAnchor,
+                               trailing: safeAreaLayoutGuide.trailingAnchor,
+                               padding: .init(top: 0, left: 5, bottom: 5, right: 5),
+                               size: .init(width: frame.size.width, height: datePickerHeight))
+        alertDatePicker.isHidden = true
     }
-}//
+    
+
+    //MARK: - Interface
+    func toggleDatePicker() {
+        alertDatePicker.isHidden = !alertDatePicker.isHidden
+    }
+    
+}

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import CoreData
 import UserNotifications
 import TasksFramework
 import CloudKit
@@ -33,10 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let viewController = window?.visibleViewController()
         checkCloudStatusFor(rootViewController: viewController!)
         
-        coreDataManager = CoreDataManager() {
-            [unowned self] in
-            self.setCoreDataManagerInViews()
-        }
         application.registerForRemoteNotifications()
         setNavigationBarColors()
         return true
@@ -68,7 +63,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navigationBarAppearance = UINavigationBar.appearance()
         navigationBarAppearance.tintColor = .white
         navigationBarAppearance.barTintColor = Colors.tasksRed
-        
         navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     }
     
@@ -79,16 +73,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
     }
     
+    /*Function used when user opens the application from the Today Widget */
     open func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         if url.scheme == "tasksopen" {
             print("AppDel - Yes!")
             
             if url.host == "addItemsVC" {
                 let containerDefaults = UserDefaults(suiteName: "group.Tasks.Extensions")
-                let id = containerDefaults?.data(forKey: "tappedID")
+//                let id = containerDefaults?.data(forKey: "tappedID")
+                
+                //TO-DO: Open the app from here.
+                let rootVC = ListsViewController()
+                let navigationController = UINavigationController(rootViewController: rootVC)
                 
                 do {
-                    let idDecoded = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id!) as! String
+//                    let idDecoded = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id!) as! String
                     let addItemsVC = AddItemsToListViewController()
                     let navController = UINavigationController(rootViewController: addItemsVC)
                     //addItemsVC.id = idDecoded
@@ -103,27 +102,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("AppDelegate = SourceApplication = \(sendingAppID ?? "AppDel, Unknown Source App"), url: \(url)")
         return true
     }
-    
-    //MARK: - Set Core Data Manager
-    /*
-     This may not be needed anymore
-     */
-    func setCoreDataManagerInViews() {
-        guard let safeCoreDataManager = coreDataManager else {
-            fatalError("AppDelegate - Error - Cant Unwrap CoreDataManager")
-        }
-        let navigationController = window?.rootViewController as! UINavigationController
-        let viewControllers = navigationController.viewControllers
-        
-        for viewController in viewControllers {
-            switch viewController {
-            case let navigationController as UINavigationController:
-                if var rootViewController: CoreDataManagerViewController = navigationController.viewControllers[0] as? CoreDataManagerViewController {
-                    rootViewController.coreDataManager = safeCoreDataManager
-                }
-            default: ()
-            }
-        }
-    }
+  
 
 }

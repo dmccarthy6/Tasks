@@ -34,15 +34,17 @@ enum FlagImage {
 }
 
 enum SystemImages {
-    static let SystemShareIcon = UIImage(systemName: "square.and.arrow.up")
+    static let AddListIcon = UIImage(systemName: "text.badge.plus")
+    static let BellReminderIcon = UIImage(systemName: "bell.fill")
+    static let CalendarIcon = UIImage(systemName: "calendar")
     static let CheckCircleFill = UIImage(systemName: "checkmark.circle.fill")
     static let CircleBlank = UIImage(systemName: "circle")
     static let CircleWithCheck = UIImage(systemName: "checkmark.circle.fill")
+    static let ListIcon = UIImage(systemName: "list.dash")
+    static let Plus = UIImage(systemName: "plus")
     static let Star = UIImage(systemName: "star")
     static let StarFill = UIImage(systemName: "star.fill")
-    static let ListIcon = UIImage(systemName: "list.dash")
-    static let AddListIcon = UIImage(systemName: "text.badge.plus")
-    static let Plus = UIImage(systemName: "plus")
+    static let elipses = UIImage(systemName: "ellipsis.circle.fill")
 }
 
 enum ListIcons: CaseIterable {

@@ -12,21 +12,21 @@ import CoreData
 import TasksFramework
 
 class ListsViewController: UIViewController, CanWriteToDatabase {
-   
+    
     //MARK: Properties
-    lazy var dataSource: MainListsDataSource = {
+    lazy private var dataSource: MainListsDataSource = {
         let mainDataSource = MainListsDataSource(viewController: self, tableView: self.tableView, delegate: self, traitCollection: traitCollection)
         return mainDataSource
     }()
-    var lists = [List]()
+    private var lists = [List]()
     private var tableView: UITableView!
-   
     
-   //MARK: - Life Cycle
+    
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super .viewDidLoad()
         view.backgroundColor = .systemBackground
-//        CoreDataManager.shared.batchDeleteCoreData(entityName: .Items)
+        //        CoreDataManager.shared.batchDeleteCoreData(entityName: .Items)
         setUpView()
     }
     
@@ -35,8 +35,8 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
         tableViewBackground(tableView: tableView)
     }
     
- //MARK: - Create TableView & Set Up View
-    func setUpView() {
+    //MARK: - Helper Functions
+    private func setUpView() {
         let listTableView = UITableView(frame: view.frame, style: .plain)
         tableView = listTableView
         view.addSubview(tableView)
@@ -48,13 +48,12 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
         navigationItem.createNavigationBar(title: "My Lists", leftItem: nil, rightItem: nil)
     }
     
-    func tableViewBackground(tableView: UITableView) {
+    private func tableViewBackground(tableView: UITableView) {
         tableView.handleTableViewForIOS13()
         NotificationCenter.default.post(name: .TasksThemeDidChange, object: nil)
     }
     
     func handleSegueToListItems(indexPath: IndexPath) {
-//        let tabBarController = TasksTabBarController()
         let fetchedResutsControllerIndexPath = IndexPath(row: indexPath.row, section: 0)
         guard let listAtIndexPath = dataSource.listsFetchedResultsController?.object(at: fetchedResutsControllerIndexPath) as? List else {
             Alerts.showNormalAlert(self, title: "Error", message: "Error Fetching List")
@@ -64,10 +63,10 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
         let controller = AddItemsToListViewController()
         controller.listTitle = listAtIndexPath
         navigationController?.pushViewController(controller, animated: true)
-        //present(tabBarController, animated: true, completion: nil)
     }
     
-}//
+}
+//MARK - UITableView Delegate Methods
 extension ListsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -101,7 +100,7 @@ extension ListsViewController: UITableViewDelegate {
             print("Open Share Extension")
             
             if let items = list.items?.allObjects as? [Items] {
-                OpenShareExtension(items: items)
+                OpenShareExtension().showShareExtensionActionSheet(items: items)
             }
             completionHandler(true)
             

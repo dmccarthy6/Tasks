@@ -7,7 +7,7 @@
 //
 
 import CoreData
-
+import TasksFramework
 
 @objc protocol CanWriteToDatabase: NSObjectProtocol {
 
@@ -53,10 +53,10 @@ extension CanWriteToDatabase {
             let itemID = itemUUIDString.data(using: .utf8) as Data?
             
             let list = parent as! List
-            let items = [list.items]
+            //let items = [list.items]
             let itemOrder: Int32 = Int32(order + 1)
             
-            addedItem.list = parent as! List
+            addedItem.list = list
             addedItem.item = value
             addedItem.order = itemOrder
             addedItem.titleID = String(data: list.recordID!, encoding: .utf8)

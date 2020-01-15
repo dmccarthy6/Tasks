@@ -8,22 +8,22 @@
 
 import UIKit
 
-class MenuModel: NSObject {
-    
-    var image: UIImage
-    var label: MenuLabel
-    var date: String?
-    
-    
-    
-    init(image: UIImage, label: MenuLabel, date: String?) {
-        self.image = image
-        self.label = label
-        self.date = date
-        
-        super.init()
-    }
-    
-    
-    
-}
+//class MenuModel: NSObject {
+//    
+//    var image: UIImage
+//    var label: MenuLabel
+//    var date: String?
+//    
+//    
+//    
+//    init(image: UIImage, label: MenuLabel, date: String?) {
+//        self.image = image
+//        self.label = label
+//        self.date = date
+//        
+//        super.init()
+//    }
+//    
+//    
+//    
+//}

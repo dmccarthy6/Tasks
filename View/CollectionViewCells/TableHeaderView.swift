@@ -58,6 +58,6 @@ final class TableHeaderView: UIView {
 }
 
 enum HeaderText: String {
-    case editItem = "Editing Item:"
-    case editList = "Editing List:"
+    case editItem = "Edit Item:"
+    case editList = "Edit List:"
 }

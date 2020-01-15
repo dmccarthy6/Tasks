@@ -81,8 +81,8 @@ enum Alerts {
     }
     
     static func editListActionSheet(title: List) {
-        let alertController = UIAlertController(title: "", message: "", preferredStyle: .actionSheet)
-        let configureListButton = UIAlertAction(title: "Configure List", style: .default) { (action) in
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let configureListButton = UIAlertAction(title: "Edit List Title", style: .default) { (action) in
             
             let editListViewControler = EditListViewController()
             editListViewControler.list = title
@@ -92,7 +92,7 @@ enum Alerts {
         }
         let shareButtonAction = UIAlertAction(title: "Share List", style: .default) { (action) in
             if let items = title.items?.allObjects as? [Items] {
-                OpenShareExtension(items: items)
+                OpenShareExtension().showShareExtensionActionSheet(items: items)
             }
         }
         

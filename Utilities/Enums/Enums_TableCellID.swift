@@ -6,17 +6,8 @@
 //  Copyright © 2019 Dylan . All rights reserved.
 //
 
-import Foundation
-
-enum ListTableCellID: String {
+enum TableViewCellIDs: String {
     case ListTextCellID = "ListTextFieldCell"
-    case ListAddedCellID = "ListAddedCell"
-}
-
-
-enum ItemsCellID: String {
-    case ItemTextFieldCellID = "TextFieldCell"
-    case OpenItemCell = "OpenItemCell"
-    case CompletedButtonCell = "CompletedButtonCell"
-    case CompletedItemsCell = "CompletedItemsCell"
+    case editItemCellID = "EditItemCell"
+    case reminderDatePickerID = "ReminderDatePickerCell"
 }

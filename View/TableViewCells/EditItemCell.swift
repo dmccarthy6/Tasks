@@ -43,6 +43,7 @@ final class EditItemCell: UITableViewCell {
                                       trailing: safeAreaLayoutGuide.trailingAnchor,
                                       padding: .init(top: 0, left: 40, bottom: 0, right: 40),
                                       size: .init(width: bounds.size.width, height: cellHeight)) //bounds.size.height
+        backgroundColor = .systemBackground
     }
     
     //MARK: - Interface Function

@@ -43,7 +43,7 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let addListCell = TextFieldCell(style: .default, reuseIdentifier: ListTableCellID.ListTextCellID.rawValue)
+        let addListCell = TextFieldCell(style: .default, reuseIdentifier: TableViewCellIDs.ListTextCellID.rawValue)
         addListCell.configure(placeholder: .Title, delegate: self, backgroundColor: .systemGray)
         
         if indexPath.section == 0 {
@@ -57,7 +57,6 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
             }
             return listCell
         }
-        
         return addListCell
     }
  
@@ -95,7 +94,11 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
         tableView.beginUpdates()
     }
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
+                    didChange anObject: Any,
+                    at indexPath: IndexPath?,
+                    for type: NSFetchedResultsChangeType,
+                    newIndexPath: IndexPath?) {
 
         switch type {
             
@@ -120,13 +123,11 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
                 editedTitleCell.configure(text: managedObject.title!, delegate: nil)
             }
             if let insertedTitleCell = tableView.cellForRow(at: frcIndex) as? ListTitleCell {
-                print("FRC Section: \(frcIndex.section), FRC Row: \(frcIndex.row) ")
                 insertedTitleCell.configure(listTitle: managedObject.title!)
             }
             tableView.reloadRows(at: [frcIndex], with: .automatic)
             
         case .delete:
-            print("MainVCData - FetchedResultsControllerDelegate - DELETE HIT")
             guard let indexPath = indexPath else {
                 fatalError("MainViewController = Indexpath on Delete is NIL")
             }
@@ -134,9 +135,7 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
             tableView.deleteRows(at: [tableViewSection], with: .fade)
             
         case .move:
-            print("MainVCData - Move")
-            guard let destinationIndexPath = newIndexPath,
-                let originIndexPath = indexPath else {
+            guard let destinationIndexPath = newIndexPath, let originIndexPath = indexPath else {
                     fatalError("MainViewController = Error Moving Row")
             }
             tableView.deleteRows(at: [originIndexPath], with: .fade)

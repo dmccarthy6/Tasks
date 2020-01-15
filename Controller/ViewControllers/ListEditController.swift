@@ -2,12 +2,11 @@
 import UIKit
 import TasksFramework
 
-final class EditListViewController: UIViewController {
-
+final class EditListViewController: UIViewController, CanWriteToDatabase {
+    
     //MARK: - Properties
     private lazy var tableView: UITableView = {
         let editListTableView = UITableView(frame: view.frame)
-//        let editListTableView = UITableView(frame: .zero, style: .plain)
         editListTableView.dataSource = self
         editListTableView.delegate = self
         editListTableView.registerCell(cellClass: MenuCell.self)
@@ -16,111 +15,93 @@ final class EditListViewController: UIViewController {
         editListTableView.tableFooterView = UIView()
         return editListTableView
     }()
-    private var data = [EditListMenuModel]()
+    private var data = [EditListModel]()
     private let editListCellID = "EditListCell"
     private let headerHeight: CGFloat = 55
-    private var tableViewCellHeight: CGFloat = 60
     var list: List?
-
+    
+    
     
     //MARK: - Initializers
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
-
-    required init?(coder aDecoder: NSCoder) {
+    
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    //MARK: Life Cycle
+    
+    
+    
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         createView()
-        setModelData()
-        
-        navigationItem.createNavigationBar(title: "",
-                                        leftItem: UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel)),
-                                        rightItem: UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(handleDone)))
+        setData()
     }
     
-    /*
-     Using below to creat modal view of the Edit List Controller. Will need to re work this VC to accomplish.
-     */
-    func setModalHeight() {
-        if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
-            window.addSubview(tableView)
-            let numberOfRows: CGFloat = CGFloat(3)
-            let height: CGFloat = numberOfRows * tableViewCellHeight
-            tableView.frame = CGRect(x: 0,
-                                     y: window.frame.height-100.0,
-                                     width: window.frame.width,
-                                     height: height)
-        }
+    func setData() {
+        data.append(EditListModel(image: SystemImages.AddListIcon!, labelText: EditAllDataLabels.saveList))
     }
-    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         view.handleThemeChange()
         NotificationCenter.default.post(name: .TasksThemeDidChange, object: nil)
     }
     
+    
     //MARK: - Helpers
     private func createView() {
         view.addSubview(tableView)
+        view.backgroundColor = .systemBackground
         
         navigationItem.createNavigationBar(title: "",
-                                           leftItem: UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(handleCancel)),
-                                           rightItem: UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(handleDone)))
-
-        doneButton(isEnabled: false)
-    }
-
-    private func setModelData() {
-        data.append(EditListMenuModel(image: SystemImages.CheckCircleFill!, label: .saveList))
+                                           leftItem: UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelTapped)),
+                                           rightItem: UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveTapped)))
+        
+        saveButton(isEnabled: false)
     }
     
-    private func doneButton(isEnabled: Bool) {
+    private func saveButton(isEnabled: Bool) {
         self.navigationItem.rightBarButtonItem?.isEnabled = isEnabled
     }
     
     //MARK: - Button Functions
-    @objc func handleCancel() {
+    @objc func cancelTapped() {
         dismiss(animated: true, completion: nil)
     }
-
-    @objc func handleDone() {
-//        let window = UIWindow()
-//        let vc = window.visibleViewController()
-        //Alerts.showNormalAlert(self, title: "List Saved", message: "Your list title has been changed to \(list?.title ?? "nil")")
+    
+    @objc func saveTapped() {
+        //TO-DO: Alert user that the list was saved.
         dismiss(animated: true, completion: nil)
     }
-
+    
 }
 
 //MARK: - UITableView Data Source Methods
 extension EditListViewController: UITableViewDataSource {
-
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 { return 1 }
-        if section == 1 { return data.count }
+        if section == 1 { return 0 }
         return 0
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let menuCell: MenuCell = tableView.dequeueReusableCell(for: indexPath)
         if indexPath.section == 0 {
             let editListCell = EditItemCell(style: .default, reuseIdentifier: editListCellID)
-            editListCell.configure(text: list?.title ?? "", delegate: self)
+            editListCell.configure(text: list?.title ?? "",
+                                   delegate: self)
             return editListCell
         }
         if indexPath.section == 1 {
-            let menuData = data[indexPath.row]
-            menuCell.configure(image: Images.SaveIcon!,
-                               tintColor: .white,
-                               text: menuData.label.rawValue)
+            let editListData = data[indexPath.row]
+            menuCell.configure(image: editListData.image,
+                               cellLabelText: editListData.labelText)
             return menuCell
         }
         return UITableViewCell()
@@ -129,10 +110,10 @@ extension EditListViewController: UITableViewDataSource {
 
 //MARK: - UITableView Delegate Methods
 extension EditListViewController: UITableViewDelegate {
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
-            handleDone()
+            saveTapped()
         }
     }
     
@@ -158,34 +139,45 @@ extension EditListViewController: UITableViewDelegate {
                                               y: 0,
                                               width: tableView.frame.size.width,
                                               height: headerHeight))
-        let titleLabel = UILabel(frame: CGRect(x: 10,
-                                               y: 0,
-                                               width: tableView.frame.size.width,
-                                               height: headerHeight))
+        let titleLabel = UILabel()
         headerView.backgroundColor = .systemBackground
         titleLabel.textColor = .label
-        titleLabel.font = .preferredFont(for: .title2, weight: .semibold)
+        titleLabel.font = .preferredFont(for: .title2,
+                                         weight: .semibold)
         titleLabel.text = HeaderText.editList.rawValue
         headerView.addSubview(titleLabel)
+        titleLabel.centerView(centerX: headerView.centerXAnchor,
+                              centerY: headerView.centerYAnchor)
         return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.backgroundColor = .systemBackground
+        return view
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 15
     }
 }
 
 //MARK: - UITextField Delegate Methods
 extension EditListViewController: UITextFieldDelegate {
-
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        doneButton(isEnabled: true)
-    }
-
+    
+    //    func textFieldDidBeginEditing(_ textField: UITextField) {
+    //        doneButton(isEnabled: true)
+    //    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard let list = list else { return false }
-        let newTitle = textField.text
-        CoreDataManager.shared.updateListTitle(list: list, newTitle: newTitle!)
+        
+        if let list = list, let updatedTitle = textField.text {
+            self.updateObject(object: list, value: updatedTitle, entity: .List)
+        }
         textField.resignFirstResponder()
         tableView.reloadData()
-        doneButton(isEnabled: true)
+        saveButton(isEnabled: true)
         return true
     }
-
+    
 }

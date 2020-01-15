@@ -24,7 +24,7 @@ class EditListMenu: NSObject {
         let tv = UITableView(frame: .zero, style: .plain)
         tv.registerCell(cellClass: MenuCell.self)
         tv.dataSource = self
-        tv.delegate = self
+        //tv.delegate = self
         tv.separatorStyle = .singleLine
         tv.separatorColor = .white
         tv.tableFooterView = UIView()
@@ -44,7 +44,7 @@ class EditListMenu: NSObject {
     }
     
     func setMenuData() {
-        menuData.append(EditListModel(image: Images.EditIcon!, label: .edit))
+        menuData.append(EditListModel(image: Images.EditIcon!, labelText: .edit))
     }
     
     
@@ -112,7 +112,7 @@ extension EditListMenu: UITableViewDataSource {
         //let menuCell = tableView.dequeueReusableCell(withIdentifier: menuID, for: indexPath) as! MenuCell
         let menuCell: MenuCell = tableView.dequeueReusableCell(for: indexPath)
         let data = menuData[indexPath.row]
-        menuCell.configure(image: data.image, tintColor: Colors.tasksRed, text: data.label.rawValue)
+        menuCell.configure(image: data.image, cellLabelText: data.labelText)
         
         //menuCell.backgroundColor = Colors.tasksRed
         //menuCell.setMenuCellColors()
@@ -125,17 +125,17 @@ extension EditListMenu: UITableViewDataSource {
     }
 }
 
-extension EditListMenu: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cellData = menuData[indexPath.row]
-        
-        if cellData.label == EditListLabels.edit {
-            showEditListViewController()
-        }
-    }
-    
-}//
+//extension EditListMenu: UITableViewDelegate {
+//
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let cellData = menuData[indexPath.row]
+//
+////        if cellData.label == EditListLabels.edit {
+////            showEditListViewController()
+////        }
+//    }
+//
+//}//
     
 //    func popoverOnIPad() {
 //        menuIsShowing = true
