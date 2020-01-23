@@ -7,6 +7,7 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
     //MARK: - Properties
     var openItemLabel: UILabel = {
         let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.font = DynamicFonts.BodyDynamic
         label.textColor = .label
@@ -15,6 +16,7 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
     }()
     var completedButton: UIButton = {
         let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(SystemImages.CircleBlank, for: .normal)
         button.tintColor = Colors.tasksRed
         button.backgroundColor = .systemBackground
@@ -23,6 +25,7 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
     }()
     var flaggedButton: UIButton = {
         let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(SystemImages.Star, for: .normal)
         button.tintColor = Colors.tasksRed
         button.backgroundColor = .systemBackground
@@ -81,9 +84,25 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         contentView.addSubview(openItemLabel)
         contentView.addSubview(flaggedButton)
 
-        completedButton.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: openItemLabel.leadingAnchor, padding: .init(top: 5, left: 3, bottom: 5, right: 3), size: .init(width: 40, height: 40))
-        openItemLabel.anchor(top: safeAreaLayoutGuide.topAnchor, leading: completedButton.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: flaggedButton.leadingAnchor, padding: .init(top: 0, left: 3, bottom: 0, right: 1), size: .init(width: openItemLabel.bounds.size.width, height: bounds.size.height))
-        flaggedButton.anchor(top: safeAreaLayoutGuide.topAnchor, leading: openItemLabel.trailingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 0, bottom: 5, right: 7), size: .init(width: 40, height: 40))
+        let guide = contentView.layoutMarginsGuide
+        
+        NSLayoutConstraint.activate([
+            completedButton.widthAnchor.constraint(equalToConstant: 50),
+            completedButton.heightAnchor.constraint(equalTo: completedButton.widthAnchor),
+            completedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+            completedButton.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            
+            openItemLabel.topAnchor.constraint(equalTo: guide.topAnchor),
+            openItemLabel.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
+            openItemLabel.leadingAnchor.constraint(equalTo: completedButton.trailingAnchor),
+            openItemLabel.trailingAnchor.constraint(equalTo: flaggedButton.leadingAnchor),
+
+            flaggedButton.widthAnchor.constraint(equalToConstant: 50),
+            flaggedButton.heightAnchor.constraint(equalTo: flaggedButton.widthAnchor),
+            flaggedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+            flaggedButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor)
+        ])
+        
         
         flaggedButton.addTarget(self, action: #selector(flaggedButtonTapped), for: .touchUpInside)
         completedButton.addTarget(self, action: #selector(completedButtonTapped), for: .touchUpInside)

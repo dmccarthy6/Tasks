@@ -12,17 +12,17 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
     var listTitle: List?
     private var isCompletedShowing: Bool = false
     private lazy var tableView: UITableView = {
-        let addItemsTableView = UITableView(frame: view.frame, style: .plain)
-        addItemsTableView.delegate = self
-        addItemsTableView.dataSource = self
-        addItemsTableView.separatorStyle = .singleLine
-        //addItemsTableView.separatorStyle = .none
-        addItemsTableView.tableFooterView = UIView()
-        addItemsTableView.registerCell(cellClass: TextFieldCell.self)
-        addItemsTableView.registerCell(cellClass: ItemAddedCell.self)
-        addItemsTableView.registerCell(cellClass: CompletedButtonCell.self)
-        addItemsTableView.registerCell(cellClass: CompletedItemsCell.self)
-        return addItemsTableView
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorStyle = .singleLine
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.tableFooterView = UIView()
+        tableView.registerCell(cellClass: TextFieldCell.self)
+        tableView.registerCell(cellClass: ItemAddedCell.self)
+        tableView.registerCell(cellClass: CompletedButtonCell.self)
+        tableView.registerCell(cellClass: CompletedItemsCell.self)
+        return tableView
     }()
     private lazy var fetchedResultsControllerDelegate: ItemsFetchedResultsControllerDelegate = {
         let delegate = ItemsFetchedResultsControllerDelegate(tableView: self.tableView)
@@ -61,6 +61,8 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         navigationItem.createNavigationBar(title: "\(listTitle?.title ?? "")",
             leftItem: nil,
             rightItem: UIBarButtonItem(image: SystemImages.elipses!, style: .plain, target: self, action: #selector(showEditListActionSheet)))
+        
+        tableView.setFullScreenTableViewConstraints(in: view)
     }
  
     //MARK: - Button Functions
@@ -275,9 +277,6 @@ extension AddItemsToListViewController: UITableViewDataSource {
 
 //MARK: UITableView Delegate Methods
 extension AddItemsToListViewController: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 50
-//    }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {//My To-Do's

@@ -5,6 +5,7 @@ final class MenuCell: UITableViewCell {
     //MARK: - Properties
     private var titleLabel: UILabel = {
         let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.font = .preferredFont(for: .title2, weight: .semibold)
         label.adjustsFontForContentSizeCategory = true
@@ -12,6 +13,7 @@ final class MenuCell: UITableViewCell {
     }()
     private var valueLabel: UILabel = {
         let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .right
         label.numberOfLines = 0
         label.font = .preferredFont(for: .body, weight: .bold)
@@ -20,6 +22,7 @@ final class MenuCell: UITableViewCell {
     }()
     private var iconImageView: UIImageView = {
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .label
         return imageView
@@ -45,26 +48,20 @@ final class MenuCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(valueLabel)
         
-        iconImageView.anchor(top: safeAreaLayoutGuide.topAnchor,
-                             leading: safeAreaLayoutGuide.leadingAnchor,
-                             bottom: safeAreaLayoutGuide.bottomAnchor,
-                             trailing: titleLabel.leadingAnchor,
-                             padding: .init(top: 0, left: 5, bottom: 0, right: 10),
-                             size: .init(width: iconImageView.image?.size.width ?? 30, height: iconImageView.image?.size.height ?? 30))
+        let guide = contentView.layoutMarginsGuide
         
-        titleLabel.anchor(top: safeAreaLayoutGuide.topAnchor,
-                          leading: iconImageView.trailingAnchor,
-                          bottom: safeAreaLayoutGuide.bottomAnchor,
-                          trailing: valueLabel.leadingAnchor,
-                          padding: .init(top: 0, left: 0, bottom: 0, right: 0),
-                          size: .init(width: frame.size.width/2, height: cellHeight))
-        
-        valueLabel.anchor(top: safeAreaLayoutGuide.topAnchor,
-                          leading: titleLabel.trailingAnchor,
-                          bottom: safeAreaLayoutGuide.bottomAnchor,
-                          trailing: safeAreaLayoutGuide.trailingAnchor,
-                          padding: .init(top: 0, left: 0, bottom: 0, right: 10),
-                          size: .init(width: frame.size.width/2, height: cellHeight))
+        NSLayoutConstraint.activate([
+            iconImageView.widthAnchor.constraint(equalToConstant: 30),
+            iconImageView.heightAnchor.constraint(equalTo: iconImageView.widthAnchor),
+            iconImageView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            iconImageView.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+            
+            titleLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: iconImageView.trailingAnchor, multiplier: 2),
+            titleLabel.topAnchor.constraint(equalTo: guide.topAnchor),
+            
+            valueLabel.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
+            valueLabel.topAnchor.constraint(equalTo: titleLabel.topAnchor),
+        ])
     }
     
     private func setRedFontIfReminderIsPastDue(reminder: String) {

@@ -28,7 +28,6 @@ extension CanWriteToDatabase {
     //MARK: - Save Objects
     func saveObjectToCoreData<T: NSManagedObject>(value: String, order: Int, entity: Entity, parent: T?) {
         if entity == .List {
-            print("THIS IS A LIST")
             let addedListTitle = NSEntityDescription.insertNewObject(forEntityName: entity.rawValue, into: managedObjectContext) as! List
             
             //UUID
@@ -46,7 +45,6 @@ extension CanWriteToDatabase {
         }
         
         if entity == .Items {
-            print("YOU HAVE AN ITEM")
             let addedItem = NSEntityDescription.insertNewObject(forEntityName: entity.rawValue, into: managedObjectContext) as! Items
             
             let itemUUIDString = UUID().uuidString

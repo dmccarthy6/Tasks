@@ -6,7 +6,8 @@ final class EditListViewController: UIViewController, CanWriteToDatabase {
     
     //MARK: - Properties
     private lazy var tableView: UITableView = {
-        let editListTableView = UITableView(frame: view.frame)
+        let editListTableView = UITableView(frame: .zero, style: .plain)
+        editListTableView.translatesAutoresizingMaskIntoConstraints = false
         editListTableView.dataSource = self
         editListTableView.delegate = self
         editListTableView.registerCell(cellClass: MenuCell.self)
@@ -57,7 +58,7 @@ final class EditListViewController: UIViewController, CanWriteToDatabase {
         navigationItem.createNavigationBar(title: "",
                                            leftItem: UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelTapped)),
                                            rightItem: UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveTapped)))
-        
+        tableView.setFullScreenTableViewConstraints(in: view)
         saveButton(isEnabled: false)
     }
     
@@ -144,7 +145,7 @@ extension EditListViewController: UITableViewDelegate {
         titleLabel.textColor = .label
         titleLabel.font = .preferredFont(for: .title2,
                                          weight: .semibold)
-        titleLabel.text = HeaderText.editList.rawValue
+        titleLabel.text = "Edit List"//HeaderText.editList.rawValue
         headerView.addSubview(titleLabel)
         titleLabel.centerView(centerX: headerView.centerXAnchor,
                               centerY: headerView.centerYAnchor)

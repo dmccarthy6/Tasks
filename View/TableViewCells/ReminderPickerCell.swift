@@ -8,11 +8,16 @@
 
 import UIKit
 
+protocol DatePickerChangedDelegate: class {
+    func didChangeDateOnDatePicker(date: Date, indexPath: IndexPath)
+}
+
 final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     
     //MARK: - Properties
     var alertDatePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.minimumDate = Date()
         datePicker.backgroundColor = .systemBackground
         return datePicker
@@ -38,13 +43,15 @@ final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     private func setupView() {
         contentView.addSubview(alertDatePicker)
         
-        alertDatePicker.anchor(top: safeAreaLayoutGuide.topAnchor,
-                               leading: safeAreaLayoutGuide.leadingAnchor,
-                               bottom: safeAreaLayoutGuide.bottomAnchor,
-                               trailing: safeAreaLayoutGuide.trailingAnchor,
-                               padding: .init(top: 0, left: 5, bottom: 5, right: 5),
-                               size: .init(width: frame.size.width, height: datePickerHeight))
-        alertDatePicker.isHidden = true
+        let guide = contentView.layoutMarginsGuide
+        NSLayoutConstraint.activate([
+            alertDatePicker.topAnchor.constraint(equalTo: guide.topAnchor),
+            alertDatePicker.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
+            alertDatePicker.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            alertDatePicker.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
+        ])
+        
+        backgroundColor = .systemBackground
     }
     
 
