@@ -25,7 +25,15 @@ class EditItemViewController: UIViewController, CanWriteToDatabase, EventAddedDe
         tableView.registerCell(cellClass: ReminderDatePickerCell.self)
         return tableView
     }()
-    var datePicker: UIDatePicker?
+    private lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.isHidden = true
+        datePicker.minimumDate = Date()
+        datePicker.backgroundColor = .secondarySystemBackground
+        datePicker.addTarget(self, action: #selector(handleDatePickerChanged(sender:)), for: .valueChanged)
+        return datePicker
+    }()
     private var datePickerIsHidden: Bool = true
     var itemBeingEdited: Items?
    
@@ -57,10 +65,10 @@ class EditItemViewController: UIViewController, CanWriteToDatabase, EventAddedDe
     }
     
     //MARK: - UIDatePicker Methods
-    func setTargetOnCellDatePicker(pickerCell: ReminderDatePickerCell) {
-        let picker = pickerCell.alertDatePicker
-        picker.addTarget(self, action: #selector(handleDatePickerChanged(sender:)), for: .valueChanged)
-    }
+//    func setTargetOnCellDatePicker(pickerCell: ReminderDatePickerCell) {
+//        let picker = pickerCell.alertDatePicker
+//        picker.addTarget(self, action: #selector(handleDatePickerChanged(sender:)), for: .valueChanged)
+//    }
     
     @objc func handleDatePickerChanged(sender: UIDatePicker) {
         let reminderCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! MenuCell
@@ -102,14 +110,7 @@ extension EditItemViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 { return 1 }
-        if section == 1 {
-            if datePickerIsHidden {
-                return 2
-            }
-            else if !datePickerIsHidden {
-                return 3
-            }
-        }
+        if section == 1 { return 3 }
         return 0
     }
     
@@ -124,89 +125,29 @@ extension EditItemViewController: UITableViewDataSource {
             return editItemTextFieldCell
         }
         if indexPath.section == 1 {
-            if datePicker == nil {
-                let cells = cellForRowPickerIsNotShowing(indexPath: indexPath, cell: labelCell)
-                return cells
+            switch indexPath.row {
+            case 0:
+                labelCell.configure(image: SystemImages.BellReminderIcon!, cellLabelText: EditAllDataLabels.reminder)
+                if let item = itemBeingEdited, let reminderDate = item.reminderDate {
+                    labelCell.configureValue(value: reminderDate)
+                }
+                return labelCell
+            case 1:
+                //Date Picker
+                let datePickerCell = ReminderDatePickerCell(style: .default, reuseIdentifier: TableViewCellIDs.reminderDatePickerID.rawValue)
+                datePickerCell.alertDatePicker = datePicker
+                return datePickerCell
+            case 2:
+                labelCell.configure(image: SystemImages.CalendarIcon!, cellLabelText: EditAllDataLabels.dueDate)
+                if let dueDate = itemBeingEdited?.dueDate {
+                    labelCell.configureValue(value: dueDate)
+                }
+            default: return UITableViewCell()
             }
-            else if datePicker != nil {
-                let cells = pickerIsShowing(indexPath: indexPath, labelCell: labelCell)
-                return cells
-            }
-           
-//            if datePickerIndexPath == indexPath {
-//                let reminderDatePickerCell = ReminderDatePickerCell(style: .default, reuseIdentifier: TableViewCellIDs.reminderDatePickerID.rawValue)
-//                setTargetOnCellDatePicker(pickerCell: reminderDatePickerCell)
-//                return reminderDatePickerCell
-//            }
-//            switch indexPath.row {
-//            case 0://REMINDERS
-//                labelCell.configure(image: SystemImages.BellReminderIcon!, cellLabelText: EditAllDataLabels.reminder)
-//                if let items = itemBeingEdited, let reminder = items.reminderDate {
-//                    labelCell.configureValue(value: reminder)
-//                }
-//            case 1://DATE PICKER
-//                datePickerIndexPath = indexPath
-//                let reminderDatePickerCell = ReminderDatePickerCell(style: .default, reuseIdentifier: TableViewCellIDs.reminderDatePickerID.rawValue)
-//                setTargetOnCellDatePicker(pickerCell: reminderDatePickerCell)
-//                return reminderDatePickerCell
-//            case 2://DUE DATE
-//                labelCell.configure(image: SystemImages.CalendarIcon!, cellLabelText: EditAllDataLabels.dueDate)
-//                if let dueDate = itemBeingEdited?.dueDate {
-//                    labelCell.configureValue(value: dueDate)
-//                }
-//                return labelCell
-//            default: return labelCell
-//            }
         }
         return labelCell
     }
-    
-    //MARK: - Helpers
-    func cellForRowPickerIsNotShowing(indexPath: IndexPath, cell: MenuCell)  -> UITableViewCell {
-        switch indexPath.row {
-        case 0:
-            //Reminder Text Cell (Above Date Picker Row)
-            cell.configure(image: SystemImages.BellReminderIcon!, cellLabelText: EditAllDataLabels.reminder)
-            if let item = itemBeingEdited, let reminder = item.reminderDate {
-                cell.configureValue(value: reminder)
-            }
-            return cell
-        case 1:
-            cell.configure(image: SystemImages.CalendarIcon!, cellLabelText: EditAllDataLabels.dueDate)
-            if let dueDate = itemBeingEdited?.dueDate {
-                cell.configureValue(value: dueDate)
-            }
-            return cell
-        default: ()
-        }
-        return UITableViewCell()
-    }
-    
-    func pickerIsShowing(indexPath: IndexPath, labelCell: MenuCell) -> UITableViewCell {
-        switch indexPath.row {
-        case 0:
-            labelCell.configure(image: SystemImages.BellReminderIcon!, cellLabelText: EditAllDataLabels.reminder)
-            if let item = itemBeingEdited, let reminder = item.reminderDate {
-                labelCell.configureValue(value: reminder)
-            }
-            return labelCell
-        case 1:
-            //DatePickerCell
-            let datePickerCell = ReminderDatePickerCell(style: .default, reuseIdentifier: TableViewCellIDs.reminderDatePickerID.rawValue)
-            datePickerCell.alertDatePicker.isHidden = false
-            datePicker = datePickerCell.alertDatePicker
-            setTargetOnCellDatePicker(pickerCell: datePickerCell)
-            return datePickerCell
-        case 2:
-            labelCell.configure(image: SystemImages.CalendarIcon!, cellLabelText: EditAllDataLabels.dueDate)
-            if let dueDate = itemBeingEdited?.dueDate {
-                labelCell.configureValue(value: dueDate)
-            }
-            return labelCell
-        default: ()
-        }
-        return UITableViewCell()
-    }
+
 }
 
 //MARK: - UITableView Delegate Methods
@@ -214,126 +155,29 @@ extension EditItemViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let indexAboveDatePicker = IndexPath(row: 0, section: 1)
-        let datePickerIndex = IndexPath(row: 1, section: 1)
-        if indexPath == indexAboveDatePicker && datePicker == nil {
-            datePickerIsHidden = false
-            datePicker = UIDatePicker()
-            
+        if indexPath == indexAboveDatePicker {
+            datePicker.isHidden.toggle()
+            if let pickerCell = tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? ReminderDatePickerCell {
+                pickerCell.setPickerConstraints()
+            }
             UIView.animate(withDuration: 0.3) {
                 self.tableView.beginUpdates()
-                self.tableView.deselectRow(at: datePickerIndex, animated: true)
-                self.tableView.insertRows(at: [datePickerIndex], with: .automatic)
-                
+                tableView.deselectRow(at: indexPath, animated: true)
                 self.tableView.endUpdates()
             }
         }
-        else if indexPath == indexAboveDatePicker && datePicker != nil {
-            datePickerIsHidden = true
-            datePicker = nil
-            self.tableView.beginUpdates()
-            self.tableView.deleteRows(at: [datePickerIndex], with: .automatic)
-            self.tableView.endUpdates()
+        else if indexPath == IndexPath(row: 2, section: 1) {
+            print("Calendar Open")
         }
-        //        let aboveDatePickerCell = IndexPath(row: 1, section: 1)
-        //        let datePickerIP = IndexPath(row: 2, section: 1)
-        //        tableView.beginUpdates()
-        //        if let datePickerIndex = datePickerIndexPath  {
-        //            if aboveDatePickerCell.row == indexPath.row {
-        //                //If date picker is showing and you tapped the cell above it -- delete row and remove
-        //                tableView.deleteRows(at: [datePickerIndex], with: .fade)
-        //                self.datePickerIndexPath = nil
-        //            }
-        //        }
-        //        else if datePickerIndexPath == nil && indexPath == aboveDatePickerCell {
-        //            print("INSERTING DATE PICKER")
-        //            datePickerIndexPath = datePickerIP
-        //            tableView.insertRows(at: [datePickerIP], with: .fade)
-        //        }
     }
-//        let reminderDatePickerIndexPath = IndexPath(row: 0, section: 1)
-//        let dueDateIndexPath = IndexPath(row: 2, section: 1)
-//
-//        if indexPath == reminderDatePickerIndexPath {
-//            /* Animate the cell date picker showing */
-//            let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as! ReminderDatePickerCell
-//            cell.toggleDatePicker()
-//            UIView.animate(withDuration: 0.3, animations: {
-//                self.tableView.beginUpdates()
-//                tableView.deselectRow(at: indexPath, animated: true)
-//                self.tableView.endUpdates()
-//            }, completion: nil)
-//        }
-//        if indexPath == dueDateIndexPath {
-//            /*Open the calendar, if user gave access, to add Task to calendar. */
-//            if let items = self.itemBeingEdited, let itemTitle = items.item {
-//                let calendarManager = CalendarManager()
-//                calendarManager.eventAddedDelegate = self
-//                DispatchQueue.main.async { [unowned self] in
-//                    calendarManager.addItemToCalendar(self, title: itemTitle, startDate: Date(), endDate: Date(), item: items)
-//                }
-//            }
-//        }
-    
-    
-//    func didSelect() {
-//        let aboveDatePickerCell = IndexPath(row: 1, section: 1)
-//        let datePickerIP = IndexPath(row: 2, section: 1)
-//        tableView.beginUpdates()
-//        if let datePickerIndex = datePickerIndexPath, aboveDatePickerCell = IndexPath.row {
-//            //If date picker is showing and you tapped the cell above it -- delete row and remove
-//            tableView.deleteRows(at: [datePickerIndex], with: .fade)
-//            self.datePickerIndexPath = nil
-//        }
-//        else if datePickerIndexPath == nil && indexPath.row == aboveDatePickerCell {
-//            datePickerIndexPath = datePickerIP
-//            tableView.insertRows(at: [datePickerIP], with: .fade)
-//        }
-//
-//        //If date picker isn't nil (it's showing) and the selected row is above the date picker we need to hide the date picker
-//        if let datePickerIndexPath = datePickerIndexPath, datePickerIndexPath.row - 1 == indexPath.row {
-//            tableView.deleteRows(at: [datePickerIndexPath], with: .fade)
-//            self.datePickerIndexPath = nil
-//        }
-//        else {
-//            if let datePickerIndexPath = datePickerIndexPath {
-//                tableView.deleteRows(at: [datePickerIndexPath], with: .fade)
-//            }
-//            datePickerIndexPath = indexPathToInsertDatePicker(indexPath: indexPath)
-//            tableView.insertRows(at: [datePickerIndexPath!], with: .fade)
-//            tableView.deselectRow(at: IndexPath, animated: true)
-//        }
-//        tableView.endUpdates()
-//    }
-//
-//    func indexPathToInsertDatePicker(indexPath: IndexPath) -> IndexPath {
-//        if let datePickerIndexPath = datePickerIndexPath, datePickerIndexPath.row < indexPath.row {
-//            return indexPath
-//        }
-//        else {
-//            return IndexPath(row: indexPath.row + 1, section: indexPath.section)
-//        }
-//    }
-    
+
     /* Set Date Picker Cell Height when the cell is tapped*/
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let datePickerIndexPath = IndexPath(row: 1, section: 1)
-        if indexPath == datePickerIndexPath && datePicker != nil {
+        if indexPath == datePickerIndexPath {
             //We have a date picker
-            let height: CGFloat = datePicker != nil ? 250 : 0
+            let height: CGFloat = datePicker.isHidden ? 0 : 250
             return height
-//        var isPickerHidden = true
-//
-//        if indexPath == datePickerIndexPath {
-//            if let datePickerCell = tableView.cellForRow(at: datePickerIndexPath) as? ReminderDatePickerCell {
-//                isPickerHidden = datePickerCell.alertDatePicker.isHidden
-//                let height: CGFloat = isPickerHidden ? 0.0 : 200.0
-//                return height
-//            }
-//            else {
-//                let height: CGFloat = isPickerHidden ? 0.0 : 200.0
-//                return height
-//            }
-            //return 0
         }
         return UITableView.automaticDimension
     }
@@ -351,14 +195,14 @@ extension EditItemViewController: UITableViewDelegate {
     }
     
     //MARK: - UITableView Footer Methods
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section == 0 { return createFooterView() }
-        else { return nil }
-    }
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 0 { return 20 }
-        else { return 0 }
-    }
+//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+//        if section == 0 { return createFooterView() }
+//        else { return nil }
+//    }
+//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+//        if section == 0 { return 20 }
+//        else { return 0 }
+//    }
     
     //MARK: - Header & Footer Helpers
     private func createdHeaderView() -> UIView {
@@ -369,7 +213,7 @@ extension EditItemViewController: UITableViewDelegate {
         let label = UILabel()
         headerView.backgroundColor = .systemBackground
         label.backgroundColor = .systemBackground
-        label.text = "Label Text:"
+        label.text = "Edit Item:"
         label.font = .preferredFont(for: .title3, weight: .semibold)
         label.textColor = .label
         headerView.addSubview(label)
@@ -404,4 +248,3 @@ extension EditItemViewController: UITextFieldDelegate {
         else { return false }
     }
 }
-

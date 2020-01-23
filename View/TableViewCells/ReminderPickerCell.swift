@@ -8,9 +8,6 @@
 
 import UIKit
 
-protocol DatePickerChangedDelegate: class {
-    func didChangeDateOnDatePicker(date: Date, indexPath: IndexPath)
-}
 
 final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     
@@ -18,18 +15,16 @@ final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     var alertDatePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.minimumDate = Date()
-        datePicker.backgroundColor = .systemBackground
         return datePicker
     }()
-    private var datePickerHeight: CGFloat = 200
+
     
     
     
     //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupView()
+        //setupView()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -38,26 +33,18 @@ final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     
     
     
-    
-    //MARK: - Helpers
-    private func setupView() {
+    //MARK: - Interface
+    func setPickerConstraints() {
         contentView.addSubview(alertDatePicker)
         
         let guide = contentView.layoutMarginsGuide
+        
         NSLayoutConstraint.activate([
             alertDatePicker.topAnchor.constraint(equalTo: guide.topAnchor),
             alertDatePicker.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
-            alertDatePicker.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-            alertDatePicker.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
         ])
         
         backgroundColor = .systemBackground
-    }
-    
-
-    //MARK: - Interface
-    func toggleDatePicker() {
-        alertDatePicker.isHidden = !alertDatePicker.isHidden
     }
     
 }
