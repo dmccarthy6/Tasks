@@ -180,8 +180,8 @@ extension AddItemsToListViewController: UITableViewDataSource {
         if indexPath.section == 0 {
             let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: indexPath)
             textFieldCell.configure(placeholder: .Item,
-                                    delegate: self,
-                                    backgroundColor: Colors.tasksRed)
+                                    delegate: self)
+                                    
             return textFieldCell
         }
         if indexPath.section == 1 {
@@ -223,7 +223,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
         switch tvIndexPath.section {
         case 0:
             let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: tvIndexPath)
-            textFieldCell.configure(placeholder: .Item, delegate: self, backgroundColor: Colors.tasksRed)
+            textFieldCell.configure(placeholder: .Item, delegate: self)
             return textFieldCell
         case 1: //Completed Button
             let completedButtonCell: CompletedButtonCell = tableView.dequeueReusableCell(for: tvIndexPath)

@@ -18,6 +18,11 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
         let mainDataSource = MainListsDataSource(viewController: self, tableView: self.tableView, delegate: self, traitCollection: traitCollection)
         return mainDataSource
     }()
+    lazy private var emptyView: EmptyView = {
+        let emptyView = EmptyView()
+        return emptyView
+    }()
+    
     private var lists = [List]()
     private var tableView: UITableView!
     
@@ -94,7 +99,7 @@ extension ListsViewController: UITableViewDelegate {
             print("Open Share Extension")
             
             if let items = list.items?.allObjects as? [Items] {
-                OpenShareExtension().showShareExtensionActionSheet(items: items)
+                OpenShareExtension().showShareExtensionActionSheet(items: items, popoverItem: nil)
             }
             completionHandler(true)
             

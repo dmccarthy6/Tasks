@@ -44,7 +44,7 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let addListCell = TextFieldCell(style: .default, reuseIdentifier: TableViewCellIDs.ListTextCellID.rawValue)
-        addListCell.configure(placeholder: .Title, delegate: self, backgroundColor: .systemGray)
+        addListCell.configure(placeholder: .Title, delegate: self)
         
         if indexPath.section == 0 {
             return addListCell

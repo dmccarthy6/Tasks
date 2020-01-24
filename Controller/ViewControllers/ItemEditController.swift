@@ -65,11 +65,6 @@ class EditItemViewController: UIViewController, CanWriteToDatabase, EventAddedDe
     }
     
     //MARK: - UIDatePicker Methods
-//    func setTargetOnCellDatePicker(pickerCell: ReminderDatePickerCell) {
-//        let picker = pickerCell.alertDatePicker
-//        picker.addTarget(self, action: #selector(handleDatePickerChanged(sender:)), for: .valueChanged)
-//    }
-    
     @objc func handleDatePickerChanged(sender: UIDatePicker) {
         let reminderCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! MenuCell
         let pickerDateAsString = sender.date.getReminderDateAsString(pickerDate: sender.date)
@@ -81,6 +76,10 @@ class EditItemViewController: UIViewController, CanWriteToDatabase, EventAddedDe
         }
         //Set Reminder Label in MenuCell
         reminderCell.configureValue(value: pickerDateAsString)
+    }
+    
+    func handleOpenCalendar() {
+        
     }
     
     //MARK: - EKEventKit Methods -- Adding Due Date To Calendar
@@ -168,6 +167,40 @@ extension EditItemViewController: UITableViewDelegate {
         }
         else if indexPath == IndexPath(row: 2, section: 1) {
             print("Calendar Open")
+            let calendarManager = CalendarManager()
+            let addCalendarEventVC = calendarManager.addViewController()
+            if let toDoItem = itemBeingEdited, let item = toDoItem.item {
+                calendarManager.addToDoItemToCalendar(title: item, eventStartDate: Date(), eventEndDate: Date()) { (result) in
+                    switch result {
+                    case .success(_):
+                        self.present(addCalendarEventVC, animated: true)
+                        
+                    case .failure(let calendarError):
+                        switch calendarError {
+                        case .calendarAccessDeniedOrRestricted:
+                            //Alert User
+                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue)
+                        case .eventAlreadyExistsInCalendar:
+                            //Alert User
+                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue)
+                        case .eventNotAddedToCalendar:
+                            //
+                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventNotAdded.rawValue)
+                        case .notDetermined:
+                            calendarManager.requestAccessToCalendar { (accessGranted, error) in
+                                if accessGranted {
+                                    self.present(addCalendarEventVC, animated: true)
+                                }
+                                else {
+                                    if let error = error {
+                                        print(error)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

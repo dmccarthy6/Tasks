@@ -1,7 +1,4 @@
-//
-//  OpenShareExtension.swift
-//  Tasks
-//
+
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
@@ -32,9 +29,14 @@ struct OpenShareExtension {
 //    }
     
     //MARK: - Open Share Extension
-    func showShareExtensionActionSheet(items: [Items]) {
+    func showShareExtensionActionSheet(items: [Items], popoverItem: UIBarButtonItem?) {
         let items = items.compactMap({ $0.item! })
         let shareViewController = ShareActivityController(activityItems: items, applicationActivities: nil)
+        
+        if let popoverSharePresentation = shareViewController.popoverPresentationController {
+            popoverSharePresentation.barButtonItem = popoverItem
+        }
+        
         rootViewController().present(shareViewController, animated: true)
     }
     

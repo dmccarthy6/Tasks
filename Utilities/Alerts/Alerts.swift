@@ -92,7 +92,7 @@ enum Alerts {
         }
         let shareButtonAction = UIAlertAction(title: "Share List", style: .default) { (action) in
             if let items = title.items?.allObjects as? [Items] {
-                OpenShareExtension().showShareExtensionActionSheet(items: items)
+                OpenShareExtension().showShareExtensionActionSheet(items: items, popoverItem: popoverBarItem)
             }
         }
         

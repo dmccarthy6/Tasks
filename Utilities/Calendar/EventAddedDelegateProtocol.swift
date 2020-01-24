@@ -18,6 +18,10 @@ protocol EventAddedDelegate: class {
 
 extension EventAddedDelegate {
     //MARK: - Extension Methods
+    
+    func eventAdded(event: EKEvent) {
+        let eventDate = event.startDate
+    }
 }
 
 //struct AddCalendarEvent {

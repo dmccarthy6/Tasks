@@ -116,7 +116,7 @@ extension ShareListMenuLauncher: UITableViewDelegate {
         if cell.labelText == EditAllDataLabels.shareList {
             
             if let items = list?.items?.allObjects as? [Items]  {
-                OpenShareExtension().showShareExtensionActionSheet(items: items)
+               // OpenShareExtension().showShareExtensionActionSheet(items: items)
             }
         }
     }

@@ -81,18 +81,7 @@ final class TextFieldCell: UITableViewCell {
         contentView.addSubview(cellTextField)
 
         let guide = contentView.layoutMarginsGuide
-//        NSLayoutConstraint.activate([
-//            addLabelIV.widthAnchor.constraint(equalToConstant: Constants.addImageWidth),
-//            addLabelIV.heightAnchor.constraint(equalTo: addLabelIV.widthAnchor),
-//            addLabelIV.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-//            addLabelIV.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor),
-//
-//            cellTextField.leadingAnchor.constraint(equalToSystemSpacingAfter: addLabelIV.trailingAnchor, multiplier: 1),
-//            cellTextField.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-//            cellTextField.topAnchor.constraint(equalToSystemSpacingBelow: safeAreaLayoutGuide.topAnchor, multiplier: 1),
-//            cellTextField.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-//
-//        ])
+
         NSLayoutConstraint.activate([
             //
             addLabelIV.heightAnchor.constraint(equalTo: addLabelIV.widthAnchor),
@@ -105,11 +94,7 @@ final class TextFieldCell: UITableViewCell {
             cellTextField.centerYAnchor.constraint(equalTo: addLabelIV.centerYAnchor),
             cellTextField.topAnchor.constraint(equalTo: guide.topAnchor),
             cellTextField.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
-//            cellTextField.heightAnchor.constraint(equalToConstant: 35),
         ])
-        
-//        cellTextField.leftViewMode = .always
-//        cellTextField.leftView = UIView()
     }
     
     private func textFieldForIOS13() {
@@ -126,7 +111,7 @@ final class TextFieldCell: UITableViewCell {
     }
     
     //MARK: - Configure View
-    func configure(placeholder: CellPlaceholder, delegate: UITextFieldDelegate?, backgroundColor: UIColor) {
+    func configure(placeholder: CellPlaceholder, delegate: UITextFieldDelegate?) {
         self.cellTextField.placeholder = placeholder.rawValue
         self.cellTextField.delegate = delegate
     }

@@ -16,7 +16,7 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
     //MARK: - Properties
     weak var eventAddedDelegate: EventAddedDelegate?
     private var eventStore: EKEventStore
-    
+    var userEvent: EKEvent?
     
     
     //MARK: - Initializer
@@ -28,7 +28,7 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
     
     
     //MARK: - User Authorization Methods
-    private func requestAccessToCalendar(completion: @escaping EKEventStoreRequestAccessCompletionHandler) {
+    func requestAccessToCalendar(completion: @escaping EKEventStoreRequestAccessCompletionHandler) {
         eventStore.requestAccess(to: EKEntityType.event) { (accessGranted, error) in
             completion(accessGranted, error)
         }
@@ -38,79 +38,39 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
         return EKEventStore.authorizationStatus(for: EKEntityType.event)
     }
     
-    //Don't need these next two functions?
-    private func addEvent(event: EKEvent, completion: @escaping AddToCalendarResponse) {
-        if !eventAlreadyExists(event: event) {
-            do {
-                try eventStore.save(event, span: .thisEvent)
-            }
-            catch {
-                completion(.failure(.eventNotAddedToCalendar))
-            }
-            completion(.success(true))
-        }
-        else {
-            completion(.failure(.eventAlreadyExistsInCalendar))
-        }
-    }
+//    //MARK: Presentation
+//    private func presentCalendarModalToAddEvent(event: EKEvent, completion: @escaping AddToCalendarResponse) {
+//        let authorizationStatus = getCalendarAccessAuthStatus()
+//
+//        switch authorizationStatus {
+//        case .authorized:
+//            showAddToCalendarViewControllerModal(event: event)
+//            completion(.success(true))
+//
+//        case .notDetermined:
+//            requestAccessToCalendar { (accessGranted, error) in
+//                if accessGranted {
+//                    self.showAddToCalendarViewControllerModal(event: event)
+//                    completion(.success(true))
+//                }
+//                else {
+//                    completion(.failure(.calendarAccessDeniedOrRestricted))
+//                }
+//            }
+//
+//        case .denied, .restricted:
+//            completion(.failure(.calendarAccessDeniedOrRestricted))
+//
+//        @unknown default: ()
+//        }
+//    }
     
-    private func eventAlreadyExists(event eventToAdd: EKEvent) -> Bool {
-        let eventExistsPredicate = eventStore.predicateForEvents(withStart: eventToAdd.startDate, end: eventToAdd.endDate, calendars: nil)
-        let existingEvents = eventStore.events(matching: eventExistsPredicate)
-        
-        let doesEventExist = existingEvents.contains { (event) -> Bool in
-            return eventToAdd.title == event.title && eventToAdd.startDate == event.startDate && eventToAdd.endDate ==  event.endDate
-        }
-        return doesEventExist
-    }
-    
-    //MARK: Presentation
-    private func presentCalendarModalToAddEvent(event: EKEvent, completion: @escaping AddToCalendarResponse) {
-        let authorizationStatus = getCalendarAccessAuthStatus()
-        
-        switch authorizationStatus {
-        case .authorized:
-            showAddToCalendarViewControllerModal(event: event)
-            completion(.success(true))
-            
-        case .notDetermined:
-            requestAccessToCalendar { (accessGranted, error) in
-                if accessGranted {
-                    self.showAddToCalendarViewControllerModal(event: event)
-                    completion(.success(true))
-                }
-                else {
-                    completion(.failure(.calendarAccessDeniedOrRestricted))
-                }
-            }
-            
-        case .denied, .restricted:
-            completion(.failure(.calendarAccessDeniedOrRestricted))
-            
-        @unknown default: ()
-        }
-    }
-    
-    private func showAddToCalendarViewControllerModal(event: EKEvent) {
-        let eventToUse = generateEvent(event: event)
-        eventToUse.calendar = eventStore.defaultCalendarForNewEvents
-        eventToUse.startDate = nil
-        eventToUse.endDate = nil
-        
-        let addToCalendarViewController = EKEventEditViewController()
-        addToCalendarViewController.editViewDelegate = self
-        addToCalendarViewController.event = eventToUse
-        addToCalendarViewController.eventStore = eventStore
-        
-        getKeyWindow().present(addToCalendarViewController, animated: true, completion: nil)
-    }
-
-    func generateEvent(event: EKEvent) -> EKEvent {
+    private func generateEvent(event: EKEvent) -> EKEvent {
         let newEvent = EKEvent(eventStore: eventStore)
-        
+
         let interval = TimeInterval(60)
         let eventAlarm = EKAlarm(relativeOffset: interval)
-        
+
         newEvent.calendar = eventStore.defaultCalendarForNewEvents
         newEvent.title = event.title
         newEvent.startDate = event.startDate
@@ -119,43 +79,43 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
         return newEvent
     }
     
-    //MARK: - Helper Methods
-    private func getKeyWindow() -> UIViewController {
-        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }), let controller = window.visibleViewController() {
-            return controller
+    func addToDoItemToCalendar(title: String, eventStartDate: Date, eventEndDate: Date, completion: @escaping AddToCalendarResponse) {
+        //Create EKEvent with data passed in from user.
+        let event = generateEvent(event: EKEvent(eventStore: eventStore))
+        event.title = title
+        event.startDate = eventStartDate
+        event.endDate = eventEndDate
+        
+        //Check Authorization Status and pass to completion based on status.
+        let status = getCalendarAccessAuthStatus()
+        
+        switch status {
+        case .authorized:
+            print("Auth Do Somethig")
+            self.userEvent = event
+            completion(.success(true))
+            print("Success")
+            
+        case .denied, .restricted:
+            completion(.failure(.calendarAccessDeniedOrRestricted))
+            print("Denied do something")
+            
+        case .notDetermined:
+            completion(.failure(.notDetermined))
+            print("Not Determined")
+        @unknown default: ()
         }
-        return UIViewController()
     }
     
-    //MARK: - Interface
-    func addItemToCalendar(_ viewController: UIViewController, title: String, startDate: Date, endDate: Date, item: Items) {
-        let event = generateEvent(event: EKEvent(eventStore: eventStore))//EKEvent(eventStore: eventStore)
-        event.title = title
-        event.startDate = startDate
-        event.endDate = endDate
-        
-        presentCalendarModalToAddEvent(event: event) { (result) in
-            switch result {
-            case .success(let success):
-                print("Success - Calendar: \(success)")
-                
-            case .failure(let error):
-                switch error {
-                case .calendarAccessDeniedOrRestricted:
-                    Alerts.showSettingsAlert(viewController,
-                                             message: CalendarAlertsMessage.restricted.rawValue)
-                case .eventAlreadyExistsInCalendar:
-                    Alerts.showNormalAlert(viewController,
-                                           title: "",
-                                           message: CalendarAlertsMessage.eventExists.rawValue)
-                case .eventNotAddedToCalendar:
-                    Alerts.showNormalAlert(viewController,
-                                           title: "",
-                                           message: CalendarAlertsMessage.eventNotAdded.rawValue)
-                }
-            }
-        }
+    func addViewController() -> EKEventEditViewController {
+        let addToCalendarViewController = EKEventEditViewController()
+        addToCalendarViewController.editViewDelegate = self
+        addToCalendarViewController.event = userEvent!
+        addToCalendarViewController.eventStore = self.eventStore
+        return addToCalendarViewController
     }
+    
+    
     
 }
 //MARK: - EKEventEdit Delegate Methods
