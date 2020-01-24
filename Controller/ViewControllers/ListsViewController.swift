@@ -36,18 +36,19 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
     }
     
     //MARK: - Helper Functions
-    private func setUpView() {
-        let listTableView = UITableView(frame: view.frame, style: .plain)
-        tableView = listTableView
-        view.addSubview(tableView)
-        listTableView.dataSource = dataSource
-        listTableView.delegate = self
-        listTableView.separatorStyle = .singleLine
-        listTableView.tableFooterView = UIView()
+    func setUpView() {
+        let listsTable = UITableView(frame: .zero, style: .plain)
+        tableView = listsTable
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.dataSource = dataSource
+        tableView.delegate = self
+        tableView.tableFooterView = UIView()
+        tableView.separatorStyle = .singleLine
         
+        view.addSubview(tableView)
+        tableView.setFullScreenTableViewConstraints(in: view)
         navigationItem.createNavigationBar(title: "My Lists", leftItem: nil, rightItem: nil)
     }
-    
     private func tableViewBackground(tableView: UITableView) {
         tableView.handleTableViewForIOS13()
         NotificationCenter.default.post(name: .TasksThemeDidChange, object: nil)
@@ -72,13 +73,6 @@ extension ListsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         handleSegueToListItems(indexPath: indexPath)
     }
-    
-    //MARK: - Header & Footer:
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
-        //Only 1 section in this view, returning cell height I want
-    }
-    
     
     //MARK: TableView Swipe Actions:
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {

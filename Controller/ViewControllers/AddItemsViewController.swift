@@ -12,17 +12,17 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
     var listTitle: List?
     private var isCompletedShowing: Bool = false
     private lazy var tableView: UITableView = {
-        let addItemsTableView = UITableView(frame: view.frame, style: .plain)
-        addItemsTableView.delegate = self
-        addItemsTableView.dataSource = self
-        addItemsTableView.separatorStyle = .singleLine
-        //addItemsTableView.separatorStyle = .none
-        addItemsTableView.tableFooterView = UIView()
-        addItemsTableView.registerCell(cellClass: TextFieldCell.self)
-        addItemsTableView.registerCell(cellClass: ItemAddedCell.self)
-        addItemsTableView.registerCell(cellClass: CompletedButtonCell.self)
-        addItemsTableView.registerCell(cellClass: CompletedItemsCell.self)
-        return addItemsTableView
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.separatorStyle = .singleLine
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.tableFooterView = UIView()
+        tableView.registerCell(cellClass: TextFieldCell.self)
+        tableView.registerCell(cellClass: ItemAddedCell.self)
+        tableView.registerCell(cellClass: CompletedButtonCell.self)
+        tableView.registerCell(cellClass: CompletedItemsCell.self)
+        return tableView
     }()
     private lazy var fetchedResultsControllerDelegate: ItemsFetchedResultsControllerDelegate = {
         let delegate = ItemsFetchedResultsControllerDelegate(tableView: self.tableView)
@@ -50,10 +50,10 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
     //MARK: - Helpers
     private func configureController() {
         itemsController = ItemsController(id: String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)!)
-            itemsController.delegate = fetchedResultsControllerDelegate
-            let id = String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)
-            let pred = NSPredicate(format: "titleID == %@", id!)
-            configureReadItemsController(predicate: pred)
+        itemsController.delegate = fetchedResultsControllerDelegate
+        let id = String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)
+        let pred = NSPredicate(format: "titleID == %@", id!)
+        configureReadItemsController(predicate: pred)
     }
     
     private func setUpView() {
@@ -61,8 +61,10 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         navigationItem.createNavigationBar(title: "\(listTitle?.title ?? "")",
             leftItem: nil,
             rightItem: UIBarButtonItem(image: SystemImages.elipses!, style: .plain, target: self, action: #selector(showEditListActionSheet)))
+        
+        tableView.setFullScreenTableViewConstraints(in: view)
     }
- 
+    
     //MARK: - Button Functions
     @objc func handleCancel() {
         dismiss(animated: true, completion: nil)
@@ -70,7 +72,7 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
     
     @objc func showEditListActionSheet() {
         if let list = listTitle {
-            Alerts.editListActionSheet(title: list)
+            Alerts.editListActionSheet(title: list, popoverBarItem: navigationItem.rightBarButtonItem!)
         }
     }
     
@@ -172,50 +174,50 @@ extension AddItemsToListViewController: UITableViewDataSource {
         }
         return 1
     }
-     //MARK: - Tableview Helper Functions -- Rows
+    //MARK: - Tableview Helper Functions -- Rows
     private func populateNumberOfRowsInTableSection(indexPath: IndexPath) -> UITableViewCell {
         if itemsController.allItemsAreComplete() { return populateOnlyCompletedRowsInTable(tvIndexPath: indexPath) }
-            if indexPath.section == 0 {
-                let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: indexPath)
-                textFieldCell.configure(placeholder: .Item,
-                                        delegate: self,
-                                        backgroundColor: Colors.tasksRed)
-                return textFieldCell
-            }
-            if indexPath.section == 1 {
-                let openItemsCell: ItemAddedCell = tableView.dequeueReusableCell(for: indexPath)
-                let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.ToDo.rawValue)!)
-                if let sections = itemsController.sections, let itemAtIndex = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
-                    openItemsCell.configureCell(itemText: itemAtIndex.item!)
-                    openItemsCell.handleUserTapFlagOrFavoriteButtons(for: itemAtIndex,
-                                                              isFlagged: itemAtIndex.isFlagged,
-                                                              tableView: tableView)
-                }
-                return openItemsCell
-            }
-            if indexPath.section == 2 {//SHOW COMPLETED BUTTON
-                let completedButtonCell: CompletedButtonCell = tableView.dequeueReusableCell(for: indexPath)
-                completedButtonCell.setCompletedButtonTitleAfterLastCompletedItemRemoved(completedShowing: isCompletedShowing)
-                handleShowCompletedTapped(for: completedButtonCell)
-                return completedButtonCell
-            }
-            else if indexPath.section == 3 {//CLOSED ITEMS
-                let completedItemsCell: CompletedItemsCell = tableView.dequeueReusableCell(for: indexPath)
-                if self.isCompletedShowing {
-                    let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.Completed.rawValue)!)
-                    if let sections = itemsController.sections, let closedItemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
-                        completedItemsCell.configure(item: closedItemAtIndexPath.item!)
-                        completedItemsCell.handleUserTapCompletedOrFavorite(for: closedItemAtIndexPath,
-                                                                                isFlagged: closedItemAtIndexPath.isFlagged,
-                                                                                tableView: tableView)
-                        handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: closedItemAtIndexPath)
-                    }
-                    return completedItemsCell
-                }
+        if indexPath.section == 0 {
+            let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: indexPath)
+            textFieldCell.configure(placeholder: .Item,
+                                    delegate: self,
+                                    backgroundColor: Colors.tasksRed)
+            return textFieldCell
         }
-            return UITableViewCell() 
+        if indexPath.section == 1 {
+            let openItemsCell: ItemAddedCell = tableView.dequeueReusableCell(for: indexPath)
+            let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.ToDo.rawValue)!)
+            if let sections = itemsController.sections, let itemAtIndex = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
+                openItemsCell.configureCell(itemText: itemAtIndex.item!)
+                openItemsCell.handleUserTapFlagOrFavoriteButtons(for: itemAtIndex,
+                                                                 isFlagged: itemAtIndex.isFlagged,
+                                                                 tableView: tableView)
+            }
+            return openItemsCell
+        }
+        if indexPath.section == 2 {//SHOW COMPLETED BUTTON
+            let completedButtonCell: CompletedButtonCell = tableView.dequeueReusableCell(for: indexPath)
+            completedButtonCell.setCompletedButtonTitleAfterLastCompletedItemRemoved(completedShowing: isCompletedShowing)
+            handleShowCompletedTapped(for: completedButtonCell)
+            return completedButtonCell
+        }
+        else if indexPath.section == 3 {//CLOSED ITEMS
+            let completedItemsCell: CompletedItemsCell = tableView.dequeueReusableCell(for: indexPath)
+            if self.isCompletedShowing {
+                let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.Completed.rawValue)!)
+                if let sections = itemsController.sections, let closedItemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
+                    completedItemsCell.configure(item: closedItemAtIndexPath.item!)
+                    completedItemsCell.handleUserTapCompletedOrFavorite(for: closedItemAtIndexPath,
+                                                                        isFlagged: closedItemAtIndexPath.isFlagged,
+                                                                        tableView: tableView)
+                    handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: closedItemAtIndexPath)
+                }
+                return completedItemsCell
+            }
+        }
+        return UITableViewCell()
     }
-
+    
     //If All Items Are Completed; Need to adjust Sections here, FRC will have 1 section '0' and TV will have 3 sections.
     private func populateOnlyCompletedRowsInTable(tvIndexPath: IndexPath) -> UITableViewCell {
         switch tvIndexPath.section {
@@ -235,8 +237,8 @@ extension AddItemsToListViewController: UITableViewDataSource {
                                                                                                                                  sections: sections) {
                     completedItemsCell.configure(item: itemAtIndexPath.item!)
                     completedItemsCell.handleUserTapCompletedOrFavorite(for: itemAtIndexPath,
-                                                                            isFlagged: itemAtIndexPath.isFlagged,
-                                                                            tableView: tableView)
+                                                                        isFlagged: itemAtIndexPath.isFlagged,
+                                                                        tableView: tableView)
                     handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: itemAtIndexPath)
                 }
                 return completedItemsCell
@@ -275,10 +277,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
 
 //MARK: UITableView Delegate Methods
 extension AddItemsToListViewController: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 50
-//    }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {//My To-Do's
             let frcSection = Int(ItemsSection.ToDo.rawValue)!

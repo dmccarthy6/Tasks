@@ -68,6 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //Set Navigation Bar Color
     func setNavigationBarColors() {
         let navigationBarAppearance = UINavigationBar.appearance()
+        //navigationBarAppearance.prefersLargeTitles = true
         navigationBarAppearance.tintColor = .white
         navigationBarAppearance.barTintColor = Colors.tasksRed
         navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]

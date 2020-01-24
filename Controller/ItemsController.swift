@@ -119,7 +119,6 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
             guard let newIndexPath = newIndexPath else { return }
             let indexPathToUse = updateTableViewIndexPath(from: newIndexPath)
             delegate?.controller?(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: indexPathToUse)
-            print("ItemsController- Insert IndexPath - \(indexPathToUse)")
             
         case .update:
             let item = anObject as! Items
@@ -132,7 +131,6 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
                 handleMovingListItems(in: controller, indexPath: indexPath, newIndexPath: newIndexPath, object: anObject, type: type)
             }
         case .delete:
-            print("DELETE")
             if let indexPath = indexPath {
                 delegate?.controller?(controller, didChange: anObject, at: indexPath, for: type, newIndexPath: newIndexPath)
             }

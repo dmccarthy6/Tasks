@@ -12,10 +12,12 @@ final class EditItemCell: UITableViewCell {
     //MARK: - Properties
     private let editListTitleTextField: UITextField = {
         let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.font = DynamicFonts.Title1Dynamic
         textField.textColor = .label
         textField.adjustsFontForContentSizeCategory = true
         textField.backgroundColor = .secondarySystemBackground
+        textField.borderStyle = .roundedRect
         return textField
     }()
     private var cellHeight: CGFloat = 60.0
@@ -37,12 +39,14 @@ final class EditItemCell: UITableViewCell {
     private func createEditItemCell() {
         contentView.addSubview(editListTitleTextField)
         
-        editListTitleTextField.anchor(top: safeAreaLayoutGuide.topAnchor,
-                                      leading: safeAreaLayoutGuide.leadingAnchor,
-                                      bottom: safeAreaLayoutGuide.bottomAnchor,
-                                      trailing: safeAreaLayoutGuide.trailingAnchor,
-                                      padding: .init(top: 0, left: 40, bottom: 0, right: 40),
-                                      size: .init(width: bounds.size.width, height: cellHeight)) //bounds.size.height
+        let guide = contentView.layoutMarginsGuide
+        
+        NSLayoutConstraint.activate([
+            editListTitleTextField.topAnchor.constraint(equalTo: guide.topAnchor),
+            editListTitleTextField.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
+            editListTitleTextField.leadingAnchor.constraint(equalToSystemSpacingAfter: guide.leadingAnchor, multiplier: 0),
+            editListTitleTextField.trailingAnchor.constraint(equalToSystemSpacingAfter: guide.trailingAnchor, multiplier: 0)
+        ])
         backgroundColor = .systemBackground
     }
     
@@ -50,7 +54,6 @@ final class EditItemCell: UITableViewCell {
     func configure(text: String, delegate: UITextFieldDelegate?) {
         editListTitleTextField.text = text
         editListTitleTextField.delegate = delegate
-        editListTitleTextField.borderStyle = .roundedRect
         editListTitleTextField.becomeFirstResponder()
     }
 }

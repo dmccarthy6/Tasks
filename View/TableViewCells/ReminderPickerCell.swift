@@ -8,23 +8,23 @@
 
 import UIKit
 
+
 final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     
     //MARK: - Properties
     var alertDatePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
-        datePicker.minimumDate = Date()
-        datePicker.backgroundColor = .systemBackground
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
         return datePicker
     }()
-    private var datePickerHeight: CGFloat = 200
+
     
     
     
     //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupView()
+        //setupView()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -33,24 +33,18 @@ final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     
     
     
-    
-    //MARK: - Helpers
-    private func setupView() {
+    //MARK: - Interface
+    func setPickerConstraints() {
         contentView.addSubview(alertDatePicker)
         
-        alertDatePicker.anchor(top: safeAreaLayoutGuide.topAnchor,
-                               leading: safeAreaLayoutGuide.leadingAnchor,
-                               bottom: safeAreaLayoutGuide.bottomAnchor,
-                               trailing: safeAreaLayoutGuide.trailingAnchor,
-                               padding: .init(top: 0, left: 5, bottom: 5, right: 5),
-                               size: .init(width: frame.size.width, height: datePickerHeight))
-        alertDatePicker.isHidden = true
-    }
-    
-
-    //MARK: - Interface
-    func toggleDatePicker() {
-        alertDatePicker.isHidden = !alertDatePicker.isHidden
+        let guide = contentView.layoutMarginsGuide
+        
+        NSLayoutConstraint.activate([
+            alertDatePicker.topAnchor.constraint(equalTo: guide.topAnchor),
+            alertDatePicker.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
+        ])
+        
+        backgroundColor = .systemBackground
     }
     
 }

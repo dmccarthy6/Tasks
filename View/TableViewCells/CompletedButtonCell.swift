@@ -7,9 +7,8 @@ class CompletedButtonCell: UITableViewCell {
     //MARK: - Properties
     private var showCompletedButton: UIButton = {
         let button = UIButton(type: .system)
-        button.layer.borderWidth = 0.5
-        button.layer.borderColor = UIColor.systemBackground.cgColor//UIColor.black.cgColor
-        button.layer.cornerRadius = 5   //was 6
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 7   //was 6
         button.contentEdgeInsets = UIEdgeInsets(top: 1, left: 7, bottom: 1, right: 7)
         button.backgroundColor = Colors.tasksRed
         button.titleLabel?.textColor = .label
@@ -32,13 +31,17 @@ class CompletedButtonCell: UITableViewCell {
     //MARK: - Helpers
     private func createShowCompletedButton() {
         selectionStyle = .none
-        addSubview(showCompletedButton)
-        showCompletedButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        contentView.addSubview(showCompletedButton)
+
+        let guide = contentView.layoutMarginsGuide
         
-        showCompletedButton.centerView(centerX: safeAreaLayoutGuide.centerXAnchor,
-                                       centerY: safeAreaLayoutGuide.centerYAnchor,
-                                       size: .init(width: showCompletedButton.bounds.size.width, height: 40),
-                                       padding: .init(top: 10, left: 0, bottom: 10, right: 0))
+        NSLayoutConstraint.activate([
+            showCompletedButton.heightAnchor.constraint(equalToConstant: Constants.completedButtonHeight),
+            showCompletedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+            showCompletedButton.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
+        ])
+        
+        showCompletedButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
     //MARK: - Interface
