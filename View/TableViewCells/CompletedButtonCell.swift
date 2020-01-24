@@ -8,9 +8,7 @@ class CompletedButtonCell: UITableViewCell {
     private var showCompletedButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-//        button.layer.borderWidth = 0.5
-//        button.layer.borderColor = UIColor.systemBackground.cgColor//UIColor.black.cgColor
-        button.layer.cornerRadius = 6   //was 6
+        button.layer.cornerRadius = 7   //was 6
         button.contentEdgeInsets = UIEdgeInsets(top: 1, left: 7, bottom: 1, right: 7)
         button.backgroundColor = Colors.tasksRed
         button.titleLabel?.textColor = .label
@@ -38,13 +36,9 @@ class CompletedButtonCell: UITableViewCell {
         let guide = contentView.layoutMarginsGuide
         
         NSLayoutConstraint.activate([
-            showCompletedButton.widthAnchor.constraint(equalToConstant: Constants.completedButtonWidth),
             showCompletedButton.heightAnchor.constraint(equalToConstant: Constants.completedButtonHeight),
             showCompletedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
             showCompletedButton.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
-//            showCompletedButton.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-//            showCompletedButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
-           
         ])
         
         showCompletedButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)

@@ -30,8 +30,8 @@ final class TextFieldCell: UITableViewCell {
         textField.layer.cornerRadius = 5
         textField.layer.shadowColor = UIColor.systemGray.cgColor
         textField.layer.shadowRadius = 2.0
-        textField.layer.borderWidth = 1.25
-        textField.layer.borderColor = UIColor.systemGray.cgColor//UIColor.black.cgColor
+//        textField.layer.borderWidth = 1.25
+//        textField.layer.borderColor = UIColor.systemGray.cgColor//UIColor.black.cgColor
         textField.tag = 0
         textField.adjustsFontForContentSizeCategory = true
         textField.font = DynamicFonts.HeadlineDynamic
@@ -77,44 +77,36 @@ final class TextFieldCell: UITableViewCell {
         selectionStyle = .none
         
         backgroundColor = .secondarySystemBackground
-        addSubview(addLabelIV)
-        addSubview(cellTextField)
-        //cellTextField.addSubview(textFieldCellButton)
-//        cellTextField.leftViewMode = .always
-//        cellTextField.leftView = textFieldCellButton
+        contentView.addSubview(addLabelIV)
+        contentView.addSubview(cellTextField)
 
-//        let guide = contentView.layoutMarginsGuide
-        NSLayoutConstraint.activate([
-            addLabelIV.widthAnchor.constraint(equalToConstant: Constants.addImageWidth),
-            addLabelIV.heightAnchor.constraint(equalTo: addLabelIV.widthAnchor),
-            addLabelIV.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            addLabelIV.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor),
-            
-            cellTextField.leadingAnchor.constraint(equalToSystemSpacingAfter: addLabelIV.trailingAnchor, multiplier: 1),
-            cellTextField.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            cellTextField.topAnchor.constraint(equalToSystemSpacingBelow: safeAreaLayoutGuide.topAnchor, multiplier: 1),
-            cellTextField.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-        
-        ])
+        let guide = contentView.layoutMarginsGuide
 //        NSLayoutConstraint.activate([
-//            //
-//            addLabelIV.heightAnchor.constraint(equalTo: addLabelIV.widthAnchor),
 //            addLabelIV.widthAnchor.constraint(equalToConstant: Constants.addImageWidth),
-//            addLabelIV.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-//            addLabelIV.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+//            addLabelIV.heightAnchor.constraint(equalTo: addLabelIV.widthAnchor),
+//            addLabelIV.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+//            addLabelIV.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor),
 //
 //            cellTextField.leadingAnchor.constraint(equalToSystemSpacingAfter: addLabelIV.trailingAnchor, multiplier: 1),
-//            cellTextField.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
-////            cellTextField.centerYAnchor.constraint(equalTo: addLabelIV.centerYAnchor),
-////            cellTextField.heightAnchor.constraint(equalToConstant: 30),
-////            cellTextField.widthAnchor.constraint(greaterThanOrEqualToConstant: 250)
+//            cellTextField.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+//            cellTextField.topAnchor.constraint(equalToSystemSpacingBelow: safeAreaLayoutGuide.topAnchor, multiplier: 1),
+//            cellTextField.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
 //
-////            cellTextField.trailingAnchor.constraint(equalToSystemSpacingAfter: guide.trailingAnchor, multiplier: -4),
-//            cellTextField.topAnchor.constraint(equalTo: guide.topAnchor),
-//            cellTextField.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
-////            cellTextField.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 0.5),
-////            cellTextField.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
 //        ])
+        NSLayoutConstraint.activate([
+            //
+            addLabelIV.heightAnchor.constraint(equalTo: addLabelIV.widthAnchor),
+            addLabelIV.widthAnchor.constraint(equalToConstant: Constants.addImageWidth),
+            addLabelIV.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            addLabelIV.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+
+            cellTextField.leadingAnchor.constraint(equalToSystemSpacingAfter: addLabelIV.trailingAnchor, multiplier: 1),
+            cellTextField.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
+            cellTextField.centerYAnchor.constraint(equalTo: addLabelIV.centerYAnchor),
+            cellTextField.topAnchor.constraint(equalTo: guide.topAnchor),
+            cellTextField.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
+//            cellTextField.heightAnchor.constraint(equalToConstant: 35),
+        ])
         
 //        cellTextField.leftViewMode = .always
 //        cellTextField.leftView = UIView()

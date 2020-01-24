@@ -80,7 +80,7 @@ enum Alerts {
         }
     }
     
-    static func editListActionSheet(title: List) {
+    static func editListActionSheet(title: List, popoverBarItem: UIBarButtonItem) {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let configureListButton = UIAlertAction(title: "Edit List Title", style: .default) { (action) in
             
@@ -101,6 +101,10 @@ enum Alerts {
         alertController.addAction(configureListButton)
         alertController.addAction(shareButtonAction)
         alertController.addAction(cancelButtonAction)
+        
+        if let popoverController = alertController.popoverPresentationController {
+            popoverController.barButtonItem = popoverBarItem
+        }
         
         rootVC().present(alertController, animated: true, completion: nil)
     }
