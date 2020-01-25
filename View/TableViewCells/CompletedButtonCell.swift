@@ -37,6 +37,8 @@ class CompletedButtonCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             showCompletedButton.heightAnchor.constraint(equalToConstant: Constants.completedButtonHeight),
+//            showCompletedButton.topAnchor.constraint(equalTo: guide.topAnchor),
+//            showCompletedButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
             showCompletedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
             showCompletedButton.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
         ])

@@ -7,7 +7,7 @@ final class MenuCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .preferredFont(for: .title2, weight: .semibold)
+        label.font = .preferredFont(for: .callout, weight: .medium)
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
@@ -15,13 +15,14 @@ final class MenuCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .right
+        label.text = ""
         label.numberOfLines = 0
-        label.font = .preferredFont(for: .body, weight: .bold)
+        label.font = .preferredFont(for: .body, weight: .medium)
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
     private var iconImageView: UIImageView = {
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .label
@@ -51,28 +52,28 @@ final class MenuCell: UITableViewCell {
         let guide = contentView.layoutMarginsGuide
         
         NSLayoutConstraint.activate([
-            iconImageView.widthAnchor.constraint(equalToConstant: 30),
-            iconImageView.heightAnchor.constraint(equalTo: iconImageView.widthAnchor),
-            iconImageView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
             iconImageView.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+            iconImageView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
             
-            titleLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: iconImageView.trailingAnchor, multiplier: 2),
             titleLabel.topAnchor.constraint(equalTo: guide.topAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: iconImageView.bottomAnchor),
+            titleLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: iconImageView.trailingAnchor, multiplier: 1),
             
-            valueLabel.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
             valueLabel.topAnchor.constraint(equalTo: titleLabel.topAnchor),
+            valueLabel.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor),
+            valueLabel.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
         ])
     }
     
     private func setRedFontIfReminderIsPastDue(reminder: String) {
         let todaysDate = Date()
         let formatter = DateFormatter()
-        formatter.dateFormat = "M/dd/yy h:m a"
+        formatter.dateFormat = "MMM/dd/yyyy h:mm a"
         
         if let reminderDate = formatter.date(from: reminder) {
             if reminderDate < todaysDate {
                 valueLabel.textColor = Colors.tasksRed
-                valueLabel.font = .preferredFont(for: .title2, weight: .bold)
+                valueLabel.font = .preferredFont(for: .body, weight: .semibold)
             }
         }
     }

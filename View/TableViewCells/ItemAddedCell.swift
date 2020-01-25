@@ -19,6 +19,7 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(SystemImages.CircleBlank, for: .normal)
         button.tintColor = Colors.tasksRed
+        button.contentMode = .scaleAspectFit
         button.backgroundColor = .systemBackground
         
         return button
@@ -27,6 +28,7 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(SystemImages.Star, for: .normal)
+        button.contentMode = .scaleAspectFit
         button.tintColor = Colors.tasksRed
         button.backgroundColor = .systemBackground
         
@@ -56,25 +58,6 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Set Up Items Cell
-//    private func configureItemsAddedCell() {
-//        if #available(iOS 13.0, *) {
-//            completedButton.setImage(SystemImages.CircleBlank, for: .normal)
-//            completedButton.tintColor = Colors.tasksRed
-//
-//            completedButton.backgroundColor = .systemBackground
-//            openItemLabel.backgroundColor = .systemBackground
-//        }
-//        else {
-//            completedButton.setImage(Images.CheckBoxBlankRedIcon, for: .normal)
-//
-//            completedButton.backgroundColor = .clear
-//            openItemLabel.backgroundColor = .clear
-//        }
-//
-//        selectionStyle = .none
-//        setLayout()
-//    }
     
     //MARK: - Set Layout Constraints
     private func createCell() {
@@ -87,18 +70,17 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         let guide = contentView.layoutMarginsGuide
         
         NSLayoutConstraint.activate([
-            completedButton.widthAnchor.constraint(equalToConstant: 50),
-            completedButton.heightAnchor.constraint(equalTo: completedButton.widthAnchor),
+            completedButton.topAnchor.constraint(equalTo: guide.topAnchor),
+            completedButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
             completedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
             completedButton.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
             
             openItemLabel.topAnchor.constraint(equalTo: guide.topAnchor),
             openItemLabel.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
-            openItemLabel.leadingAnchor.constraint(equalTo: completedButton.trailingAnchor),
-            openItemLabel.trailingAnchor.constraint(equalTo: flaggedButton.leadingAnchor),
-
-            flaggedButton.widthAnchor.constraint(equalToConstant: 50),
-            flaggedButton.heightAnchor.constraint(equalTo: flaggedButton.widthAnchor),
+            openItemLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: completedButton.trailingAnchor, multiplier: 2),
+            
+            flaggedButton.topAnchor.constraint(equalTo: completedButton.topAnchor),
+            flaggedButton.bottomAnchor.constraint(equalTo: completedButton.bottomAnchor),
             flaggedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
             flaggedButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor)
         ])

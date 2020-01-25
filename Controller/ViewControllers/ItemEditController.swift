@@ -10,7 +10,7 @@ import UIKit
 import EventKit
 import TasksFramework
 
-class EditItemViewController: UIViewController, CanWriteToDatabase, EventAddedDelegate {
+class EditItemViewController: UIViewController, CanWriteToDatabase {
     //MARK: - Properties
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -76,10 +76,7 @@ class EditItemViewController: UIViewController, CanWriteToDatabase, EventAddedDe
         }
         //Set Reminder Label in MenuCell
         reminderCell.configureValue(value: pickerDateAsString)
-    }
-    
-    func handleOpenCalendar() {
-        
+        tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
     }
     
     //MARK: - EKEventKit Methods -- Adding Due Date To Calendar
@@ -87,6 +84,7 @@ class EditItemViewController: UIViewController, CanWriteToDatabase, EventAddedDe
         guard let items = itemBeingEdited else { return }
         let eventDate = event.startDate
         setDueDateForItem(item: items, date: eventDate!)
+        tableView.reloadRows(at: [IndexPath(row: 1, section: 1)], with: .automatic)
     }
     
     //MARK: - UINavigation Methods
@@ -166,41 +164,56 @@ extension EditItemViewController: UITableViewDelegate {
             }
         }
         else if indexPath == IndexPath(row: 2, section: 1) {
-            print("Calendar Open")
             let calendarManager = CalendarManager()
-            let addCalendarEventVC = calendarManager.addViewController()
+            
             if let toDoItem = itemBeingEdited, let item = toDoItem.item {
-                calendarManager.addToDoItemToCalendar(title: item, eventStartDate: Date(), eventEndDate: Date()) { (result) in
+                calendarManager.presentModalCalendarController(title: item, startDate: Date(), endDate: Date()) { (result) in
                     switch result {
-                    case .success(_):
-                        self.present(addCalendarEventVC, animated: true)
+                    case .success(let controller):
+                        self.present(controller, animated: true)
                         
                     case .failure(let calendarError):
                         switch calendarError {
                         case .calendarAccessDeniedOrRestricted:
-                            //Alert User
                             Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue)
-                        case .eventAlreadyExistsInCalendar:
-                            //Alert User
-                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue)
                         case .eventNotAddedToCalendar:
-                            //
-                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventNotAdded.rawValue)
+                            print("Not Added To Calendar")
                         case .notDetermined:
-                            calendarManager.requestAccessToCalendar { (accessGranted, error) in
-                                if accessGranted {
-                                    self.present(addCalendarEventVC, animated: true)
-                                }
-                                else {
-                                    if let error = error {
-                                        print(error)
-                                    }
-                                }
-                            }
+                            print("Not Determined")
+                        case .eventAlreadyExistsInCalendar:
+                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue)
                         }
                     }
                 }
             }
+//            if let toDoItem = itemBeingEdited, let item = toDoItem.item {
+//                calendarManager.addToDoItemToCalendar(title: item, eventStartDate: Date(), eventEndDate: Date()) { (result) in
+//                    let addCalendarEventVC = calendarManager.addViewController()
+//                    switch result {
+//                    case .success(_):
+//                        self.present(addCalendarEventVC, animated: true)
+//
+//                    case .failure(let calendarError):
+//                        switch calendarError {
+//                        case .calendarAccessDeniedOrRestricted:
+//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue)
+//                        case .eventAlreadyExistsInCalendar:
+//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue)
+//                        case .eventNotAddedToCalendar:
+//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventNotAdded.rawValue)
+//                        case .notDetermined:
+//                            calendarManager.requestAccessToCalendar { (accessGranted, error) in
+//                                if accessGranted {
+//                                    self.present(addCalendarEventVC, animated: true)
+//                                }
+//                                else {
+//                                    if let error = error { print(error) }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 
@@ -226,17 +239,7 @@ extension EditItemViewController: UITableViewDelegate {
         if section == 0 { return 50 }
         else { return 0 }
     }
-    
-    //MARK: - UITableView Footer Methods
-//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-//        if section == 0 { return createFooterView() }
-//        else { return nil }
-//    }
-//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        if section == 0 { return 20 }
-//        else { return 0 }
-//    }
-    
+
     //MARK: - Header & Footer Helpers
     private func createdHeaderView() -> UIView {
         let headerView = UIView(frame: CGRect(x: 0,
@@ -280,4 +283,16 @@ extension EditItemViewController: UITextFieldDelegate {
         }
         else { return false }
     }
+}
+
+extension EditItemViewController: EventAddedDelegate {
+    
+    var item: Items? {
+        if let item = itemBeingEdited {
+            return item
+        }
+        return nil
+    }
+    
+    
 }

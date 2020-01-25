@@ -13,14 +13,13 @@ final class EditItemCell: UITableViewCell {
     private let editListTitleTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.font = DynamicFonts.Title1Dynamic
+        textField.font = .preferredFont(for: .title3, weight: .semibold)
         textField.textColor = .label
         textField.adjustsFontForContentSizeCategory = true
         textField.backgroundColor = .secondarySystemBackground
         textField.borderStyle = .roundedRect
         return textField
     }()
-    private var cellHeight: CGFloat = 60.0
     
     
     

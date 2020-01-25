@@ -73,18 +73,17 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
         let guide = contentView.layoutMarginsGuide
         
         NSLayoutConstraint.activate([
-                completedButton.widthAnchor.constraint(equalToConstant: 50),
-                completedButton.heightAnchor.constraint(equalTo: completedButton.widthAnchor),
+                completedButton.topAnchor.constraint(equalTo: guide.topAnchor),
+                completedButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
                 completedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
                 completedButton.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
                 
                 itemLabel.topAnchor.constraint(equalTo: guide.topAnchor),
                 itemLabel.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
                 itemLabel.leadingAnchor.constraint(equalTo: completedButton.trailingAnchor),
-                itemLabel.trailingAnchor.constraint(equalTo: flaggedButton.leadingAnchor),
-
-                flaggedButton.widthAnchor.constraint(equalToConstant: 50),
-                flaggedButton.heightAnchor.constraint(equalTo: flaggedButton.widthAnchor),
+                
+                flaggedButton.topAnchor.constraint(equalTo: completedButton.topAnchor),
+                flaggedButton.bottomAnchor.constraint(equalTo: completedButton.bottomAnchor),
                 flaggedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
                 flaggedButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor)
         ])
