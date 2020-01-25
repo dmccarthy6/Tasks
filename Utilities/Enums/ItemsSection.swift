@@ -1,7 +1,4 @@
-//
-//  Enum_ItemsSection.swift
-//  Tasks
-//
+
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
@@ -19,8 +16,6 @@ enum ItemsSection: String {
             return "Completed"
         case .ToDo:
             return "ToDo"
-        default:
-            break
         }
     }
     

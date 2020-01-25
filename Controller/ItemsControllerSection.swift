@@ -6,15 +6,14 @@
 //  Copyright © 2019 Dylan . All rights reserved.
 //
 
-import Foundation
 import CoreData
 
-class ControllerSectionInfo {
+final class ControllerSectionInfo {
     
-    let section: ItemsSection
+    private let section: ItemsSection
     let fetchedIndex: Int?
-    let fetchController: NSFetchedResultsController<NSFetchRequestResult>
-    var fetchedInfo: NSFetchedResultsSectionInfo? {
+    private let fetchController: NSFetchedResultsController<NSFetchRequestResult>
+    private var fetchedInfo: NSFetchedResultsSectionInfo? {
         guard let index = fetchedIndex else {
             return nil
         }

@@ -8,30 +8,43 @@
 
 import UIKit
 
-class ReminderDatePickerCell: UITableViewCell {
+
+final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
     
+    //MARK: - Properties
     var alertDatePicker: UIDatePicker = {
-        let alertDatePicker = UIDatePicker()
-        alertDatePicker.isHidden = true
-        alertDatePicker.minimumDate = Date()
-        if #available(iOS 13.0, *) { alertDatePicker.backgroundColor = .systemBackground }
-        return alertDatePicker
+        let datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        return datePicker
     }()
-    var datePickerHeight: CGFloat = 200
+
     
     
+    
+    //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        addDatePickersToCell()
+        //setupView()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func addDatePickersToCell() {
-        addSubview(alertDatePicker)
+    
+    
+    //MARK: - Interface
+    func setPickerConstraints() {
+        contentView.addSubview(alertDatePicker)
         
-        alertDatePicker.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 5, left: 5, bottom: 5, right: 5), size: .init(width: frame.size.width, height: datePickerHeight))
+        let guide = contentView.layoutMarginsGuide
+        
+        NSLayoutConstraint.activate([
+            alertDatePicker.topAnchor.constraint(equalTo: guide.topAnchor),
+            alertDatePicker.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
+        ])
+        
+        backgroundColor = .systemBackground
     }
-}//
+    
+}

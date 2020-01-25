@@ -55,6 +55,10 @@ extension UIView {
             heightAnchor.constraint(equalToConstant: size.height).isActive = true
         }
     }
+    
+    func set(padding: UIEdgeInsets = .zero, for top: NSLayoutYAxisAnchor, leading: NSLayoutXAxisAnchor, trailing: NSLayoutXAxisAnchor, bottom: NSLayoutYAxisAnchor) {
+        
+    }
 //    
 //    func imageViewLayout(top: NSLayoutYAxisAnchor?, left: NSLayoutXAxisAnchor?, right: NSLayoutXAxisAnchor?, height: CGFloat?, width: CGFloat?) {
 //        translatesAutoresizingMaskIntoConstraints = false

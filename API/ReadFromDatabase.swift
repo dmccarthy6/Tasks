@@ -8,6 +8,7 @@
 import UIKit
 import CoreData
 
+
 //typalias Database = ReadFromDatabase & WriteToDatabase --IN VC
 
 @objc protocol CanReadFromDatabase {

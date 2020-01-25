@@ -22,7 +22,7 @@ struct ListFetchedResultsController {
         do {
             try listFetchedResultsController.performFetch()
         }
-        catch let error as Error {
+        catch let error {
             
             print("Error Fetching Lists: \(error)")
         }

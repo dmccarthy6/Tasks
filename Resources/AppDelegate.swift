@@ -7,17 +7,14 @@
 //
 
 import UIKit
-import CoreData
 import UserNotifications
 import TasksFramework
-import CoreData
 import CloudKit
 
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var coreDataManager: CoreDataManager?
     var notificationCenter: NotificationCenter?
 
 
@@ -34,35 +31,47 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let viewController = window?.visibleViewController()
         checkCloudStatusFor(rootViewController: viewController!)
         
-        coreDataManager = CoreDataManager() {
-            [unowned self] in
-            self.setCoreDataManagerInViews()
-        }
         application.registerForRemoteNotifications()
-        
+        setNavigationBarColors()
         return true
     }
     
+    //MARK: - Helper Methods
+    //Check if the user has CK Enabled.
     func checkCloudStatusFor(rootViewController: UIViewController) {
         CKContainer.default().accountStatus { (cloudStatus, error) in
             switch cloudStatus {
             case .available: return
-            case .noAccount: Alerts.customCloudKitError(errorMessage: "You are not logged into iCloud. Click settings to enable iCloud for Tasks in order to keep all your devices updated.")
-            case .restricted: Alerts.customCloudKitError(errorMessage: "iCloud account is restricted for this content. Click on settings to update your iCloud settings.")
-            case .couldNotDetermine: Alerts.customCloudKitError(errorMessage: "Unable to determine iCloud status. Click settings to log into iCloud.")
+            case .noAccount: Alerts.customCloudKitError(errorMessage: CloudKitErrorMessage.noAccount)
+            case .restricted: Alerts.customCloudKitError(errorMessage: CloudKitErrorMessage.restricted)
+            case .couldNotDetermine: Alerts.customCloudKitError(errorMessage: CloudKitErrorMessage.couldNotDetermine)
             @unknown default: return
             }
         }
     }
     
+    //Reigster For Push Notifications
     func registerForPushNotifications() {
         UNUserNotificationCenter.current().requestAuthorization(options: []) { (granted, error) in
-            
             if let error = error {
+                if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }),
+                    let rootViewController = window.rootViewController {
+                    Alerts.showNormalAlert(rootViewController,
+                                           title: "Error",
+                                           message: "Unable to register for notifications - \(error.localizedDescription)")
+                }
                 print("Error Granting Push Notifications - \(error.localizedDescription)")
             }
-            print("Remote Notification Permission Granted? - \(granted)")
         }
+    }
+    
+    //Set Navigation Bar Color
+    func setNavigationBarColors() {
+        let navigationBarAppearance = UINavigationBar.appearance()
+        //navigationBarAppearance.prefersLargeTitles = true
+        navigationBarAppearance.tintColor = .white
+        navigationBarAppearance.barTintColor = Colors.tasksRed
+        navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     }
     
     //MARK: - Share Extension, open app functions:
@@ -72,19 +81,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
     }
     
+    /*Function used when user opens the application from the Today Widget */
     open func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         if url.scheme == "tasksopen" {
             print("AppDel - Yes!")
             
             if url.host == "addItemsVC" {
                 let containerDefaults = UserDefaults(suiteName: "group.Tasks.Extensions")
-                let id = containerDefaults?.data(forKey: "tappedID")
+//                let id = containerDefaults?.data(forKey: "tappedID")
+                
+                //TO-DO: Open the app from here.
+                let rootVC = ListsViewController()
+                let navigationController = UINavigationController(rootViewController: rootVC)
                 
                 do {
-                    let idDecoded = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id!) as! String
+//                    let idDecoded = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id!) as! String
                     let addItemsVC = AddItemsToListViewController()
                     let navController = UINavigationController(rootViewController: addItemsVC)
-                    addItemsVC.id = idDecoded
+                    //addItemsVC.id = idDecoded
                     window?.rootViewController = navController
                 }
                 catch let error as NSError {
@@ -96,27 +110,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("AppDelegate = SourceApplication = \(sendingAppID ?? "AppDel, Unknown Source App"), url: \(url)")
         return true
     }
-    
-    //MARK: - Set Core Data Manager
-    /*
-     This may not be needed anymore
-     */
-    func setCoreDataManagerInViews() {
-        guard let safeCoreDataManager = coreDataManager else {
-            fatalError("AppDelegate - Error - Cant Unwrap CoreDataManager")
-        }
-        let navigationController = window?.rootViewController as! UINavigationController
-        let viewControllers = navigationController.viewControllers
-        
-        for viewController in viewControllers {
-            switch viewController {
-            case let navigationController as UINavigationController:
-                if var rootViewController: CoreDataManagerViewController = navigationController.viewControllers[0] as? CoreDataManagerViewController {
-                    rootViewController.coreDataManager = safeCoreDataManager
-                }
-            default: ()
-            }
-        }
-    }
+  
 
 }

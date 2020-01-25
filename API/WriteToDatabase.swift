@@ -7,7 +7,7 @@
 //
 
 import CoreData
-
+import TasksFramework
 
 @objc protocol CanWriteToDatabase: NSObjectProtocol {
 
@@ -28,7 +28,6 @@ extension CanWriteToDatabase {
     //MARK: - Save Objects
     func saveObjectToCoreData<T: NSManagedObject>(value: String, order: Int, entity: Entity, parent: T?) {
         if entity == .List {
-            print("THIS IS A LIST")
             let addedListTitle = NSEntityDescription.insertNewObject(forEntityName: entity.rawValue, into: managedObjectContext) as! List
             
             //UUID
@@ -46,20 +45,18 @@ extension CanWriteToDatabase {
         }
         
         if entity == .Items {
-            print("YOU HAVE AN ITEM")
             let addedItem = NSEntityDescription.insertNewObject(forEntityName: entity.rawValue, into: managedObjectContext) as! Items
             
             let itemUUIDString = UUID().uuidString
             let itemID = itemUUIDString.data(using: .utf8) as Data?
             
             let list = parent as! List
-            //let items = list.items?.allObjects as? [Items]
-            let items = [list.items]
-            let order: Int32 = Int32(items.count ?? 0)
+            //let items = [list.items]
+            let itemOrder: Int32 = Int32(order + 1)
             
-            addedItem.list = parent as! List
+            addedItem.list = list
             addedItem.item = value
-            addedItem.order = order
+            addedItem.order = itemOrder
             addedItem.titleID = String(data: list.recordID!, encoding: .utf8)
             addedItem.recordID = itemID
             addedItem.dateAdded = Date()
@@ -117,6 +114,35 @@ extension CanWriteToDatabase {
         }
     }
     
+    func updateOrderAfterDelete<T: NSManagedObject>(objects: [T], entity: Entity) {
+        if entity == .List {
+            for (index, list) in objects.enumerated() {
+                let title = list as! List
+                title.order = Int32(index)
+                title.lastUpdateDate = Date()
+                saveContext()
+            }
+        }
+        if entity == .Items {
+            for (index, currentItem) in objects.enumerated() {
+                let item = currentItem as! Items
+                item.order = Int32(index)
+                item.lastUpdatedDate = Date()
+                saveContext()
+            }
+        }
+    }
+    
+    func updateSectionItemsOrder<T: NSManagedObject>(objects: [T], entity: Entity) {
+           if entity == .Items {
+               for (index, currentItem) in objects.enumerated() {
+                   let item = currentItem as! Items
+                   item.order = Int32(index)
+                   item.lastUpdatedDate = Date()
+                   saveContext()
+               }
+           }
+       }
     
     
     //MARK - Save Context
@@ -131,6 +157,12 @@ extension CanWriteToDatabase {
                 }
             }
         }
+    }
+    
+    //MARK: - Delete
+    func deleteFromCoreData(object: NSManagedObject) {
+        managedObjectContext.delete(object)
+        saveContext()
     }
 }
 

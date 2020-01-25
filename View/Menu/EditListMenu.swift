@@ -22,9 +22,9 @@ class EditListMenu: NSObject {
     
     lazy var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .plain)
-        tv.backgroundColor = Colors.tasksRed
+        tv.registerCell(cellClass: MenuCell.self)
         tv.dataSource = self
-        tv.delegate = self
+        //tv.delegate = self
         tv.separatorStyle = .singleLine
         tv.separatorColor = .white
         tv.tableFooterView = UIView()
@@ -34,26 +34,23 @@ class EditListMenu: NSObject {
     var list: List?
     var menuData: [EditListModel] = []
     var menuIsShowing: Bool = false
-    let menuID = "MenuCell"
     let tabBar = TasksTabBarController()
     
     
     override init() {
         super.init()
-        registerTableViewCells()
+
         setMenuData()
     }
     
     func setMenuData() {
-        menuData.append(EditListModel(image: Images.EditIcon!, label: .edit))
+        menuData.append(EditListModel(image: Images.EditIcon!, labelText: .edit))
     }
     
-    func registerTableViewCells() {
-        tableView.register(MenuCell.self, forCellReuseIdentifier: menuID)
-    }
+    
     
     @objc func showEditListMenu() {
-        if let window = UIApplication.shared.keyWindow {
+        if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
             window.addSubview(overlayView)
             window.addSubview(tableView)
             menuIsShowing = true
@@ -74,11 +71,15 @@ class EditListMenu: NSObject {
         }
     }
     
+    @objc func showEditListMenuIpad() {
+        
+    }
+    
     @objc func handleDismiss() {
         menuIsShowing = false
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 2, options: .curveEaseOut, animations: {
             self.overlayView.alpha = 0
-            if let window = UIApplication.shared.keyWindow {
+            if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
                 let tabBarOffset = window.getTabBarSize()!
                 let y = window.frame.height - tabBarOffset
                 self.tableView.frame = CGRect(x: 0, y: y, width: self.tableView.frame.width, height: 0) //window.frame.height //self.tableView.frame.height-tabBarOffset
@@ -91,7 +92,7 @@ class EditListMenu: NSObject {
         let nav = UINavigationController(rootViewController: editVC)
         handleDismiss()
         
-        let window = UIApplication.shared.keyWindow
+        let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first
         let viewController = window?.visibleViewController()
         editVC.list = list
         viewController?.present(nav, animated: true, completion: nil)
@@ -108,29 +109,33 @@ extension EditListMenu: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let menuCell = tableView.dequeueReusableCell(withIdentifier: menuID, for: indexPath) as! MenuCell
-        menuCell.backgroundColor = Colors.tasksRed
-        menuCell.setMenuCellColors()
-
+        //let menuCell = tableView.dequeueReusableCell(withIdentifier: menuID, for: indexPath) as! MenuCell
+        let menuCell: MenuCell = tableView.dequeueReusableCell(for: indexPath)
         let data = menuData[indexPath.row]
-        menuCell.titleLabel.text = data.label.rawValue
-        menuCell.iconImageView.image = data.image
+        menuCell.configure(image: data.image, cellLabelText: data.labelText)
+        
+        //menuCell.backgroundColor = Colors.tasksRed
+        //menuCell.setMenuCellColors()
+
+        
+//        menuCell.titleLabel.text = data.label.rawValue
+//        menuCell.iconImageView.image = data.image
         
         return menuCell
     }
 }
 
-extension EditListMenu: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cellData = menuData[indexPath.row]
-        
-        if cellData.label == EditListLabels.edit {
-            showEditListViewController()
-        }
-    }
-    
-}//
+//extension EditListMenu: UITableViewDelegate {
+//
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let cellData = menuData[indexPath.row]
+//
+////        if cellData.label == EditListLabels.edit {
+////            showEditListViewController()
+////        }
+//    }
+//
+//}//
     
 //    func popoverOnIPad() {
 //        menuIsShowing = true

@@ -7,37 +7,53 @@
 //
 
 import UIKit
-//MOVING THIS, I THINK I"M USING TEXT CELL SO THIS IS USELESS -- DELETE IF SO
-class EditItemCell: UITableViewCell {
-    
-    let editListTitleTextField: UITextField = {
-        let addTitleTextField = UITextField()
-        addTitleTextField.font = DynamicFonts.Title1Dynamic
-        addTitleTextField.adjustsFontForContentSizeCategory = true
-        return addTitleTextField
+
+final class EditItemCell: UITableViewCell {
+    //MARK: - Properties
+    private let editListTitleTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.font = .preferredFont(for: .title3, weight: .semibold)
+        textField.textColor = .label
+        textField.adjustsFontForContentSizeCategory = true
+        textField.backgroundColor = .secondarySystemBackground
+        textField.borderStyle = .roundedRect
+        return textField
     }()
     
-    var cellHeight: CGFloat = 60.0
+    
     
     //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         createEditItemCell()
     }
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Create Cell
-    func createEditItemCell() {
-        addSubview(editListTitleTextField)
-        addConstraints()
+    
+    
+    //MARK: - Helper Functions
+    private func createEditItemCell() {
+        contentView.addSubview(editListTitleTextField)
+        
+        let guide = contentView.layoutMarginsGuide
+        
+        NSLayoutConstraint.activate([
+            editListTitleTextField.topAnchor.constraint(equalTo: guide.topAnchor),
+            editListTitleTextField.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
+            editListTitleTextField.leadingAnchor.constraint(equalToSystemSpacingAfter: guide.leadingAnchor, multiplier: 0),
+            editListTitleTextField.trailingAnchor.constraint(equalToSystemSpacingAfter: guide.trailingAnchor, multiplier: 0)
+        ])
+        backgroundColor = .systemBackground
     }
     
-    func addConstraints() {
-        editListTitleTextField.anchor(top: safeAreaLayoutGuide.topAnchor, leading: safeAreaLayoutGuide.leadingAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, trailing: safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 2, bottom: 0, right: 0), size: .init(width: bounds.size.width, height: cellHeight)) //bounds.size.height
+    //MARK: - Interface Function
+    func configure(text: String, delegate: UITextFieldDelegate?) {
+        editListTitleTextField.text = text
+        editListTitleTextField.delegate = delegate
+        editListTitleTextField.becomeFirstResponder()
     }
-    
 }
 

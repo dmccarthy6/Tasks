@@ -20,8 +20,6 @@ struct ItemsFetchedResultsController {
         
         let itemsFetchedResultsController = NSFetchedResultsController(fetchRequest: itemsFetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: "sectionIdentifier", cacheName: nil)
         
-        //TO-DO: Set Delegate
-        
         do {
             try itemsFetchedResultsController.performFetch()
         }

@@ -11,10 +11,11 @@ import CoreData
 class ConfigureFetchedResultsController {
     
     //MARK: - Properties
-    var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>
-    var coreDataManager: CoreDataManager
+    private var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>
+    private var coreDataManager: CoreDataManager
     
     
+    //MARK: - Initializer
     init(coreDataManager: CoreDataManager, fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>) {
         self.fetchedResultsController = fetchedResultsController
         self.coreDataManager = coreDataManager
@@ -22,7 +23,7 @@ class ConfigureFetchedResultsController {
     }
     
     
-    
+    //MARK: - Helpers
     func configureFetchedResultsController(entityName: String, predicate: NSPredicate) -> NSFetchedResultsController<NSFetchRequestResult>? {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         let sortOrder = NSSortDescriptor(key: "order", ascending: true)

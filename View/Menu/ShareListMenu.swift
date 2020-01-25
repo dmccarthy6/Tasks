@@ -24,6 +24,7 @@ class ShareListMenuLauncher: NSObject {
         tableView.backgroundColor = Colors.tasksRed
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.registerCell(cellClass: MenuCell.self)
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = .white
         tableView.tableFooterView = UIView()
@@ -41,13 +42,12 @@ class ShareListMenuLauncher: NSObject {
     
     override init() {
         super.init()
-        registerTableViewCells()
         setMenuData()
     }
     
     
     @objc func showShareMenu() {
-        if let window = UIApplication.shared.keyWindow {
+        if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
             window.addSubview(overlayView)
             window.addSubview(tableView)
             isMenuShowing = true
@@ -73,7 +73,7 @@ class ShareListMenuLauncher: NSObject {
         isMenuShowing = false
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
             self.overlayView.alpha = 0
-            if let window = UIApplication.shared.keyWindow {
+            if let window = UIApplication.shared.windows.filter({ $0.isKeyWindow }).first {
                 let tabBarOffset = window.getTabBarSize()!
                 let y = window.frame.height - tabBarOffset
                 self.tableView.frame = CGRect(x: 0, y: y, width: self.tableView.frame.width, height: 0)
@@ -83,11 +83,7 @@ class ShareListMenuLauncher: NSObject {
     }
     
     func setMenuData() {
-        menuData.append(EditListModel(image: Images.ShareIcon!, label: .share))
-    }
-    
-    func registerTableViewCells() {
-        tableView.register(MenuCell.self, forCellReuseIdentifier: shareCellID)
+        menuData.append(EditListModel(image: Images.ShareIcon!, labelText: .shareList))
     }
     
 }
@@ -102,13 +98,13 @@ extension ShareListMenuLauncher: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let shareMenuCell = tableView.dequeueReusableCell(withIdentifier: shareCellID, for: indexPath) as? MenuCell
-        shareMenuCell?.setMenuCellColors()
-        
+        //let shareMenuCell = tableView.dequeueReusableCell(withIdentifier: shareCellID, for: indexPath) as? MenuCell
+        let shareMenuCell: MenuCell = tableView.dequeueReusableCell(for: indexPath)
         let cellData = menuData[indexPath.row]
-        shareMenuCell?.titleLabel.text = cellData.label.rawValue
-        shareMenuCell?.iconImageView.image = cellData.image
-        return shareMenuCell!
+        shareMenuCell.configure(image: cellData.image, cellLabelText: cellData.labelText)
+//        shareMenuCell?.titleLabel.text = cellData.label.rawValue
+//        shareMenuCell?.iconImageView.image = cellData.image
+        return shareMenuCell
     }
     
 }
@@ -117,14 +113,11 @@ extension ShareListMenuLauncher: UITableViewDelegate {
     //MARK: UITableView Delegate Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = menuData[indexPath.row]
-        if cell.label == EditListLabels.share {
+        if cell.labelText == EditAllDataLabels.shareList {
             
-            if let items = list?.items  {
-                OpenShareExtension(items: [items])
+            if let items = list?.items?.allObjects as? [Items]  {
+               // OpenShareExtension().showShareExtensionActionSheet(items: items)
             }
-//            if let items = list?.items?.allObjects as? [Items] {
-//                OpenShareExtension(items: items)
-//            }
         }
     }
 }

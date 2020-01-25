@@ -8,22 +8,28 @@
 
 import UIKit
 
-class EditListModel {
-    
+struct EditListModel: Hashable {
+    var id = UUID().uuidString
     var image: UIImage
-    var label: EditListLabels
+    var labelText: EditAllDataLabels
     
-    
-    init(image: UIImage, label: EditListLabels) {
-        self.image = image
-        self.label = label
+    static func == (lhs: EditListModel, rhs: EditListModel) -> Bool {
+        return lhs.id == rhs.id
     }
-    
     
 }
 
-enum EditListLabels: String {
-    case edit = "Edit List"
-    case share = "Share"
+extension EditListModel {
+    static var editItems: [EditListModel] {
+        return [
+            EditListModel(image: SystemImages.BellReminderIcon!, labelText: EditAllDataLabels.reminder),
+            EditListModel(image: SystemImages.CalendarIcon!, labelText: EditAllDataLabels.dueDate)
+        ]
+    }
     
+    static var editList: [EditListModel] {
+        return [
+            EditListModel(image: SystemImages.AddListIcon!, labelText: EditAllDataLabels.saveList)
+        ]
+    }
 }

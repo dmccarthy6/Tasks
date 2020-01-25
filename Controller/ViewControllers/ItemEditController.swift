@@ -6,113 +6,100 @@
 //  Copyright © 2019 Dylan . All rights reserved.
 //
 
-import Foundation
 import UIKit
-import CoreData
-import CloudKit
 import EventKit
 import TasksFramework
 
-class EditItemViewController: UIViewController, CoreDataManagerViewController {
-    
+class EditItemViewController: UIViewController, CanWriteToDatabase {
     //MARK: - Properties
-    lazy var tableView: UITableView = {
+    private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .systemBackground
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .singleLine
         tableView.tableFooterView = UIView()
+        tableView.registerCell(cellClass: MenuCell.self)
+        tableView.registerCell(cellClass: EditItemCell.self)
+        tableView.registerCell(cellClass: ReminderDatePickerCell.self)
         return tableView
     }()
+    private lazy var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.isHidden = true
+        datePicker.minimumDate = Date()
+        datePicker.backgroundColor = .secondarySystemBackground
+        datePicker.addTarget(self, action: #selector(handleDatePickerChanged(sender:)), for: .valueChanged)
+        return datePicker
+    }()
+    private var datePickerIsHidden: Bool = true
+    var itemBeingEdited: Items?
+   
     
-    var coreDataManager: CoreDataManager?
-    var modelObjectType: ModelObjectType?
-    var items: Items?
-    var alertDatePicker: UIDatePicker?
-    let cellHeight: CGFloat = 40
     
     
-    //Cell Identifiers
-    private let editItemCellID = "EditItemCell"
-    private let menuCellID = "MenuCell"
-    private let reminderDatePickerID = "ReminderDatePickerCell"
-    
-    
-    
+    //MARK: - Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        createTableView()
         
-        checkForUpdate()
+        setupView()
+        doneButton(isEnabled: false)
     }
     
-    func checkForUpdate() {
-        if #available(iOS 13.0, *) {
-            view.backgroundColor = .systemBackground
-            tableView.separatorColor = .white
-            tableView.backgroundColor = .systemBackground
-        } else {
-            tableView.separatorColor = .black
-            tableView.backgroundColor = Colors.editItemRed
-        }
+    
+    //TO-DO: Trait Collection Methods Here?
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        
     }
-
-    //MARK: - Create TableView
-    func createTableView() {
-        setUpView()
-    }
-
-    func setUpView() {
+    
+    //MARK: - Helpers
+    private func setupView() {
         view.addSubview(tableView)
         
-        tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.safeAreaLayoutGuide.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.safeAreaLayoutGuide.trailingAnchor, padding: .init(top: 0, left: 0, bottom: 0, right: 0), size: .init(width: view.bounds.size.width, height: view.bounds.size.height))
-        //Register TableView Cells
-        tableView.register(EditItemCell.self, forCellReuseIdentifier: editItemCellID)
-        tableView.register(MenuCell.self, forCellReuseIdentifier: menuCellID)
-        tableView.register(ReminderDatePickerCell.self, forCellReuseIdentifier: reminderDatePickerID)
+        navigationItem.createNavigationBar(title: "",
+                                           leftItem: nil,
+                                           rightItem: UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped)))
+        tableView.setFullScreenTableViewConstraints(in: view)
+    }
+    
+    //MARK: - UIDatePicker Methods
+    @objc func handleDatePickerChanged(sender: UIDatePicker) {
+        let reminderCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! MenuCell
+        let pickerDateAsString = sender.date.getReminderDateAsString(pickerDate: sender.date)
         
-        if let item = items {
-            navigationItem.title = item.item
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-            navigationItem.rightBarButtonItem?.isEnabled = false
+        //Save reminder date to item in Core Data
+        if let item = itemBeingEdited {
+            setAlertOnItem(item: item, alertDate: sender.date)
+            doneButton(isEnabled: true)
         }
+        //Set Reminder Label in MenuCell
+        reminderCell.configureValue(value: pickerDateAsString)
+        tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
     }
     
-    //MARK: - Date Picker Functions
-    @objc func reminderDatePickerChanged(sender: UIDatePicker) {
-        let stringDate = sender.date.getReminderDateAsString(pickerDate: sender.date)
-        let reminderIndexPath = IndexPath(row: 0, section: 1)
-        let reminderCell = tableView.cellForRow(at: reminderIndexPath) as! MenuCell
-        CoreDataManager.shared.setItemAlert(item: items!, alert: sender.date)
-        reminderCell.valueLabel.text = stringDate
-    }
-    
-    func toggleDatePicker(datePicker: UIDatePicker) {
-        datePicker.isHidden = !datePicker.isHidden
-    }
-    
-    //MARK: - Setting Due Date To Core Data through Delegate
-    func eventAdded(event: EKEvent) {
-        guard let items = items else { return }
+    //MARK: - EKEventKit Methods -- Adding Due Date To Calendar
+    internal func eventAdded(event: EKEvent) {
+        guard let items = itemBeingEdited else { return }
         let eventDate = event.startDate
-        CoreDataManager.shared.setDueDate(item: items, date: eventDate!)
+        setDueDateForItem(item: items, date: eventDate!)
+        tableView.reloadRows(at: [IndexPath(row: 1, section: 1)], with: .automatic)
     }
     
-    //MARK: - Navigation
+    //MARK: - UINavigation Methods
     @objc func doneButtonTapped() {
-        handleDismiss()
+        //TO-DO: Reverse Navigation Here?
+        
     }
     
-    func handleDismiss() {
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseIn, animations: {
-            self.dismiss(animated: true, completion: nil)
-        }) { (success) in
-            //
-        }
+    private func doneButton(isEnabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = isEnabled
     }
     
 }//
 
+//MARK: - UITableView Data Source Methods
 extension EditItemViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
@@ -120,143 +107,192 @@ extension EditItemViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 { return 1 }
-        if section == 1 { return 4 }
+        if section == 1 { return 3 }
         return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let labelCell = tableView.dequeueReusableCell(withIdentifier: menuCellID, for: IndexPath(row: indexPath.row, section: 1)) as! MenuCell
-        let reminderDatePickerCell = ReminderDatePickerCell(style: .default, reuseIdentifier: reminderDatePickerID)
+        let labelCell: MenuCell = tableView.dequeueReusableCell(for: IndexPath(row: indexPath.row, section: 1))
         
         if indexPath.section == 0 {
-            let editItemTextFieldCell = EditItemCell(style: .default, reuseIdentifier: editItemCellID)
-            editItemTextFieldCell.editListTitleTextField.delegate = self
-            guard let safeItems = items else { return UITableViewCell() }
-            editItemTextFieldCell.editListTitleTextField.text = safeItems.item
+            let editItemTextFieldCell: EditItemCell = EditItemCell(style: .default, reuseIdentifier: TableViewCellIDs.editItemCellID.rawValue)
+            if let safeItems = itemBeingEdited, let item = safeItems.item {
+                editItemTextFieldCell.configure(text: item, delegate: self)
+            }
             return editItemTextFieldCell
         }
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                labelCell.titleLabel.text = MenuLabel.reminder.rawValue
-                labelCell.iconImageView.image = Images.BellIcon
-                
-                if let reminder = items?.reminderDate {
-                    let today = Date()
-                    if reminder.checkIf(reminderDate: reminder, isLessThan: today) {
-                        print("RED REUM - EDIT ITEMS VC")
-                        //TO-DO - RED FONT
-                    } else {
-                        labelCell.valueLabel.text = reminder
-                    }
-                    labelCell.valueLabel.text = reminder
-                }
-            case 1:
-                let reminderDatePicker = reminderDatePickerCell.alertDatePicker
-                alertDatePicker = reminderDatePicker
-                alertDatePicker?.addTarget(self, action: #selector(reminderDatePickerChanged(sender:)), for: .valueChanged)
-                return reminderDatePickerCell
-            case 2:
-                labelCell.titleLabel.text = MenuLabel.dueDate.rawValue
-                labelCell.iconImageView.image = Images.CalendarIcon
-                if let dueDate = items?.dueDate {
-                    labelCell.valueLabel.text = dueDate
+                labelCell.configure(image: SystemImages.BellReminderIcon!, cellLabelText: EditAllDataLabels.reminder)
+                if let item = itemBeingEdited, let reminderDate = item.reminderDate {
+                    labelCell.configureValue(value: reminderDate)
                 }
                 return labelCell
-            default: return labelCell
+            case 1:
+                //Date Picker
+                let datePickerCell = ReminderDatePickerCell(style: .default, reuseIdentifier: TableViewCellIDs.reminderDatePickerID.rawValue)
+                datePickerCell.alertDatePicker = datePicker
+                return datePickerCell
+            case 2:
+                labelCell.configure(image: SystemImages.CalendarIcon!, cellLabelText: EditAllDataLabels.dueDate)
+                if let dueDate = itemBeingEdited?.dueDate {
+                    labelCell.configureValue(value: dueDate)
+                }
+            default: return UITableViewCell()
             }
         }
         return labelCell
     }
-}//DataSource
 
+}
+
+//MARK: - UITableView Delegate Methods
 extension EditItemViewController: UITableViewDelegate {
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let reminderDatePickerIndexPath = IndexPath(row: 0, section: 1)
-        let dueDateIndexPath = IndexPath(row: 2, section: 1)
-        
-        if indexPath == reminderDatePickerIndexPath {
-            guard let reminderDatePicker = alertDatePicker else { return }
-            toggleDatePicker(datePicker: reminderDatePicker)
-            
-            UIView.animate(withDuration: 0.3, animations: {
+        let indexAboveDatePicker = IndexPath(row: 0, section: 1)
+        if indexPath == indexAboveDatePicker {
+            datePicker.isHidden.toggle()
+            if let pickerCell = tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? ReminderDatePickerCell {
+                pickerCell.setPickerConstraints()
+            }
+            UIView.animate(withDuration: 0.3) {
                 self.tableView.beginUpdates()
                 tableView.deselectRow(at: indexPath, animated: true)
                 self.tableView.endUpdates()
-            }, completion: nil)
-        }
-        if indexPath == dueDateIndexPath {
-            DispatchQueue.main.async {
-                [unowned self] in
-                if let items = self.items {
-                    let itemTitle = items.item!
-                    AddCalendarEvent(viewController: self, title: itemTitle, startDate: Date(), endDate: Date(), item: items)
-                }
-                
             }
+        }
+        else if indexPath == IndexPath(row: 2, section: 1) {
+            let calendarManager = CalendarManager()
+            
+            if let toDoItem = itemBeingEdited, let item = toDoItem.item {
+                calendarManager.presentModalCalendarController(title: item, startDate: Date(), endDate: Date()) { (result) in
+                    switch result {
+                    case .success(let controller):
+                        self.present(controller, animated: true)
+                        
+                    case .failure(let calendarError):
+                        switch calendarError {
+                        case .calendarAccessDeniedOrRestricted:
+                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue)
+                        case .eventNotAddedToCalendar:
+                            print("Not Added To Calendar")
+                        case .notDetermined:
+                            print("Not Determined")
+                        case .eventAlreadyExistsInCalendar:
+                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue)
+                        }
+                    }
+                }
+            }
+//            if let toDoItem = itemBeingEdited, let item = toDoItem.item {
+//                calendarManager.addToDoItemToCalendar(title: item, eventStartDate: Date(), eventEndDate: Date()) { (result) in
+//                    let addCalendarEventVC = calendarManager.addViewController()
+//                    switch result {
+//                    case .success(_):
+//                        self.present(addCalendarEventVC, animated: true)
+//
+//                    case .failure(let calendarError):
+//                        switch calendarError {
+//                        case .calendarAccessDeniedOrRestricted:
+//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue)
+//                        case .eventAlreadyExistsInCalendar:
+//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue)
+//                        case .eventNotAddedToCalendar:
+//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventNotAdded.rawValue)
+//                        case .notDetermined:
+//                            calendarManager.requestAccessToCalendar { (accessGranted, error) in
+//                                if accessGranted {
+//                                    self.present(addCalendarEventVC, animated: true)
+//                                }
+//                                else {
+//                                    if let error = error { print(error) }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
     }
-    
+
+    /* Set Date Picker Cell Height when the cell is tapped*/
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        if indexPath.row == 1 {
-            if let reminderDatePicker = alertDatePicker {
-                let height: CGFloat = reminderDatePicker.isHidden ? 0.0 : 200.0
-                return height
-            }
+        let datePickerIndexPath = IndexPath(row: 1, section: 1)
+        if indexPath == datePickerIndexPath {
+            //We have a date picker
+            let height: CGFloat = datePicker.isHidden ? 0 : 250
+            return height
         }
         return UITableView.automaticDimension
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == 0 { return 20 }
-        else { return 0 }
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    //MARK: - UITableView Header Methods
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
-            let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 10))
-            footerView.backgroundColor = Colors.editItemRed
-            return footerView
+            return createdHeaderView()
         }
         else { return nil }
     }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return "Edit Item:"
-        }
-        else { return "" }
-    }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 { return 20 }
+        if section == 0 { return 50 }
         else { return 0 }
+    }
+
+    //MARK: - Header & Footer Helpers
+    private func createdHeaderView() -> UIView {
+        let headerView = UIView(frame: CGRect(x: 0,
+                                              y: 0,
+                                              width: tableView.frame.size.width,
+                                              height: 50))
+        let label = UILabel()
+        headerView.backgroundColor = .systemBackground
+        label.backgroundColor = .systemBackground
+        label.text = "Edit Item:"
+        label.font = .preferredFont(for: .title3, weight: .semibold)
+        label.textColor = .label
+        headerView.addSubview(label)
+        label.centerView(centerX: headerView.centerXAnchor, centerY: headerView.centerYAnchor)
         
+        return headerView
     }
     
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        if section == 0 {
-//            let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 20))
-//            headerView.backgroundColor = Colors.tasksRed
-//            return headerView
-//        }
-//        else {
-//            return nil
-//        }
-//    }
+    private func createFooterView() -> UIView {
+        let footerView = UIView(frame: CGRect(x: 0,
+                                              y: 0,
+                                              width: tableView.frame.size.width,
+                                              height: 50))
+        footerView.backgroundColor = .systemBackground
+        return footerView
+    }
 }
 
+//MARK: - UITextField Delegate Methods
 extension EditItemViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField.text != "" {
             let updatedItem = textField.text!
-            CoreDataManager.shared.updateItem(item: items!, text: updatedItem)
-            navigationItem.rightBarButtonItem?.isEnabled = true
+            if let object = itemBeingEdited {
+                self.updateObject(object: object, value: updatedItem, entity: .Items)
+            }
+            //doneButton(isEnabled: true)
             textField.resignFirstResponder()
             return true
         }
         else { return false }
     }
+}
+
+extension EditItemViewController: EventAddedDelegate {
+    
+    var item: Items? {
+        if let item = itemBeingEdited {
+            return item
+        }
+        return nil
+    }
+    
+    
 }
