@@ -170,50 +170,26 @@ extension EditItemViewController: UITableViewDelegate {
                 calendarManager.presentModalCalendarController(title: item, startDate: Date(), endDate: Date()) { (result) in
                     switch result {
                     case .success(let controller):
-                        self.present(controller, animated: true)
-                        
+                        DispatchQueue.main.async {
+                            controller.editViewDelegate = calendarManager
+                            self.present(controller, animated: true)
+                        }
+    
                     case .failure(let calendarError):
                         switch calendarError {
                         case .calendarAccessDeniedOrRestricted:
-                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue)
+                            DispatchQueue.main.async { Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue) }
+                            
                         case .eventNotAddedToCalendar:
                             print("Not Added To Calendar")
                         case .notDetermined:
                             print("Not Determined")
                         case .eventAlreadyExistsInCalendar:
-                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue)
+                            DispatchQueue.main.async { Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue) }
                         }
                     }
                 }
             }
-//            if let toDoItem = itemBeingEdited, let item = toDoItem.item {
-//                calendarManager.addToDoItemToCalendar(title: item, eventStartDate: Date(), eventEndDate: Date()) { (result) in
-//                    let addCalendarEventVC = calendarManager.addViewController()
-//                    switch result {
-//                    case .success(_):
-//                        self.present(addCalendarEventVC, animated: true)
-//
-//                    case .failure(let calendarError):
-//                        switch calendarError {
-//                        case .calendarAccessDeniedOrRestricted:
-//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue)
-//                        case .eventAlreadyExistsInCalendar:
-//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventExists.rawValue)
-//                        case .eventNotAddedToCalendar:
-//                            Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.eventNotAdded.rawValue)
-//                        case .notDetermined:
-//                            calendarManager.requestAccessToCalendar { (accessGranted, error) in
-//                                if accessGranted {
-//                                    self.present(addCalendarEventVC, animated: true)
-//                                }
-//                                else {
-//                                    if let error = error { print(error) }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 
@@ -236,36 +212,44 @@ extension EditItemViewController: UITableViewDelegate {
         else { return nil }
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 { return 50 }
+        if section == 0 { return 30 }
         else { return 0 }
     }
 
     //MARK: - Header & Footer Helpers
     private func createdHeaderView() -> UIView {
-        let headerView = UIView(frame: CGRect(x: 0,
-                                              y: 0,
-                                              width: tableView.frame.size.width,
-                                              height: 50))
+        let headerView = UIView()
         let label = UILabel()
-        headerView.backgroundColor = .systemBackground
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        headerView.backgroundColor = .blue
         label.backgroundColor = .systemBackground
         label.text = "Edit Item:"
         label.font = .preferredFont(for: .title3, weight: .semibold)
         label.textColor = .label
-        headerView.addSubview(label)
-        label.centerView(centerX: headerView.centerXAnchor, centerY: headerView.centerYAnchor)
         
+        view.addSubview(headerView)
+        view.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            label.topAnchor.constraint(equalToSystemSpacingBelow: headerView.topAnchor, multiplier: 1),
+            label.leadingAnchor.constraint(equalToSystemSpacingAfter: headerView.leadingAnchor, multiplier: 2),
+        ])
         return headerView
     }
     
-    private func createFooterView() -> UIView {
-        let footerView = UIView(frame: CGRect(x: 0,
-                                              y: 0,
-                                              width: tableView.frame.size.width,
-                                              height: 50))
-        footerView.backgroundColor = .systemBackground
-        return footerView
-    }
+//    private func createFooterView() -> UIView {
+//        let footerView = UIView(frame: CGRect(x: 0,
+//                                              y: 0,
+//                                              width: tableView.frame.size.width,
+//                                              height: 50))
+//        footerView.backgroundColor = .systemBackground
+//        return footerView
+//    }
 }
 
 //MARK: - UITextField Delegate Methods
