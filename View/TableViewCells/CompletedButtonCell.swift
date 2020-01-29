@@ -10,6 +10,8 @@ class CompletedButtonCell: UITableViewCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 7   //was 6
         button.contentEdgeInsets = UIEdgeInsets(top: 1, left: 7, bottom: 1, right: 7)
+        button.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        
         button.backgroundColor = Colors.tasksRed
         button.titleLabel?.textColor = .label
         button.setTitle("Show Completed", for: .normal)
@@ -42,7 +44,6 @@ class CompletedButtonCell: UITableViewCell {
             showCompletedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
             showCompletedButton.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
         ])
-        
         showCompletedButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     

@@ -32,7 +32,8 @@ enum DynamicFonts {
 enum Constants {
     static let completedButtonWidth = CGFloat(150)
     static let completedButtonHeight = CGFloat(35)
-    static let addImageWidth = CGFloat(25)
+    static let addImageWidth = CGFloat(30)
+    static let itemCellButtonWidth = CGFloat(40)
 }
 
 /* This enum is for a future idea in the project. Not currently being used. */

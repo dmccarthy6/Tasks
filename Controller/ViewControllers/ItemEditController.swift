@@ -45,7 +45,6 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         super.viewDidLoad()
         
         setupView()
-        doneButton(isEnabled: false)
     }
     
     
@@ -58,9 +57,7 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
     private func setupView() {
         view.addSubview(tableView)
         
-        navigationItem.createNavigationBar(title: "",
-                                           leftItem: nil,
-                                           rightItem: UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped)))
+        navigationItem.createNavigationBar(title: "Edit Item", leftItem: nil, rightItem: nil)
         tableView.setFullScreenTableViewConstraints(in: view)
     }
     
@@ -72,7 +69,6 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         //Save reminder date to item in Core Data
         if let item = itemBeingEdited {
             setAlertOnItem(item: item, alertDate: sender.date)
-            doneButton(isEnabled: true)
         }
         //Set Reminder Label in MenuCell
         reminderCell.configureValue(value: pickerDateAsString)
@@ -86,17 +82,7 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         setDueDateForItem(item: items, date: eventDate!)
         tableView.reloadRows(at: [IndexPath(row: 1, section: 1)], with: .automatic)
     }
-    
-    //MARK: - UINavigation Methods
-    @objc func doneButtonTapped() {
-        //TO-DO: Reverse Navigation Here?
-        
-    }
-    
-    private func doneButton(isEnabled: Bool) {
-        navigationItem.rightBarButtonItem?.isEnabled = isEnabled
-    }
-    
+
 }//
 
 //MARK: - UITableView Data Source Methods
@@ -205,19 +191,19 @@ extension EditItemViewController: UITableViewDelegate {
     }
     
     //MARK: - UITableView Header Methods
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 0 {
-            return createdHeaderView()
-        }
-        else { return nil }
-    }
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 { return 30 }
-        else { return 0 }
-    }
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        if section == 0 {
+//            return createdHeaderView()
+//        }
+//        else { return nil }
+//    }
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        if section == 0 { return 30 }
+//        else { return 0 }
+//    }
 
     //MARK: - Header & Footer Helpers
-    private func createdHeaderView() -> UIView {
+    private func createHeaderView() -> UIView {
         let headerView = UIView()
         let label = UILabel()
         headerView.translatesAutoresizingMaskIntoConstraints = false
@@ -261,7 +247,6 @@ extension EditItemViewController: UITextFieldDelegate {
             if let object = itemBeingEdited {
                 self.updateObject(object: object, value: updatedItem, entity: .Items)
             }
-            //doneButton(isEnabled: true)
             textField.resignFirstResponder()
             return true
         }

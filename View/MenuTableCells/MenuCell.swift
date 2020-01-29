@@ -7,7 +7,7 @@ final class MenuCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = .preferredFont(for: .callout, weight: .medium)
+        label.font = .preferredFont(for: .title3, weight: .regular)
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
@@ -15,9 +15,8 @@ final class MenuCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .right
-        label.text = ""
         label.numberOfLines = 0
-        label.font = .preferredFont(for: .body, weight: .medium)
+        label.font = .preferredFont(for: .body, weight: .regular)
         label.adjustsFontForContentSizeCategory = true
         return label
     }()

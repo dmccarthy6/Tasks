@@ -9,7 +9,7 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = DynamicFonts.BodyDynamic
+        label.font = .preferredFont(for: .title2, weight: .thin)
         label.backgroundColor = .systemBackground
         label.textColor = .label
         label.adjustsFontForContentSizeCategory = true
@@ -19,6 +19,7 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
     private var completedButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         button.setImage(SystemImages.CircleWithCheck, for: .normal)
         button.tintColor = Colors.tasksRed
         button.backgroundColor = .systemBackground
@@ -29,6 +30,7 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
     private var flaggedButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         button.setImage(SystemImages.Star, for: .normal)
         button.backgroundColor = .systemBackground
         button.tintColor = Colors.tasksRed
@@ -66,6 +68,8 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
 
     //MARK: - Set Cell Constraints
     private func setupLayout() {
+        selectionStyle = .none
+        
         contentView.addSubview(completedButton)
         contentView.addSubview(itemLabel)
         contentView.addSubview(flaggedButton)
@@ -73,19 +77,20 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
         let guide = contentView.layoutMarginsGuide
         
         NSLayoutConstraint.activate([
-                completedButton.topAnchor.constraint(equalTo: guide.topAnchor),
-                completedButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
-                completedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+                completedButton.widthAnchor.constraint(equalToConstant: Constants.itemCellButtonWidth),
+                completedButton.heightAnchor.constraint(equalTo: completedButton.widthAnchor),
                 completedButton.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+                completedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
                 
+                itemLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: completedButton.trailingAnchor, multiplier: 1),
                 itemLabel.topAnchor.constraint(equalTo: guide.topAnchor),
                 itemLabel.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
-                itemLabel.leadingAnchor.constraint(equalTo: completedButton.trailingAnchor),
                 
-                flaggedButton.topAnchor.constraint(equalTo: completedButton.topAnchor),
-                flaggedButton.bottomAnchor.constraint(equalTo: completedButton.bottomAnchor),
+                flaggedButton.widthAnchor.constraint(equalToConstant: Constants.itemCellButtonWidth),
+                flaggedButton.heightAnchor.constraint(equalTo: flaggedButton.heightAnchor),
+                flaggedButton.leadingAnchor.constraint(equalToSystemSpacingAfter: itemLabel.trailingAnchor, multiplier: 1),
+                flaggedButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
                 flaggedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
-                flaggedButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor)
         ])
         flaggedButton.addTarget(self, action: #selector(flaggedButtonTapped), for: .touchUpInside)
         completedButton.addTarget(self, action: #selector(completedButtonTapped), for: .touchUpInside)
