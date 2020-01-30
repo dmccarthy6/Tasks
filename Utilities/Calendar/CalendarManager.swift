@@ -23,7 +23,7 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
     }
     
 
- //MARK: - Add event to calendar
+    //MARK: - Add event to calendar
     
     func presentModalCalendarController(title: String, startDate: Date, endDate: Date, completion: @escaping (Result<EKEventEditViewController, CalendarError>) -> Void) {
         let eventController = createEventModalController(title: title, startDate: startDate, endDate: endDate)
@@ -59,12 +59,30 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
         
         eventModalVC.event = event
         eventModalVC.eventStore = eventStore
+//        eventModalVC.editViewDelegate = self
         return eventModalVC
     }
+    
+    private func eventAlreadyExists(eventToAdd: EKEvent) -> Bool {
+        let predicate = eventStore.predicateForEvents(withStart: eventToAdd.startDate, end: eventToAdd.endDate, calendars: nil)
+        let existingEvents = eventStore.events(matching: predicate)
+        
+        let eventExists = existingEvents.contains { (event) -> Bool in
+            return event.title == eventToAdd.title && event.startDate == eventToAdd.startDate && eventToAdd.endDate == event.endDate
+        }
+        return eventExists
+    }
+    
+    
 }
-//MARK: - EKEventEdit Delegate Methods
-/*This is where we are saving the calendar information entered by the user (startDate/endDate etc.) */
-extension CalendarManager: EKEventEditViewDelegate, UINavigationControllerDelegate {
+
+    //MARK: - EKEventEdit Delegate Methods
+
+/*
+ * EKEventKit Delegate methods. This delegate triggers when user hits cancel or add in the Nav Controller.
+ 
+*/
+extension CalendarManager: EKEventEditViewDelegate { //, UINavigationControllerDelegate
    
     func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
         switch action {

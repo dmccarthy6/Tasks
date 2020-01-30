@@ -26,9 +26,30 @@ final class EmptyView: UIView {
     
     
     //MARK: - Interface
-    func setEmptyViewData(message: String, icon: UIImage) {
-        emptyDataLabel.text = message
+    func setEmptyViewData(message: EmptyViewMessage, icon: UIImage) {
+        emptyDataLabel.text = message.message
         iconView.image = icon
     }
     
+    
+    enum EmptyViewMessage: String {
+        case emptyList
+        
+        var message: String {
+            switch self {
+            case .emptyList: return "The list is empty"
+            }
+        }
+    }
+    
+//    enum EmptyViewIcon: UIImage {
+//        typealias RawValue = UIImage
+//        case emptyList
+//        
+//        var image: UIImage {
+//            switch self {
+//            case .emptyList: return UIImage(systemName: "hand.thumbsup.fill")!
+//            }
+//        }
+//    }
 }

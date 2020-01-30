@@ -268,7 +268,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
     private func handleCompletedItemsCompletedButtonTapoedFor(completedCell: CompletedItemsCell, item: Items) {
         completedCell.whenCompletedButtonTapped { [unowned self] in
             self.setItemCompletedStatus(item: item)
-            if self.itemsController.getCompletedItemsCount() == 0 {
+            if self.itemsController.getClosedItemsCount() == 0 {
                 self.isCompletedShowing = false
             }
             self.tableView.reloadData()
