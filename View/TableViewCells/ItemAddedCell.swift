@@ -5,35 +5,35 @@ import UIKit
 class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
 
     //MARK: - Properties
-    var openItemLabel: UILabel = {
+    private var openItemLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.font = DynamicFonts.BodyDynamic
+        label.font = .preferredFont(for: .title2, weight: .thin)
         label.textColor = .label
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    var completedButton: UIButton = {
+    private var completedButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         button.setImage(SystemImages.CircleBlank, for: .normal)
         button.tintColor = Colors.tasksRed
         button.contentMode = .scaleAspectFit
-        button.backgroundColor = .systemBackground
-        
         return button
     }()
-    var flaggedButton: UIButton = {
+    private var flaggedButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
         button.setImage(SystemImages.Star, for: .normal)
         button.contentMode = .scaleAspectFit
         button.tintColor = Colors.tasksRed
-        button.backgroundColor = .systemBackground
-        
         return button
     }()
+    
+    
     
     
     //MARK: - Initializers
@@ -42,17 +42,6 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         
         createCell()
     }
-    //Draw Tableview Cell Separator so you can hae them only in the open cells section?
-//    override func draw(_ rect: CGRect) {
-//        super.draw(rect)
-//
-//        let context = UIGraphicsGetCurrentContext()
-//        context!.setStrokeColor(UIColor.blue.cgColor)
-//        context?.setLineWidth(0.5)
-//        context?.move(to: CGPoint(x: 0.0, y: rect.width))
-//        context?.addLine(to: CGPoint(x: rect.height, y: rect.width))
-//        context?.strokePath()
-//    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -70,26 +59,26 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         let guide = contentView.layoutMarginsGuide
         
         NSLayoutConstraint.activate([
-            completedButton.topAnchor.constraint(equalTo: guide.topAnchor),
-            completedButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
-            completedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
+            completedButton.widthAnchor.constraint(equalToConstant: Constants.itemCellButtonWidth),
+            completedButton.heightAnchor.constraint(equalTo: completedButton.widthAnchor),
             completedButton.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            completedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
             
+            openItemLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: completedButton.trailingAnchor, multiplier: 1),
             openItemLabel.topAnchor.constraint(equalTo: guide.topAnchor),
             openItemLabel.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
-            openItemLabel.leadingAnchor.constraint(equalToSystemSpacingAfter: completedButton.trailingAnchor, multiplier: 2),
             
-            flaggedButton.topAnchor.constraint(equalTo: completedButton.topAnchor),
-            flaggedButton.bottomAnchor.constraint(equalTo: completedButton.bottomAnchor),
+            flaggedButton.widthAnchor.constraint(equalToConstant: Constants.itemCellButtonWidth),
+            flaggedButton.heightAnchor.constraint(equalTo: flaggedButton.widthAnchor),
+            flaggedButton.leadingAnchor.constraint(equalToSystemSpacingAfter: openItemLabel.trailingAnchor, multiplier: 1),
+            flaggedButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
             flaggedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
-            flaggedButton.trailingAnchor.constraint(equalTo: guide.trailingAnchor)
         ])
-        
-        
         flaggedButton.addTarget(self, action: #selector(flaggedButtonTapped), for: .touchUpInside)
         completedButton.addTarget(self, action: #selector(completedButtonTapped), for: .touchUpInside)
     }
-
+    
+    
     //MARK: - Interface
     func configureCell(itemText: String) {
         self.openItemLabel.text = itemText
@@ -129,3 +118,16 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
            self.flaggedButtonFunc = function
        }
 }
+
+
+   //Draw Tableview Cell Separator so you can hae them only in the open cells section?
+//    override func draw(_ rect: CGRect) {
+//        super.draw(rect)
+//
+//        let context = UIGraphicsGetCurrentContext()
+//        context!.setStrokeColor(UIColor.blue.cgColor)
+//        context?.setLineWidth(0.5)
+//        context?.move(to: CGPoint(x: 0.0, y: rect.width))
+//        context?.addLine(to: CGPoint(x: rect.height, y: rect.width))
+//        context?.strokePath()
+//    }

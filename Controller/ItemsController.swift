@@ -25,13 +25,14 @@ class ItemsController: NSObject, CanReadFromDatabase {
         itemsFetchedResultsController!.delegate = self
         return itemsFetchedResultsController!
     }()
-    
+    private var openItemsBeforeChange: Int?
     
     //MARK: - Initializers
     init(id: String) {
         self.id = id
         super.init()
         sections = setSections()
+        openItemsBeforeChange = determineOpenItems()
     }
     
     //MARK: - Helpers
@@ -67,18 +68,11 @@ class ItemsController: NSObject, CanReadFromDatabase {
         else { return 0 }
     }
     
-    func getCompletedItemsCount() -> Int {
-        let completedCount = fetchItems().filter({ $0.isComplete }).count
-        return completedCount
-    }
-    
     func numberOfSectionsBasedOnItemStatus() -> Int {
         if fetchItems().filter({ $0.isComplete }).count > 0 {
             return 3
         }
-        else {
-            return 2
-        }
+        else { return 2 }
     }
     
     //MARK: - Private Functions
@@ -87,6 +81,12 @@ class ItemsController: NSObject, CanReadFromDatabase {
         let sectionValuesIndexes = fetchedSections.map({ ($0, fetchedSections.firstIndex(of: $0)) })
         let sections = sectionValuesIndexes.map({ ControllerSectionInfo(section: ItemsSection(rawValue: $0.0)!, fetchedIndex: $0.1, fetchController: itemsController) })
         return sections
+    }
+    
+    private func determineOpenItems() -> Int? {
+        guard let openItems = itemsController.fetchedObjects as? [Items] else { return 0 }
+        print("OpenItemsCount: \(openItems.filter({ $0.isComplete == false }).count)")
+        return openItems.filter({ $0.isComplete == false }).count
     }
     
     fileprivate func displayedIndexPathForFetchedIndexPath(_ fetchedIndexPath: IndexPath, sections: [ControllerSectionInfo])  -> IndexPath? {
@@ -161,6 +161,9 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
+    /*
+     
+     */
     func handleMovingListItems(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
         if (getOpenItemsCount() == 0 && getClosedItemsCount() >= 1) || (getClosedItemsCount() == 0 && getOpenItemsCount() >= 1) {
             handleMovingLastItemOutOfSection(in: controller, indexPath: indexPath, newIndexPath: newIndexPath, object: object, type: type)
@@ -173,28 +176,50 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
-    func handleMovingFirstItemIntoNewSection(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
+    private func handleMovingFirstItemIntoNewSection(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
+        /* This method has two scenarios it handles. First is there are more than 2 items total in the list, and moving the first item into a new section (open -> closed OR closed -> open)
+            When there are two items total && both are open || both are closed:
+                * When first open goes to closed -> moving from TV section 1 to section 3
+                * When first closed goes to open this will hit the else statement below.
+        */
+        
         let open = getOpenItemsCount()
         let closed = getClosedItemsCount()
         
         if open >= 1 && closed == 1 {
-            //Moving first item into closed
-            print("ItemsController - FIRST ITEM TO CLOSED SECTION")
+            if openItemsBeforeChange == 0 {
+                //First closed item to Open when there are only 2 items and both are closed.
+                openItemsBeforeChange = determineOpenItems()
+                let currentIndexPath = IndexPath(row: indexPath.row, section: 2)
+                let destinationIndexPath = IndexPath(row: indexPath.row, section: 1)
+                delegate?.controller?(controller, didChange: object, at: currentIndexPath, for: type, newIndexPath: destinationIndexPath)
+            }
+            else {
+                //First open item to closed when there are only 2 items (at this moment 1 is open, 1 is closed)
+                let currentIndexPath = IndexPath(row: indexPath.row, section: 1)
+                let destinationIndexPath = IndexPath(row: newIndexPath.row, section: 2)
+                delegate?.controller?(controller, didChange: object, at: currentIndexPath, for: type, newIndexPath: destinationIndexPath)
+            }
+        }
+        else if open > 1 && closed == 1 {
+            //Moving the first item from open (irregardless of open.count) to closed.
             let currentIndexPath = IndexPath(row: indexPath.row, section: 1)
             let destinationIndexPath = IndexPath(row: newIndexPath.row, section: 2)
             delegate?.controller?(controller, didChange: object, at: currentIndexPath, for: type, newIndexPath: destinationIndexPath)
         }
         else if closed >= 1 && open == 1 {
-            //Moving first item into opened
+            //Moving first item into opened if there are greater than 1 item in closed.
             print("ItemsController - FIRST ITEM TO OPEN SECTION FROM CLOSED")
             let currentIndexPath = IndexPath(row: indexPath.row, section: 2)
             let destinationIndexPath = IndexPath(row: newIndexPath.row, section: 1)
             delegate?.controller?(controller, didChange: object, at: currentIndexPath, for: type, newIndexPath: destinationIndexPath)
         }
-        
     }
     
-    func handleTaskItemMoved(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
+    /*
+     This method handles items moving between sections when it's not the first or last item in either section.
+     */
+    private func handleTaskItemMoved(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
         //Not the first or last item moved -- from either section.
         print("ItemsController - MOVING ITEM, NOT FIRST OR LAST")
         let tableIndexPath = updateTableViewIndexPath(from: indexPath)
@@ -203,11 +228,15 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         delegate?.controller?(controller, didChange: object, at: tableIndexPath, for: type, newIndexPath: tableNewIndexPath)
     }
     
-    func handleMovingLastItemOutOfSection(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
+    /*
+     This method handles moving the last item out of a section (deleting the sections the items were removed from & handling either adding or deleting the 'showCompleted' button based on the item counts.
+     */
+    private func handleMovingLastItemOutOfSection(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
         let open = getOpenItemsCount()
         let closed = getClosedItemsCount()
         
         if open == 0 {
+            openItemsBeforeChange = determineOpenItems()
             print("ItemsController - MOVING LAST ITEM FROM OPEN TO CLOSED")
             let currentIndex = updateTableViewIndexPath(from: indexPath)
             let destinationIndexPath = IndexPath(row: newIndexPath.row, section: 2)
@@ -223,7 +252,7 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
-    func sectionsAreNotEqual() -> Bool {
+    private func sectionsAreNotEqual() -> Bool {
         if let sections = sections {
             if oldSectionsDuringFetchUpdate.count != sections.count {
                 return true
@@ -235,12 +264,12 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         return false
     }
     
-    func getOpenItemsCount() -> Int {
-        fetchItems().filter({ $0.isComplete == false }).count
+    private func getOpenItemsCount() -> Int {
+        return fetchItems().filter({ $0.isComplete == false }).count
     }
     
     func getClosedItemsCount() -> Int {
-        fetchItems().filter({ $0.isComplete }).count
+        return fetchItems().filter({ $0.isComplete }).count
     }
     
     

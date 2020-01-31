@@ -15,6 +15,8 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.delegate = self
         tableView.dataSource = self
+//        tableView.rowHeight = UITableView.automaticDimension
+//        tableView.estimatedRowHeight = 100
         tableView.separatorStyle = .singleLine
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.tableFooterView = UIView()
@@ -266,7 +268,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
     private func handleCompletedItemsCompletedButtonTapoedFor(completedCell: CompletedItemsCell, item: Items) {
         completedCell.whenCompletedButtonTapped { [unowned self] in
             self.setItemCompletedStatus(item: item)
-            if self.itemsController.getCompletedItemsCount() == 0 {
+            if self.itemsController.getClosedItemsCount() == 0 {
                 self.isCompletedShowing = false
             }
             self.tableView.reloadData()

@@ -10,17 +10,19 @@ import UIKit
 import EventKit
 
 
-protocol EventAddedDelegate: class {
-    
+protocol EventAddedDelegate: class, CanWriteToDatabase {
+    var item: Items? { get }
     func eventAdded(event: EKEvent)
     
 }
 
 extension EventAddedDelegate {
     //MARK: - Extension Methods
-    
+
     func eventAdded(event: EKEvent) {
-        let eventDate = event.startDate
+        if let eventDate = event.startDate {
+            setDueDateForItem(item: item!, date: eventDate)
+        }
     }
 }
 

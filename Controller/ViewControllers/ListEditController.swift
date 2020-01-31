@@ -8,6 +8,7 @@ final class EditListViewController: UIViewController, CanWriteToDatabase {
     private lazy var tableView: UITableView = {
         let editListTableView = UITableView(frame: .zero, style: .plain)
         editListTableView.translatesAutoresizingMaskIntoConstraints = false
+        editListTableView.backgroundColor = .systemBackground
         editListTableView.dataSource = self
         editListTableView.delegate = self
         editListTableView.registerCell(cellClass: MenuCell.self)
@@ -55,7 +56,7 @@ final class EditListViewController: UIViewController, CanWriteToDatabase {
         view.addSubview(tableView)
         view.backgroundColor = .systemBackground
         
-        navigationItem.createNavigationBar(title: "",
+        navigationItem.createNavigationBar(title: "Edit List",
                                            leftItem: UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelTapped)),
                                            rightItem: UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveTapped)))
         tableView.setFullScreenTableViewConstraints(in: view)
@@ -118,22 +119,22 @@ extension EditListViewController: UITableViewDelegate {
         }
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        switch section {
-        case 0:
-            return createHeaderView()
-        case 1: return nil
-        default: return nil
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch section {
-        case 0: return headerHeight
-        case 1: return 0
-        default: return 0
-        }
-    }
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        switch section {
+//        case 0:
+//            return createHeaderView()
+//        case 1: return nil
+//        default: return nil
+//        }
+//    }
+//    
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        switch section {
+//        case 0: return headerHeight
+//        case 1: return 0
+//        default: return 0
+//        }
+//    }
     
     private func createHeaderView() -> UIView {
         let headerView = UIView(frame: CGRect(x: 0,

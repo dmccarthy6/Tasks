@@ -44,7 +44,7 @@ final class ReminderDatePickerCell: UITableViewCell, CanWriteToDatabase {
             alertDatePicker.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
         ])
         
-        backgroundColor = .systemBackground
+        backgroundColor = .secondarySystemBackground
     }
     
 }

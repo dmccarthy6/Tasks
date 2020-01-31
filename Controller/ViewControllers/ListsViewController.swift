@@ -35,6 +35,11 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
         setUpView()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        tableView.reloadData()
+    }
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         view.handleThemeChange()
         tableViewBackground(tableView: tableView)
@@ -45,6 +50,7 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
         let listsTable = UITableView(frame: .zero, style: .plain)
         tableView = listsTable
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        //tableView.backgroundColor = .systemBackground
         tableView.dataSource = dataSource
         tableView.delegate = self
         tableView.tableFooterView = UIView()

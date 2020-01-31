@@ -51,9 +51,9 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
         }
         else if indexPath.section == 1 {
             let listCell: ListTitleCell = tableView.dequeueReusableCell(for: indexPath)
-            if let list = getListAtIndexPath(indexPath: indexPath) {
-            //Fetch Core Data, if any:
-            listCell.configure(listTitle: list.title!)
+            if let list = getListAtIndexPath(indexPath: indexPath), let title = list.title, let items = list.items?.allObjects as? [Items] {
+                let openCount = items.filter({ $0.isComplete == false }).count
+                listCell.configure(listTitle: title, itemsCount: openCount)
             }
             return listCell
         }
@@ -99,7 +99,7 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
                     at indexPath: IndexPath?,
                     for type: NSFetchedResultsChangeType,
                     newIndexPath: IndexPath?) {
-
+        
         switch type {
             
         case .insert:
@@ -123,7 +123,10 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
                 editedTitleCell.configure(text: managedObject.title!, delegate: nil)
             }
             if let insertedTitleCell = tableView.cellForRow(at: frcIndex) as? ListTitleCell {
-                insertedTitleCell.configure(listTitle: managedObject.title!)
+                if let title = managedObject.title, let items = managedObject.items?.allObjects as? [Items] {
+                    let openCount = items.filter({ $0.isComplete == false }).count
+                    insertedTitleCell.configure(listTitle: title, itemsCount: openCount)
+                }
             }
             tableView.reloadRows(at: [frcIndex], with: .automatic)
             
@@ -136,14 +139,12 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
             
         case .move:
             guard let destinationIndexPath = newIndexPath, let originIndexPath = indexPath else {
-                    fatalError("MainViewController = Error Moving Row")
+                fatalError("MainViewController = Error Moving Row")
             }
             tableView.deleteRows(at: [originIndexPath], with: .fade)
             tableView.insertRows(at: [destinationIndexPath], with: .fade)
             
-        @unknown default:
-            print("Default")
-            
+        @unknown default: print("Default")
         }
     }
     
@@ -152,4 +153,3 @@ extension MainListsDataSource: NSFetchedResultsControllerDelegate {
     }
     
 }
-

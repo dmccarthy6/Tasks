@@ -9,7 +9,9 @@ class CompletedButtonCell: UITableViewCell {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 7   //was 6
-        button.contentEdgeInsets = UIEdgeInsets(top: 1, left: 7, bottom: 1, right: 7)
+        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 7, bottom: 10, right: 7)
+        button.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        
         button.backgroundColor = Colors.tasksRed
         button.titleLabel?.textColor = .label
         button.setTitle("Show Completed", for: .normal)
@@ -36,13 +38,11 @@ class CompletedButtonCell: UITableViewCell {
         let guide = contentView.layoutMarginsGuide
         
         NSLayoutConstraint.activate([
-            showCompletedButton.heightAnchor.constraint(equalToConstant: Constants.completedButtonHeight),
-//            showCompletedButton.topAnchor.constraint(equalTo: guide.topAnchor),
-//            showCompletedButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
+            showCompletedButton.topAnchor.constraint(equalTo: guide.topAnchor),
+            showCompletedButton.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
             showCompletedButton.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
             showCompletedButton.centerXAnchor.constraint(equalTo: guide.centerXAnchor),
         ])
-        
         showCompletedButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     
@@ -71,7 +71,7 @@ class CompletedButtonCell: UITableViewCell {
         completedButtonFunction()
     }
 
-    //MARK: - Unused Button
+    //MARK: - Unused Button Animation Methods
     private func animate() {
         let keyPath = "Position"
         let shake = CABasicAnimation(keyPath: keyPath)
