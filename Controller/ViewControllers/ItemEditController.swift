@@ -10,6 +10,9 @@ import UIKit
 import EventKit
 import TasksFramework
 
+import EventKit
+import EventKitUI
+
 class EditItemViewController: UIViewController, CanWriteToDatabase {
     //MARK: - Properties
     private lazy var tableView: UITableView = {
@@ -151,21 +154,25 @@ extension EditItemViewController: UITableViewDelegate {
         }
         else if indexPath == IndexPath(row: 2, section: 1) {
             let calendarManager = CalendarManager()
-            
+//            deleteTHISMETHOD(manager: calendarManager)
             if let toDoItem = itemBeingEdited, let item = toDoItem.item {
                 calendarManager.presentModalCalendarController(title: item, startDate: Date(), endDate: Date()) { (result) in
                     switch result {
                     case .success(let controller):
+                        
                         DispatchQueue.main.async {
                             controller.editViewDelegate = calendarManager
+                            controller.delegate = calendarManager
+                            if controller.editViewDelegate != nil {
                             self.present(controller, animated: true)
+                            }
                         }
-    
+
                     case .failure(let calendarError):
                         switch calendarError {
                         case .calendarAccessDeniedOrRestricted:
                             DispatchQueue.main.async { Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue) }
-                            
+
                         case .eventNotAddedToCalendar:
                             print("Not Added To Calendar")
                         case .notDetermined:
@@ -178,6 +185,21 @@ extension EditItemViewController: UITableViewDelegate {
             }
         }
     }
+    
+//    func deleteTHISMETHOD(manager: CalendarManager) {
+//        let eventStore = EKEventStore()
+//        let event = EKEvent(eventStore: eventStore)
+//        event.title = "Test Title"
+//        event.startDate = Date()
+//        event.endDate = Date()
+//        event.calendar = eventStore.defaultCalendarForNewEvents
+//        let eventModalVC = EKEventEditViewController()
+//        eventModalVC.event = event
+//        eventModalVC.eventStore = eventStore
+//        eventModalVC.editViewDelegate = self
+//        print("Here's the delegate: \(eventModalVC.editViewDelegate?.description)")
+//        self.present(eventModalVC, animated: true)
+//    }
 
     /* Set Date Picker Cell Height when the cell is tapped*/
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -265,3 +287,22 @@ extension EditItemViewController: EventAddedDelegate {
     
     
 }
+
+//extension EditItemViewController: EKEventEditViewDelegate {
+//
+//    func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
+//        switch action {
+//        case .canceled:
+//            print("Cancel Hit")
+//            controller.dismiss(animated: true, completion: nil)
+//
+//        case .saved:
+//            print("Saved")
+//
+//        case .deleted:
+//            print("Deleted")
+//
+//        default: ()
+//        }
+//    }
+//}
