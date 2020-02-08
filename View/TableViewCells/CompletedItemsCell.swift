@@ -105,7 +105,7 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
         whenFlaggedButtonTapped { [unowned self] in
             self.setItemAsFlagged(item: item, status: !isFlagged)
             self.flaggedButton.setImage((isFlagged ? SystemImages.Star : SystemImages.StarFill), for: .normal)
-            self.flaggedButton.tintColor = isFlagged ? Colors.tasksRed : Colors.tasksYellow
+            self.flaggedButton.tintColor = isFlagged ? Colors.tasksRed : .systemYellow
             tableView.reloadData()
         }
         whenCompletedButtonTapped { [unowned self] in

@@ -89,7 +89,7 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         whenFlaggedButtonTapped {
             self.setItemAsFlagged(item: item, status: !isFlagged)
             self.flaggedButton.setImage((isFlagged ? SystemImages.StarFill : SystemImages.Star), for: .normal)
-            self.flaggedButton.tintColor = isFlagged ? Colors.tasksYellow : Colors.tasksRed
+            self.flaggedButton.tintColor = isFlagged ? .systemYellow : Colors.tasksRed
             tableView.reloadData()
         }
         whenCompletedButtonTapped {
