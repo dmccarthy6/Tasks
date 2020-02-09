@@ -63,5 +63,11 @@ extension UITableView {
             trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
+    
+    func handleEmptyView(isEmpty: Bool, view: EmptyView) {
+        UIView.animate(withDuration: 0.3) {
+            self.backgroundView = isEmpty ? view : nil
+        }
+    }
 }
 

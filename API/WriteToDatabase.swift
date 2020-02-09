@@ -21,7 +21,7 @@ extension CanWriteToDatabase {
         }
     }
     
-    func delete<T: NSManagedObject>(_ object: T){
+    func delete<T: NSManagedObject>(_ object: T) {
         
     }
     

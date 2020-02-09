@@ -11,6 +11,11 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
     private var listTitle: String?
     private var tableViewDelegate: UITableViewDelegate
     var traitCollection: UITraitCollection
+    private lazy var emptyView: EmptyView = {
+        let view = EmptyView()
+        view.setEmptyViewData(message: .emptyList, icon: UIImage(systemName: "hand.thumbsup")!)
+        return view
+    }()
     
     
     //MARK: - Initializers
@@ -25,6 +30,17 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
         registerTableViewCells()
         configureListsController()
         listsFetchedResultsController?.delegate = self
+        layoutEmptyView()
+    }
+    
+    func layoutEmptyView() {
+        viewController.view.addSubview(emptyView)
+        NSLayoutConstraint.activate([
+            emptyView.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
+            emptyView.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
+            emptyView.topAnchor.constraint(equalTo: viewController.view.safeAreaLayoutGuide.topAnchor),
+            emptyView.bottomAnchor.constraint(equalTo: viewController.view.safeAreaLayoutGuide.bottomAnchor)
+        ])
     }
     
     //MARK: - TableView Data Source Methods
@@ -38,7 +54,9 @@ class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase 
             guard let number = getObjectsAtSection(section: section, frcSection: 0) else {
                 return 0
             }
+            tableView.handleEmptyView(isEmpty: true, view: emptyView)
             return number
+            
         }
     }
     

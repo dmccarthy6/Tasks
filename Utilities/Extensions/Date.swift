@@ -13,7 +13,7 @@ extension Date {
     func dateOnlyToString(date: Date) -> String {
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat =  "MMM/dd/yyyy h:mm a" //"MMM d, y"//"yyyy/MM/dd hh:ss" m/dd/yy, h:m
+        dateFormatter.dateFormat =  "MMM dd, yyyy h:mm a" //"MMM d, y"//"yyyy/MM/dd hh:ss" m/dd/yy, h:m//BEFORE I CHANGED IT "MMM/dd/yyyy h:mm a"
         let stringDate = dateFormatter.string(from: date)
         return stringDate
     }

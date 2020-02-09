@@ -31,7 +31,8 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
     override func viewDidLoad() {
         super .viewDidLoad()
         view.backgroundColor = .systemBackground
-        //        CoreDataManager.shared.batchDeleteCoreData(entityName: .Items)
+    
+//        CoreDataManager.shared.batchDeleteCoreData(entityName: .List)
         setUpView()
     }
     

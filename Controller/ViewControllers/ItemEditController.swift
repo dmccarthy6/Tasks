@@ -1,14 +1,11 @@
-//
-//  ItemEditController.swift
-//  Tasks
-//
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
 
 import UIKit
-import EventKit
 import TasksFramework
+import EventKitUI
+
 
 class EditItemViewController: UIViewController, CanWriteToDatabase {
     //MARK: - Properties
@@ -56,7 +53,6 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
     //MARK: - Helpers
     private func setupView() {
         view.addSubview(tableView)
-        
         navigationItem.createNavigationBar(title: "Edit Item", leftItem: nil, rightItem: nil)
         tableView.setFullScreenTableViewConstraints(in: view)
     }
@@ -74,15 +70,6 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         reminderCell.configureValue(value: pickerDateAsString)
         tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
     }
-    
-    //MARK: - EKEventKit Methods -- Adding Due Date To Calendar
-    internal func eventAdded(event: EKEvent) {
-        guard let items = itemBeingEdited else { return }
-        let eventDate = event.startDate
-        setDueDateForItem(item: items, date: eventDate!)
-        tableView.reloadRows(at: [IndexPath(row: 1, section: 1)], with: .automatic)
-    }
-
 }//
 
 //MARK: - UITableView Data Source Methods
@@ -151,21 +138,20 @@ extension EditItemViewController: UITableViewDelegate {
         }
         else if indexPath == IndexPath(row: 2, section: 1) {
             let calendarManager = CalendarManager()
-            
             if let toDoItem = itemBeingEdited, let item = toDoItem.item {
                 calendarManager.presentModalCalendarController(title: item, startDate: Date(), endDate: Date()) { (result) in
                     switch result {
                     case .success(let controller):
                         DispatchQueue.main.async {
-                            controller.editViewDelegate = calendarManager
+                            controller.editViewDelegate = self
                             self.present(controller, animated: true)
                         }
-    
+
                     case .failure(let calendarError):
                         switch calendarError {
                         case .calendarAccessDeniedOrRestricted:
                             DispatchQueue.main.async { Alerts.showSettingsAlert(self, message: CalendarAlertsMessage.restricted.rawValue) }
-                            
+
                         case .eventNotAddedToCalendar:
                             print("Not Added To Calendar")
                         case .notDetermined:
@@ -189,18 +175,6 @@ extension EditItemViewController: UITableViewDelegate {
         }
         return UITableView.automaticDimension
     }
-    
-    //MARK: - UITableView Header Methods
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        if section == 0 {
-//            return createdHeaderView()
-//        }
-//        else { return nil }
-//    }
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        if section == 0 { return 30 }
-//        else { return 0 }
-//    }
 
     //MARK: - Header & Footer Helpers
     private func createHeaderView() -> UIView {
@@ -227,15 +201,6 @@ extension EditItemViewController: UITableViewDelegate {
         ])
         return headerView
     }
-    
-//    private func createFooterView() -> UIView {
-//        let footerView = UIView(frame: CGRect(x: 0,
-//                                              y: 0,
-//                                              width: tableView.frame.size.width,
-//                                              height: 50))
-//        footerView.backgroundColor = .systemBackground
-//        return footerView
-//    }
 }
 
 //MARK: - UITextField Delegate Methods
@@ -254,14 +219,26 @@ extension EditItemViewController: UITextFieldDelegate {
     }
 }
 
-extension EditItemViewController: EventAddedDelegate {
-    
-    var item: Items? {
-        if let item = itemBeingEdited {
-            return item
+//MARK: - EKEventEditViewDelegate Methods
+/* Delegate methods for EventKit UI. Methods used when user taps cancel, or add to add event to their calendar.  */
+extension EditItemViewController: EKEventEditViewDelegate {
+
+    func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
+        switch action {
+        case .canceled:
+            controller.dismiss(animated: true, completion: nil)
+
+        case .saved:
+            if let event = controller.event, let item = itemBeingEdited, let startDate = event.startDate {
+                setDueDateForItem(item: item, date: startDate)
+                controller.dismiss(animated: true, completion: nil)
+                tableView.reloadData()
+            }
+            
+        case .deleted:
+            controller.dismiss(animated: true, completion: nil)
+
+        default: ()
         }
-        return nil
     }
-    
-    
 }
