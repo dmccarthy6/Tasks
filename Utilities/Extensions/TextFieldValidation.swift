@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import TasksFramework
 
 class ValidateTextField: NSObject, CanWriteToDatabase {
     
