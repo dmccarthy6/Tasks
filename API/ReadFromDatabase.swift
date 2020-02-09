@@ -1,13 +1,10 @@
-//
-//  ReadFromDatabase.swift
-//  Tasks
-//
+
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
 import UIKit
 import CoreData
-
+import TasksFramework
 
 //typalias Database = ReadFromDatabase & WriteToDatabase --IN VC
 
@@ -19,6 +16,7 @@ import CoreData
 
 extension CanReadFromDatabase {
     var managedObjectContext: NSManagedObjectContext {
+        
         get { return CoreDataManager.shared.mainThreadManagedObjectContext }
     }
     

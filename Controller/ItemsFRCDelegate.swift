@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import CoreData
+import TasksFramework
 
 class ItemsFetchedResultsControllerDelegate: NSObject, NSFetchedResultsControllerDelegate {
     

@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import TasksFramework
 
 class ItemsController: NSObject, CanReadFromDatabase {
     var listsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
@@ -20,6 +21,7 @@ class ItemsController: NSObject, CanReadFromDatabase {
     fileprivate lazy var itemsController: NSFetchedResultsController<NSFetchRequestResult> = {
         let itemsForListTitlePredicate = NSPredicate(format: "titleID == %@", self.id)
         let controller = ItemsFetchedResultsController(managedObjectContext: managedObjectContext, predicate: itemsForListTitlePredicate)
+        
         let controllerToReturn = controller.configureItemsController()
         itemsFetchedResultsController = controller.configureItemsController()
         itemsFetchedResultsController!.delegate = self
