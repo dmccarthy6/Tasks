@@ -1,6 +1,7 @@
 
 
 import UIKit
+import TasksFramework
 
 class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
 

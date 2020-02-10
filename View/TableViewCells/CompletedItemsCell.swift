@@ -1,6 +1,6 @@
 
 import UIKit
-
+import TasksFramework
 
 final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
     

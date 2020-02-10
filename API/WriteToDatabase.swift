@@ -7,10 +7,9 @@
 //
 
 import CoreData
-import TasksFramework
+//import TasksFramework
 
 @objc protocol CanWriteToDatabase: NSObjectProtocol {
-
 }
 
 extension CanWriteToDatabase {

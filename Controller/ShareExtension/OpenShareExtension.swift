@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import TasksFramework
 
 struct OpenShareExtension {
 //    //MARK: - Properties

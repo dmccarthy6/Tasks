@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import EventKit
 import CoreData
+import TasksFramework
 
 class ShareListMenuLauncher: NSObject {
     

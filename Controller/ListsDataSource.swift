@@ -1,6 +1,7 @@
 
 import UIKit
 import CoreData
+import TasksFramework
 
 class MainListsDataSource: NSObject, UITableViewDataSource, CanReadFromDatabase {
     var listsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
