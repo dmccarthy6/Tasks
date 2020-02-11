@@ -3,20 +3,18 @@ import UIKit
 import CoreData
 import TasksFramework
 
-
 final class AddItemsToListViewController: UIViewController, CanReadFromDatabase, CanWriteToDatabase {
     //MARK: - Properties
     var listsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var itemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var completedItemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var listTitle: List?
+    var listTitleID: String?
     private var isCompletedShowing: Bool = false
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.delegate = self
         tableView.dataSource = self
-//        tableView.rowHeight = UITableView.automaticDimension
-//        tableView.estimatedRowHeight = 100
         tableView.separatorStyle = .singleLine
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.tableFooterView = UIView()
@@ -31,9 +29,12 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         return delegate
     }()
     private lazy var itemsController: ItemsController = {
-        let listTitleID = String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)
-        let controller = ItemsController(id: listTitleID!)
-        return controller
+        guard let idData = listTitle?.recordID, let titleIDFromList = String(data: idData, encoding: String.Encoding.utf8) else {
+            let listID = listTitleID ?? ""
+            let controller = ItemsController(id: listID)
+            return controller
+        }
+        return ItemsController(id: titleIDFromList)
     }()
     
     
@@ -41,7 +42,7 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpView()
-        configureController()
+        checkHowViewControllerWasOpened(if: listTitleID != nil ? true : false)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -63,8 +64,20 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         navigationItem.createNavigationBar(title: "\(listTitle?.title ?? "")",
             leftItem: nil,
             rightItem: UIBarButtonItem(image: SystemImages.elipses!, style: .plain, target: self, action: #selector(showEditListActionSheet)))
-        
         tableView.setFullScreenTableViewConstraints(in: view)
+    }
+    
+    /* Checking here how this VC was opened. If by Widget, setting listTitle property by fetching via recordID. Else calling configureController which configures based on list segued in */
+    private func checkHowViewControllerWasOpened(if fromWidget: Bool) {
+        if fromWidget {
+            //Configure FetchedResultsController -- this came from Today Widget need to get and set listTitle here as well.
+            if let listTitleID = listTitleID {
+                itemsController = configureControllerOpenedByWidget(id: listTitleID)
+                itemsController.delegate = fetchedResultsControllerDelegate
+                listTitle = itemsController.fetchItems()[0].list
+            }
+        } //Configure FetchedResultsController Normally. Opened via Lists Segue
+        else { configureController() }
     }
     
     //MARK: - Button Functions
@@ -181,9 +194,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
         if itemsController.allItemsAreComplete() { return populateOnlyCompletedRowsInTable(tvIndexPath: indexPath) }
         if indexPath.section == 0 {
             let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: indexPath)
-            textFieldCell.configure(placeholder: .Item,
-                                    delegate: self)
-                                    
+            textFieldCell.configure(placeholder: .Item, delegate: self)
             return textFieldCell
         }
         if indexPath.section == 1 {
@@ -281,7 +292,10 @@ extension AddItemsToListViewController: UITableViewDataSource {
 extension AddItemsToListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 1 {//My To-Do's
+        if indexPath.section == 0 { return }
+        //Stops selection of the button cell from segueing when all items are closed (if all items are closed, this cell becomes section 1)
+        if indexPath.section == 1 && checkIfItemsAreAllComplete(items: itemsController.fetchItems()) { return }
+        if indexPath.section == 1 {
             let frcSection = Int(ItemsSection.ToDo.rawValue)!
             let fetchedIndexPath = IndexPath(row: indexPath.row, section: frcSection)
             if let sections = itemsController.sections {

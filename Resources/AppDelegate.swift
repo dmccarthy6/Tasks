@@ -1,7 +1,4 @@
-//
-//  AppDelegate.swift
-//  Tasks
-//
+
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
@@ -10,10 +7,10 @@ import UIKit
 import UserNotifications
 import TasksFramework
 import CloudKit
-
+import CoreData
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
     var window: UIWindow?
     var notificationCenter: NotificationCenter?
 
@@ -68,7 +65,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     //Set Navigation Bar Color
     func setNavigationBarColors() {
         let navigationBarAppearance = UINavigationBar.appearance()
-        //navigationBarAppearance.prefersLargeTitles = true
         navigationBarAppearance.tintColor = .white
         navigationBarAppearance.barTintColor = Colors.tasksRed
         navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -84,22 +80,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /*Function used when user opens the application from the Today Widget */
     open func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         if url.scheme == "tasksopen" {
-            print("AppDel - Yes!")
             
             if url.host == "addItemsVC" {
                 let containerDefaults = UserDefaults(suiteName: "group.Tasks.Extensions")
-//                let id = containerDefaults?.data(forKey: "tappedID")
-                
-                //TO-DO: Open the app from here.
-                let rootVC = ListsViewController()
-                let navigationController = UINavigationController(rootViewController: rootVC)
+                let id = containerDefaults?.data(forKey: "tappedID")
                 
                 do {
-//                    let idDecoded = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id!) as! String
-                    let addItemsVC = AddItemsToListViewController()
-                    let navController = UINavigationController(rootViewController: addItemsVC)
-                    //addItemsVC.id = idDecoded
-                    window?.rootViewController = navController
+                    if let id = id {
+                        let encodedID = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id) as! String
+                        openItemsController(for: encodedID)
+                    }
                 }
                 catch let error as NSError {
                     print("Error \(error.localizedDescription)")
@@ -111,5 +101,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
   
+    func openItemsController(for listID: String) {
+        let navigationController = UINavigationController()
+        let rootVC = ListsViewController()
+        let itemsVC = AddItemsToListViewController()
+        itemsVC.listTitleID = listID
+        navigationController.setViewControllers([rootVC, itemsVC], animated: true)
+        window?.rootViewController = navigationController
+        
+    }
 
 }

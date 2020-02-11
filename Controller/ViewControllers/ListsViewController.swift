@@ -83,7 +83,10 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
 extension ListsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        handleSegueToListItems(indexPath: indexPath)
+        if indexPath.section == 0 { return }
+        else {
+            handleSegueToListItems(indexPath: indexPath)
+        }
     }
     
     //MARK: TableView Swipe Actions:
