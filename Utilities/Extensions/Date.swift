@@ -19,10 +19,22 @@ extension Date {
     }
     
     
-    func getReminderDateAsString(pickerDate: Date) -> String {
+    func getReminderDateAsString(pickerDate: Date) -> String? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "M/dd/yy h:m a"
         let dateString = dateFormatter.string(from: pickerDate)
         return dateString
+    }
+    
+    func setInitialCalendarEndDate() -> Date? {
+        let minutesToAdd = 30
+        
+        var dateComponent = DateComponents()
+        dateComponent.minute = minutesToAdd
+        
+        if let endDate = Calendar.current.date(byAdding: dateComponent, to: self) {
+            return endDate
+        }
+        return nil
     }
 }

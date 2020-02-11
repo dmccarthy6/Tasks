@@ -13,11 +13,9 @@ typealias EventsCalendarManagerResponse = (_ result: ResultCustomError) -> Void
  CalendarManager handles the EKEventKit methods, this class is used when users tap "Due Date" on the MenuCell to add tasks to their calendar.
  */
 
-
 final class CalendarManager: NSObject, CanWriteToDatabase {
     //MARK: - Properties
     private var eventStore: EKEventStore
-    
     
     
     //MARK: - Initializer
@@ -27,8 +25,6 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
     }
     
     
-    
-
     //MARK: - Add event to calendar
     
     func presentModalCalendarController(title: String, startDate: Date, endDate: Date, completion: @escaping (Result<EKEventEditViewController, CalendarError>) -> Void) {
@@ -55,16 +51,16 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
     
     private func createEventModalController(title: String, startDate: Date, endDate: Date) -> EKEventEditViewController {
         let event = EKEvent(eventStore: eventStore)
-       
-            event.title = title
-            event.startDate = startDate
-            event.endDate = endDate
-            event.calendar = eventStore.defaultCalendarForNewEvents
+        
+        event.title = title
+        event.startDate = startDate
+        event.endDate = endDate.setInitialCalendarEndDate()
+        event.calendar = eventStore.defaultCalendarForNewEvents
         
         let eventModalVC = EKEventEditViewController()
-         if !eventAlreadyExists(eventToAdd: event) {
-        eventModalVC.event = event
-        eventModalVC.eventStore = eventStore
+        if !eventAlreadyExists(eventToAdd: event) {
+            eventModalVC.event = event
+            eventModalVC.eventStore = eventStore
         }
         return eventModalVC
     }
@@ -80,32 +76,3 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
     }
 
 }
-
-    //MARK: - EKEventEdit Delegate Methods
-    /*
-        * EKEventKit Delegate methods. This delegate triggers when user hits cancel or add in the Nav Controller.
-    */
-//extension CalendarManager: EKEventEditViewDelegate, UINavigationControllerDelegate { //, UINavigationControllerDelegate
-//    func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
-//        print("CALENDAR DELEGATE HIT")
-//        switch action {
-//        case .canceled:
-//            controller.dismiss(animated: true, completion: nil)
-//
-//        case .saved:
-//            if let event = controller.event {
-//                eventAddedDelegate?.eventAdded(event: event)
-//                controller.dismiss(animated: true, completion: nil)
-//            }
-//
-//        case .deleted:
-//            print("CalendarManager - Calendar Event Deleted")
-//            controller.dismiss(animated: true, completion: nil)
-//
-//        @unknown default: ()
-//        }
-//    }
-//
-//}
-
-

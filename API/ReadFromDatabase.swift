@@ -16,7 +16,6 @@ import TasksFramework
 
 extension CanReadFromDatabase {
     var managedObjectContext: NSManagedObjectContext {
-        
         get { return CoreDataManager.shared.mainThreadManagedObjectContext }
     }
     
@@ -89,87 +88,28 @@ extension CanReadFromDatabase {
         return delegate
     }
     
-//    func itemsForSection(section: Int) -> Int {
-//        if fetchItems().count > 0 {
-//            return sections[section].numberOfObjects
-//        }
-//        return 0
-//    }
-//
-//    func completedItemsForSection(section: Int) -> Int {
-//        return sections[section].numberOfObjects
-//    }
-//
-//    func returnItemsSectionsCount() -> Int {
-//        return sections.count
-//    }
+    //MARK: - Widget Functions
+    func configureControllerOpenedByWidget(id: String) -> ItemsController {
+        let controller = ItemsController(id: id)
+        configureReadItemsController(predicate: NSPredicate(format: "titleID == %@", id))
+        return controller
+    }
     
-//    func allItemsAreComplete() -> Bool {
-//        let openItems = fetchItems().filter({ $0.isComplete == false }).count
-//        let closedItems = fetchItems().filter({ $0.isComplete }).count
-//
-//        if openItems == 0 && closedItems > 0 { return true }
-//        else { return false }
+//    func getListFromTitleID(id: String) -> List {
+//        
+//        let listsArray = configureControllerOpenedByWidget(id: id).fetchedObjects as? [List]
+//        let stringData = id.data(using: String.Encoding.utf8)
+//        let itemToReturn = listsArray?.filter({ $0.recordID == stringData })
+//        return itemToReturn![0]
 //    }
-    
-//    func section() -> Int {
-//        if fetchItems().filter({ $0.isComplete }).count > 0 {
-//            return 3
-//        }
-//        else {
-//            return 2
-//        }
-//    }
-    
-//    func showCompletedButton() -> Int {
-//        if fetchItems().filter({ $0.isComplete }).count > 0 { return 1 }
-//        else { return 0 }
-//    }
-//
-//    func getCompletedItemsCount() -> Int {
-//        let completedCount = fetchItems().filter({ $0.isComplete }).count
-//        return completedCount
-//    }
-    
-    
-    //ITEMS CONTROLLER METHODS
-//    func setSections() -> [ControllerSectionInfo] {
-//        if let fetchedSections = itemsFetchedResultsController?.sections?.map({ $0.name }) {
-//            let sectionValueIndexes = fetchedSections.map({ ($0, fetchedSections.firstIndex(of: $0)) })
-//            let sections = sectionValueIndexes.map({ ControllerSectionInfo(section: ItemsSection(rawValue: $0.0)!, fetchedIndex: $0.1, fetchController: itemsFetchedResultsController!) })
-//            return sections
-//        }
-//        return []
-//    }
-//
-//    func fetchItems() -> [Items] {
-//        let items = itemsFetchedResultsController?.fetchedObjects as? [Items]
-//        return items.map({ $0 }) ?? []
-//    }
-//
-//    func itemsControllerItemAtIndexPath(indexPath: IndexPath, sections: [ControllerSectionInfo]) -> Items? {//old itemsAtIndexPath
-//        let sectionInfo = sections[indexPath.section]
-//        if let section = sectionInfo.fetchedIndex {
-//            let indexPath = IndexPath(row: indexPath.row, section: section)
-//            let itemAtIndexPath = itemsFetchedResultsController?.object(at: indexPath) as! Items
-//            return itemAtIndexPath
-//        }
-//        return nil
-//    }
+}
 
-//    func reloadData() {
-//        try! itemsFetchedResultsController?.performFetch()
-//        sections = setSections()
-//    }
-    
-//    func displayedIndexPathForFetchedIndexPath(_ fetchedIndexPath: IndexPath, sections: [ControllerSectionInfo])  -> IndexPath? {
-//        for (sectionIndex, sectionInfo) in sections.enumerated() {
-//            if sectionInfo.fetchedIndex == fetchedIndexPath.section {
-//                return IndexPath(row: fetchedIndexPath.row, section: sectionIndex)
-//            }
-//        }
-//        return nil
-//    }
-}//
-
-
+/*
+ private func configureController() {
+     itemsController = ItemsController(id: String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)!)
+     itemsController.delegate = fetchedResultsControllerDelegate
+     let id = String(data: (listTitle?.recordID)!, encoding: String.Encoding.utf8)
+     let pred = NSPredicate(format: "titleID == %@", id!)
+     configureReadItemsController(predicate: pred)
+ }
+ */
