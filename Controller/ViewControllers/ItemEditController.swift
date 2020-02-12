@@ -26,7 +26,6 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         let datePicker = UIDatePicker()
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.isHidden = true
-        datePicker.minimumDate = Date()
         datePicker.backgroundColor = .secondarySystemBackground
         datePicker.addTarget(self, action: #selector(handleDatePickerChanged(sender:)), for: .valueChanged)
         return datePicker
@@ -70,7 +69,7 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
         reminderCell.configureValue(value: pickerDateAsString)
         tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
     }
-}//
+}
 
 //MARK: - UITableView Data Source Methods
 extension EditItemViewController: UITableViewDataSource {
@@ -127,7 +126,11 @@ extension EditItemViewController: UITableViewDelegate {
         let indexAboveDatePicker = IndexPath(row: 0, section: 1)
         if indexPath == indexAboveDatePicker {
             datePicker.isHidden.toggle()
+            if let reminderDate = itemBeingEdited?.reminderDate {
+                datePicker.date = reminderDate.setDatePickerDateTo(currentReminderDate: reminderDate)
+            }
             if let pickerCell = tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? ReminderDatePickerCell {
+                
                 pickerCell.setPickerConstraints()
             }
             UIView.animate(withDuration: 0.3) {

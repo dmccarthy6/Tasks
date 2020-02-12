@@ -6,11 +6,11 @@
 import UIKit
 
 final class EmptyView: UIView {
-    
+    //MARK: - Properties
     let emptyDataLabel: UILabel = {
         let label = UILabel()
-        label.text = "No Data"
-        label.font = .preferredFont(for: .headline, weight: .bold)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .preferredFont(for: .title1, weight: .bold)
         label.textColor = .label
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -20,36 +20,62 @@ final class EmptyView: UIView {
     
     let iconView: UIImageView = {
         let imageView = UIImageView()
-        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(systemName: "hand.thumbsup")
+        imageView.tintColor = Colors.tasksRed
+        imageView.contentMode = .scaleAspectFit
         return imageView
     }()
     
     
-    //MARK: - Interface
-    func setEmptyViewData(message: EmptyViewMessage, icon: UIImage) {
-        emptyDataLabel.text = message.message
-        iconView.image = icon
+    
+    
+    //MARK: - Initializer
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     
-    enum EmptyViewMessage: String {
-        case emptyList
+    
+    //MARK: - Layout
+    private func setupView() {
+        addSubview(emptyDataLabel)
+        addSubview(iconView)
         
-        var message: String {
-            switch self {
-            case .emptyList: return "The list is empty"
-            }
+        NSLayoutConstraint.activate([
+            emptyDataLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            emptyDataLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            
+            iconView.topAnchor.constraint(equalToSystemSpacingBelow: emptyDataLabel.bottomAnchor, multiplier: 5),
+            iconView.widthAnchor.constraint(equalToConstant: 70),
+            iconView.heightAnchor.constraint(equalTo: iconView.widthAnchor),
+            iconView.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor),
+            iconView.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor),
+        ])
+    }
+    
+    
+    
+    //MARK: - Interface
+    func setEmptyViewData(message: EmptyDataMessage) {
+        emptyDataLabel.text = message.message
+    }
+
+}
+
+enum EmptyDataMessage: String {
+    case emptyList
+    case emptyItems
+    
+    var message: String {
+        switch self {
+        case .emptyList:            return "Looks like you completed all your Tasks, great job!"
+        case .emptyItems:           return "You are crushing it! All your tasks have been completed."
         }
     }
-    
-//    enum EmptyViewIcon: UIImage {
-//        typealias RawValue = UIImage
-//        case emptyList
-//        
-//        var image: UIImage {
-//            switch self {
-//            case .emptyList: return UIImage(systemName: "hand.thumbsup.fill")!
-//            }
-//        }
-//    }
 }

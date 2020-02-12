@@ -36,7 +36,10 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         }
         return ItemsController(id: titleIDFromList)
     }()
-    
+    private lazy var emptyDataView: EmptyView = {
+        let view = EmptyView()
+        return view
+    }()
     
     //MARK: - Life Cycle
     override func viewDidLoad() {
@@ -75,6 +78,7 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
                 itemsController = configureControllerOpenedByWidget(id: listTitleID)
                 itemsController.delegate = fetchedResultsControllerDelegate
                 listTitle = itemsController.fetchItems()[0].list
+                tableView.reloadData()
             }
         } //Configure FetchedResultsController Normally. Opened via Lists Segue
         else { configureController() }
@@ -146,7 +150,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
             }
         }
     }
-    
+    /* This method  */
     private func handleOnlyCompletedItemsRowsInSection(section: Int, items: [Items]) -> Int {
         switch section {
         case 0: return 1
