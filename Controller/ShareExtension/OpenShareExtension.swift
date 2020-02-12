@@ -12,6 +12,10 @@ struct OpenShareExtension {
     func showShareExtensionInItemsActionSheet(items: [Items], popoverItem: UIBarButtonItem?) {
         let items = items.compactMap({ $0.item! })
         let shareViewController = ShareActivityController(activityItems: items, applicationActivities: nil)
+        
+        if let popoverController = shareViewController.popoverPresentationController {
+            popoverController.barButtonItem = popoverItem
+        }
         rootViewController().present(shareViewController, animated: true)
     }
     
