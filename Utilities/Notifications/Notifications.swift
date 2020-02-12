@@ -8,20 +8,24 @@ import UserNotifications
 import TasksFramework
 
 final class Notifications: NSObject {
-    
+    //MARK: - Properties
     public static let shared = Notifications()
     private let isRegisteredForRemoteNotifications = UIApplication.shared.isRegisteredForRemoteNotifications
     private var passedItem: Items?
     private var passedDate: Date?
     
-    private func requestAuthorization() {
+    
+    
+    
+    //MARK: Public Functions
+    /* This function is called when saving a reminder to an item. Called in WriteToDatabase. */
+    func requestAuthorizationAndCreateNotification(date: Date, item: Items) {
         let center = UNUserNotificationCenter.current()
+        
         center.requestAuthorization(options: [.alert, .badge, .sound]) { [unowned self] (granted, error) in
             if granted {
                 print("Access Granted")
-                if let date = self.passedDate, let item = self.passedItem {
-                    self.createNotification(from: date, item: item)
-                }
+                self.createNotification(from: date, item: item)
             }
             else {
                 print("No Notification Access")
@@ -29,7 +33,10 @@ final class Notifications: NSObject {
         }
     }
     
-    func checkNotificationCenterAuthorizationStatus(for viewController: UIViewController) {
+    
+    //MARK: - Private Functions
+    /* Functions that take in the Date and Item and create a Reminder Notification when the user adds a reminder to an Item */
+    private func checkNotificationCenterAuthorizationStatus(for viewController: UIViewController) {
         let notificationCenter = UNUserNotificationCenter.current()
         
         notificationCenter.getNotificationSettings { (settings) in
@@ -53,60 +60,52 @@ final class Notifications: NSObject {
         }
     }
     
-    func createNotification(from date: Date, item: Items) {
-        passedDate = date
-        passedItem = item
+    private func createNotification(from date: Date, item: Items) {
+        let center = UNUserNotificationCenter.current()
+        //Calendar
+        let calendar = Calendar(identifier: .gregorian)
+        let calendarComponents = calendar.dateComponents(in: .current, from: date)
+        let newComponents = DateComponents(calendar: calendar,
+                                           timeZone: .current,
+                                           era: nil,
+                                           year: nil,
+                                           month: calendarComponents.month,
+                                           day: calendarComponents.day,
+                                           hour: calendarComponents.hour,
+                                           minute: calendarComponents.minute,
+                                           second: nil,
+                                           nanosecond: nil,
+                                           weekday: nil,
+                                           weekdayOrdinal: nil,
+                                           quarter: nil,
+                                           weekOfMonth: nil,
+                                           weekOfYear: nil,
+                                           yearForWeekOfYear: nil)
         
-        if isRegisteredForRemoteNotifications {
-            let center = UNUserNotificationCenter.current()
-            //Calendar
-            let calendar = Calendar(identifier: .gregorian)
-            let calendarComponents = calendar.dateComponents(in: .current, from: date)
-            let newComponents = DateComponents(calendar: calendar,
-                                               timeZone: .current,
-                                               era: nil,
-                                               year: nil,
-                                               month: calendarComponents.month,
-                                               day: calendarComponents.day,
-                                               hour: calendarComponents.hour,
-                                               minute: calendarComponents.minute,
-                                               second: nil,
-                                               nanosecond: nil,
-                                               weekday: nil,
-                                               weekdayOrdinal: nil,
-                                               quarter: nil,
-                                               weekOfMonth: nil,
-                                               weekOfYear: nil,
-                                               yearForWeekOfYear: nil)
-            
-            //Content
-            guard let safeItem = item.item, let safeTitle = item.list?.title else {
-                return
-            }
-            let content = UNMutableNotificationContent()
-            content.categoryIdentifier = "Task"
-            content.title = safeTitle
-            content.body =  safeItem
-            content.sound = UNNotificationSound.default
-            
-            //Trigger
-            let trigger = UNCalendarNotificationTrigger(dateMatching: newComponents, repeats: false)
-            let request = UNNotificationRequest(identifier: "Task",
-                                                content: content,
-                                                trigger: trigger)
-            
-            //Set Alert
-            center.removeAllPendingNotificationRequests()
-            center.add(request) { (error) in
-                if let error = error {
-                    print("Error Adding Alert \(error.localizedDescription)")
-                }
-            }
-            registerCategories()
+        //Content
+        guard let safeItem = item.item, let safeTitle = item.list?.title else {
+            return
         }
-        else {
-            requestAuthorization()
+        let content = UNMutableNotificationContent()
+        content.categoryIdentifier = "Task"
+        content.title = safeTitle
+        content.body =  safeItem
+        content.sound = UNNotificationSound.default
+        
+        //Trigger
+        let trigger = UNCalendarNotificationTrigger(dateMatching: newComponents, repeats: false)
+        let request = UNNotificationRequest(identifier: "Task",
+                                            content: content,
+                                            trigger: trigger)
+        
+        //Set Alert
+        center.removeAllPendingNotificationRequests()
+        center.add(request) { (error) in
+            if let error = error {
+                print("Error Adding Alert \(error.localizedDescription)")
+            }
         }
+        registerCategories()
     }
     
     private func registerCategories() {
@@ -134,8 +133,9 @@ final class Notifications: NSObject {
         }
     }
     
-}//
+}
 
+//MARK: - UINotificationCenter Delegate Methods
 extension Notifications: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
