@@ -1,7 +1,3 @@
-//
-//  TextFieldCell.swift
-//  Tasks
-//
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
@@ -59,22 +55,16 @@ final class TextFieldCell: UITableViewCell {
         backgroundColor = .secondarySystemBackground
         contentView.addSubview(addLabelIV)
         contentView.addSubview(cellTextField)
-//        contentView.addSubview(cellTextView)
+
 
         let guide = contentView.layoutMarginsGuide
 
         NSLayoutConstraint.activate([
-            //
             addLabelIV.heightAnchor.constraint(equalTo: addLabelIV.widthAnchor),
             addLabelIV.widthAnchor.constraint(equalToConstant: Constants.addImageWidth),
             addLabelIV.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
             addLabelIV.centerYAnchor.constraint(equalTo: guide.centerYAnchor),
-            
-//            cellTextView.leadingAnchor.constraint(equalToSystemSpacingAfter: addLabelIV.trailingAnchor, multiplier: 1),
-//            cellTextView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
-//            cellTextView.centerYAnchor.constraint(equalTo: addLabelIV.centerYAnchor),
-//            cellTextView.topAnchor.constraint(equalTo: guide.topAnchor),
-//            cellTextView.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
+ 
             cellTextField.leadingAnchor.constraint(equalToSystemSpacingAfter: addLabelIV.trailingAnchor, multiplier: 1),
             cellTextField.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
             cellTextField.centerYAnchor.constraint(equalTo: addLabelIV.centerYAnchor),

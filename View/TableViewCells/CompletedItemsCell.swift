@@ -96,8 +96,11 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
         completedButton.addTarget(self, action: #selector(completedButtonTapped), for: .touchUpInside)
     }
     
-    func configure(item: String) {
-        self.itemLabel.attributedText = strikeThroughTextFor(item)
+    func configure(item: Items) {
+        self.itemLabel.attributedText = strikeThroughTextFor(item.item)
+        
+        self.flaggedButton.setImage(item.isFlagged ? SystemImages.StarFill : SystemImages.Star, for: .normal)
+        self.flaggedButton.tintColor = item.isFlagged ? .systemYellow : Colors.tasksRed
     }
     
     func handleUserTapCompletedOrFavorite(for item: Items, isFlagged: Bool, tableView: UITableView) {
@@ -114,13 +117,13 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
         }
     }
     
-    private func strikeThroughTextFor(_ item: String) -> NSAttributedString {
+    private func strikeThroughTextFor(_ item: String?) -> NSAttributedString {
         let attributes: [NSAttributedString.Key : Any] = [
             NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue,
             NSAttributedString.Key.strikethroughColor: Colors.tasksRed,
         ]
         
-        let attributedStringWithAttributes = NSAttributedString(string: item, attributes: attributes)
+        let attributedStringWithAttributes = NSAttributedString(string: item ?? "", attributes: attributes)
         return attributedStringWithAttributes
     }
     
