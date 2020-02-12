@@ -73,7 +73,6 @@ final class EditListViewController: UIViewController, CanWriteToDatabase {
     }
     
     @objc func saveTapped() {
-        //TO-DO: Alert user that the list was saved.
         dismiss(animated: true, completion: nil)
     }
     
@@ -119,23 +118,6 @@ extension EditListViewController: UITableViewDelegate {
         }
     }
     
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        switch section {
-//        case 0:
-//            return createHeaderView()
-//        case 1: return nil
-//        default: return nil
-//        }
-//    }
-//    
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        switch section {
-//        case 0: return headerHeight
-//        case 1: return 0
-//        default: return 0
-//        }
-//    }
-    
     private func createHeaderView() -> UIView {
         let headerView = UIView(frame: CGRect(x: 0,
                                               y: 0,
@@ -146,10 +128,12 @@ extension EditListViewController: UITableViewDelegate {
         titleLabel.textColor = .label
         titleLabel.font = .preferredFont(for: .title2,
                                          weight: .semibold)
-        titleLabel.text = "Edit List"//HeaderText.editList.rawValue
+        titleLabel.text = "Edit List"  
         headerView.addSubview(titleLabel)
-        titleLabel.centerView(centerX: headerView.centerXAnchor,
-                              centerY: headerView.centerYAnchor)
+        NSLayoutConstraint.activate([
+            titleLabel.centerXAnchor.constraint(equalTo: headerView.centerXAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor),
+        ])
         return headerView
     }
     
@@ -166,10 +150,6 @@ extension EditListViewController: UITableViewDelegate {
 
 //MARK: - UITextField Delegate Methods
 extension EditListViewController: UITextFieldDelegate {
-    
-    //    func textFieldDidBeginEditing(_ textField: UITextField) {
-    //        doneButton(isEnabled: true)
-    //    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         

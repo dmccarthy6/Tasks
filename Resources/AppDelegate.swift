@@ -1,7 +1,4 @@
-//
-//  AppDelegate.swift
-//  Tasks
-//
+
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
@@ -10,17 +7,15 @@ import UIKit
 import UserNotifications
 import TasksFramework
 import CloudKit
-
+import CoreData
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
     var window: UIWindow?
     var notificationCenter: NotificationCenter?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        
         let mainListVC = ListsViewController()
         
         let navigationController = UINavigationController(rootViewController: mainListVC)
@@ -29,15 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
         
         let viewController = window?.visibleViewController()
+        registerForPushNotifications(application: application)
         checkCloudStatusFor(rootViewController: viewController!)
-        
-        application.registerForRemoteNotifications()
         setNavigationBarColors()
         return true
     }
     
     //MARK: - Helper Methods
-    //Check if the user has CK Enabled.
+    /* Presents alert to user if they are not currently logged into CloudKit. Gives them option to open settings and log into iCloud to sync lists between devices. */
     func checkCloudStatusFor(rootViewController: UIViewController) {
         CKContainer.default().accountStatus { (cloudStatus, error) in
             switch cloudStatus {
@@ -51,24 +45,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     //Reigster For Push Notifications
-    func registerForPushNotifications() {
-        UNUserNotificationCenter.current().requestAuthorization(options: []) { (granted, error) in
-            if let error = error {
-                if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }),
-                    let rootViewController = window.rootViewController {
-                    Alerts.showNormalAlert(rootViewController,
-                                           title: "Error",
-                                           message: "Unable to register for notifications - \(error.localizedDescription)")
+    func registerForPushNotifications(application: UIApplication) {
+        if application.isRegisteredForRemoteNotifications { return }
+        else {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .providesAppNotificationSettings]) { (granted, error) in
+                if error == nil && granted {
+                    DispatchQueue.main.async {
+                        application.registerForRemoteNotifications()
+                    }
                 }
-                print("Error Granting Push Notifications - \(error.localizedDescription)")
+                else {
+                    //Permission Denied
+                }
             }
         }
     }
     
-    //Set Navigation Bar Color
+    //UI - Setting Navigation Bar Appearance
     func setNavigationBarColors() {
         let navigationBarAppearance = UINavigationBar.appearance()
-        //navigationBarAppearance.prefersLargeTitles = true
         navigationBarAppearance.tintColor = .white
         navigationBarAppearance.barTintColor = Colors.tasksRed
         navigationBarAppearance.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -81,25 +76,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
     }
     
+    //MARK: - Today Widget - called when user taps item in Today Widgetm this opens the correct ItemsController.
     /*Function used when user opens the application from the Today Widget */
     open func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         if url.scheme == "tasksopen" {
-            print("AppDel - Yes!")
             
             if url.host == "addItemsVC" {
                 let containerDefaults = UserDefaults(suiteName: "group.Tasks.Extensions")
-//                let id = containerDefaults?.data(forKey: "tappedID")
-                
-                //TO-DO: Open the app from here.
-                let rootVC = ListsViewController()
-                let navigationController = UINavigationController(rootViewController: rootVC)
+                let id = containerDefaults?.data(forKey: "tappedID")
                 
                 do {
-//                    let idDecoded = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id!) as! String
-                    let addItemsVC = AddItemsToListViewController()
-                    let navController = UINavigationController(rootViewController: addItemsVC)
-                    //addItemsVC.id = idDecoded
-                    window?.rootViewController = navController
+                    if let id = id {
+                        let encodedID = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSString.self], from: id) as! String
+                        openItemsController(for: encodedID)
+                    }
                 }
                 catch let error as NSError {
                     print("Error \(error.localizedDescription)")
@@ -111,5 +101,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
   
+    func openItemsController(for listID: String) {
+        let navigationController = UINavigationController()
+        let rootVC = ListsViewController()
+        let itemsVC = AddItemsToListViewController()
+        itemsVC.listTitleID = listID
+        navigationController.setViewControllers([rootVC, itemsVC], animated: true)
+        window?.rootViewController = navigationController
+        
+    }
 
 }

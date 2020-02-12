@@ -16,15 +16,15 @@ class TasksTabBarController: UITabBarController {
     let addItemsToListVC = AddItemsToListViewController()
     let editListController = EditListViewController()
     
-    lazy var editListMenu: EditListMenu = {
-        let editList = EditListMenu()
-        return editList
-    }()
-    
-    lazy var shareListMenu: ShareListMenuLauncher = {
-       let shareList = ShareListMenuLauncher()
-        return shareList
-    }()
+//    lazy var editListMenu: EditListMenu = {
+//        let editList = EditListMenu()
+//        return editList
+//    }()
+//
+//    lazy var shareListMenu: ShareListMenuLauncher = {
+//       let shareList = ShareListMenuLauncher()
+//        return shareList
+//    }()
     
     var currentList: List?
     
@@ -58,53 +58,53 @@ class TasksTabBarController: UITabBarController {
 
 extension TasksTabBarController: UITabBarControllerDelegate {
     
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        
-        if viewController.isKind(of: UINavigationController.self) {
-            if let navVC = viewController as? UINavigationController {
-                
-                guard let visibleVC = navVC.visibleViewController else {
-                    fatalError("Error No VC")
-                }
-                
-                if visibleVC.isKind(of: EditListViewController.self) {
-                    
-                    shareListMenu.handleDismiss()
-                    handleEditMenu(editListMenu: editListMenu)
-                    return false
-                }
-                if visibleVC.isKind(of: AddItemsToListViewController.self) {
-                    
-                    editListMenu.handleDismiss()
-                    handleShareMenu(shareListMenu: shareListMenu)
-                    return false
-                }
-            }
-        }
-        return true
-    }
+//    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+//        
+//        if viewController.isKind(of: UINavigationController.self) {
+//            if let navVC = viewController as? UINavigationController {
+//                
+//                guard let visibleVC = navVC.visibleViewController else {
+//                    fatalError("Error No VC")
+//                }
+//                
+//                if visibleVC.isKind(of: EditListViewController.self) {
+//                    
+//                    shareListMenu.handleDismiss()
+//                    handleEditMenu(editListMenu: editListMenu)
+//                    return false
+//                }
+//                if visibleVC.isKind(of: AddItemsToListViewController.self) {
+//                    
+//                    editListMenu.handleDismiss()
+//                    handleShareMenu(shareListMenu: shareListMenu)
+//                    return false
+//                }
+//            }
+//        }
+//        return true
+//    }
     
-    func handleEditMenu(editListMenu: EditListMenu) {
-        if editListMenu.menuIsShowing {
-            
-            editListMenu.handleDismiss()
-        }
-        else {
-            editListMenu.showEditListMenu()
-            editListMenu.list = currentList
-        }
-    }
-    
-    func handleShareMenu(shareListMenu: ShareListMenuLauncher) {
-        if shareListMenu.isMenuShowing {
-            
-            shareListMenu.handleDismiss()
-        }
-        else {
-            shareListMenu.showShareMenu()
-            shareListMenu.list = currentList
-        }
-    }
+//    func handleEditMenu(editListMenu: EditListMenu) {
+//        if editListMenu.menuIsShowing {
+//
+//            editListMenu.handleDismiss()
+//        }
+//        else {
+//            editListMenu.showEditListMenu()
+//            editListMenu.list = currentList
+//        }
+//    }
+//
+//    func handleShareMenu(shareListMenu: ShareListMenuLauncher) {
+//        if shareListMenu.isMenuShowing {
+//
+//            shareListMenu.handleDismiss()
+//        }
+//        else {
+//            shareListMenu.showShareMenu()
+//            shareListMenu.list = currentList
+//        }
+//    }
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if item == addItemsToListVC.tabBarItem {

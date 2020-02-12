@@ -1,7 +1,3 @@
-//
-//  ItemsController.swift
-//  Tasks
-//
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
@@ -21,7 +17,6 @@ class ItemsController: NSObject, CanReadFromDatabase {
     fileprivate lazy var itemsController: NSFetchedResultsController<NSFetchRequestResult> = {
         let itemsForListTitlePredicate = NSPredicate(format: "titleID == %@", self.id)
         let controller = ItemsFetchedResultsController(managedObjectContext: managedObjectContext, predicate: itemsForListTitlePredicate)
-        
         let controllerToReturn = controller.configureItemsController()
         itemsFetchedResultsController = controller.configureItemsController()
         itemsFetchedResultsController!.delegate = self
@@ -87,7 +82,6 @@ class ItemsController: NSObject, CanReadFromDatabase {
     
     private func determineOpenItems() -> Int? {
         guard let openItems = itemsController.fetchedObjects as? [Items] else { return 0 }
-        print("OpenItemsCount: \(openItems.filter({ $0.isComplete == false }).count)")
         return openItems.filter({ $0.isComplete == false }).count
     }
     
@@ -187,6 +181,7 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         
         let open = getOpenItemsCount()
         let closed = getClosedItemsCount()
+        openItemsBeforeChange = determineOpenItems()
         
         if open >= 1 && closed == 1 {
             if openItemsBeforeChange == 0 {

@@ -1,7 +1,3 @@
-//
-//  ListsViewController.swift
-//  Tasks
-//
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
@@ -30,7 +26,7 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
     //MARK: - Life Cycle
     override func viewDidLoad() {
         super .viewDidLoad()
-        view.backgroundColor = .systemBackground
+        //view.backgroundColor = .systemBackground
     
 //        CoreDataManager.shared.batchDeleteCoreData(entityName: .List)
         setUpView()
@@ -51,7 +47,7 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
         let listsTable = UITableView(frame: .zero, style: .plain)
         tableView = listsTable
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        //tableView.backgroundColor = .systemBackground
+        tableView.backgroundColor = .systemBackground
         tableView.dataSource = dataSource
         tableView.delegate = self
         tableView.tableFooterView = UIView()
@@ -83,7 +79,10 @@ class ListsViewController: UIViewController, CanWriteToDatabase {
 extension ListsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        handleSegueToListItems(indexPath: indexPath)
+        if indexPath.section == 0 { return }
+        else {
+            handleSegueToListItems(indexPath: indexPath)
+        }
     }
     
     //MARK: TableView Swipe Actions:
@@ -91,9 +90,9 @@ extension ListsViewController: UITableViewDelegate {
         if indexPath.section == 0 { return nil }
         let fetchedIndex = IndexPath(row: indexPath.row, section: 0)
         guard let list = dataSource.listsFetchedResultsController?.object(at: fetchedIndex) as? List else { return nil }
+        
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action: UIContextualAction, view: UIView, completionHandler: (Bool) -> Void) in
-            Alerts.showAlert(self, message: "Deleting \(list.title!) will delete all data associated with this list. Are you sure you want to delete?") {
-                print("Deleting list: \(list.title ?? "No List To Delete")")
+            Alerts.deleteAlert(self, view: view, message: .deleteList) {
                 self.deleteFromCoreData(object: list)
                 let allLists = self.dataSource.listsFetchedResultsController?.fetchedObjects as! [List]
                 self.updateOrderAfterDelete(objects: allLists, entity: .List)
@@ -102,18 +101,14 @@ extension ListsViewController: UITableViewDelegate {
         }
         
         let shareAction = UIContextualAction(style: .normal, title: "Share") { (shareAction: UIContextualAction, view: UIView, completionHandler: (Bool) -> Void) in
-            //TO-TO: Open Share Extensionn
-            print("Open Share Extension")
-            
             if let items = list.items?.allObjects as? [Items] {
-                OpenShareExtension().showShareExtensionActionSheet(items: items, popoverItem: nil)
+                Alerts.shareListActionSheet(self, items: items, popoverView: view)
             }
             completionHandler(true)
-            
         }
-        shareAction.image = UIImage(systemName: "square.and.arrow.up")
-        shareAction.backgroundColor = .blue
-        deleteAction.image = UIImage(systemName: "trash")
+        shareAction.image = SystemImages.Share!
+        shareAction.backgroundColor = .systemBlue
+        deleteAction.image = SystemImages.DeleteTrashCan!
         
         let actions = UISwipeActionsConfiguration(actions: [deleteAction, shareAction])
         return actions

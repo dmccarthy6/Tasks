@@ -81,8 +81,13 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
     
     
     //MARK: - Interface
-    func configureCell(itemText: String) {
-        self.openItemLabel.text = itemText
+    func configureCell(item: Items) {
+        self.openItemLabel.text = item.item
+        
+        //Flagged Button
+        self.flaggedButton.setImage(item.isFlagged ? SystemImages.StarFill! : SystemImages.Star!, for: .normal)
+        self.flaggedButton.tintColor = item.isFlagged ? .systemYellow : Colors.tasksRed
+        
     }
     
     func handleUserTapFlagOrFavoriteButtons(for item: Items, isFlagged: Bool, tableView: UITableView) {
