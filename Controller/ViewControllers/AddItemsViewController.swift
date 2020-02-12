@@ -201,7 +201,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
             let openItemsCell: ItemAddedCell = tableView.dequeueReusableCell(for: indexPath)
             let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.ToDo.rawValue)!)
             if let sections = itemsController.sections, let itemAtIndex = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
-                openItemsCell.configureCell(itemText: itemAtIndex.item!)
+                openItemsCell.configureCell(item: itemAtIndex)
                 openItemsCell.handleUserTapFlagOrFavoriteButtons(for: itemAtIndex,
                                                                  isFlagged: itemAtIndex.isFlagged,
                                                                  tableView: tableView)
@@ -219,7 +219,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
             if self.isCompletedShowing {
                 let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.Completed.rawValue)!)
                 if let sections = itemsController.sections, let closedItemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
-                    completedItemsCell.configure(item: closedItemAtIndexPath.item!)
+                    completedItemsCell.configure(item: closedItemAtIndexPath)
                     completedItemsCell.handleUserTapCompletedOrFavorite(for: closedItemAtIndexPath,
                                                                         isFlagged: closedItemAtIndexPath.isFlagged,
                                                                         tableView: tableView)
@@ -248,7 +248,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
                 let frcIndexPath = IndexPath(row: tvIndexPath.row, section: 0)
                 if let sections = itemsController.sections, let itemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath,
                                                                                                                                  sections: sections) {
-                    completedItemsCell.configure(item: itemAtIndexPath.item!)
+                    completedItemsCell.configure(item: itemAtIndexPath)
                     completedItemsCell.handleUserTapCompletedOrFavorite(for: itemAtIndexPath,
                                                                         isFlagged: itemAtIndexPath.isFlagged,
                                                                         tableView: tableView)
