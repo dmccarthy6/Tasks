@@ -16,6 +16,10 @@ typealias EventsCalendarManagerResponse = (_ result: ResultCustomError) -> Void
 final class CalendarManager: NSObject, CanWriteToDatabase {
     //MARK: - Properties
     private var eventStore: EKEventStore
+    private var tempTitle: String?
+    private var tempStartDate: Date?
+    private var tempEndDate: Date?
+    
     
     
     //MARK: - Initializer
@@ -39,7 +43,7 @@ final class CalendarManager: NSObject, CanWriteToDatabase {
         case .notDetermined:
             eventStore.requestAccess(to: .event) { (granted, error) in
                 if granted {
-                    completion(.success(eventController))
+                    
                 }
                 else {
                     completion(.failure(.calendarAccessDeniedOrRestricted))
