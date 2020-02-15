@@ -58,15 +58,10 @@ class EditItemViewController: UIViewController, CanWriteToDatabase {
     
     //MARK: - UIDatePicker Methods
     @objc func handleDatePickerChanged(sender: UIDatePicker) {
-        let reminderCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as! MenuCell
-        let pickerDateAsString = sender.date.getReminderDateAsString(pickerDate: sender.date)
-        
         //Save reminder date to item in Core Data
         if let item = itemBeingEdited {
             setAlertOnItem(item: item, alertDate: sender.date)
         }
-        //Set Reminder Label in MenuCell
-        reminderCell.configureValue(value: pickerDateAsString)
         tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .automatic)
     }
 }
@@ -96,9 +91,10 @@ extension EditItemViewController: UITableViewDataSource {
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                labelCell.configure(image: SystemImages.BellReminderIcon!, cellLabelText: EditAllDataLabels.reminder)
+                labelCell.configureCell(image: SystemImages.BellReminderIcon!, titleLabelText: EditAllDataLabels.reminder)
+                
                 if let item = itemBeingEdited, let reminderDate = item.reminderDate {
-                    labelCell.configureValue(value: reminderDate)
+                    labelCell.configureCellValues(valueText: reminderDate)
                 }
                 return labelCell
             case 1:
@@ -107,9 +103,10 @@ extension EditItemViewController: UITableViewDataSource {
                 datePickerCell.alertDatePicker = datePicker
                 return datePickerCell
             case 2:
-                labelCell.configure(image: SystemImages.CalendarIcon!, cellLabelText: EditAllDataLabels.dueDate)
+                labelCell.configureCell(image: SystemImages.CalendarIcon!, titleLabelText: EditAllDataLabels.dueDate)
+                
                 if let dueDate = itemBeingEdited?.dueDate {
-                    labelCell.configureValue(value: dueDate)
+                    labelCell.configureCellValues(valueText: dueDate)
                 }
             default: return UITableViewCell()
             }
@@ -130,7 +127,6 @@ extension EditItemViewController: UITableViewDelegate {
                 datePicker.date = reminderDate.setDatePickerDateTo(currentReminderDate: reminderDate)
             }
             if let pickerCell = tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? ReminderDatePickerCell {
-                
                 pickerCell.setPickerConstraints()
             }
             UIView.animate(withDuration: 0.3) {
@@ -235,7 +231,7 @@ extension EditItemViewController: EKEventEditViewDelegate {
             if let event = controller.event, let item = itemBeingEdited, let startDate = event.startDate {
                 setDueDateForItem(item: item, date: startDate)
                 controller.dismiss(animated: true, completion: nil)
-                tableView.reloadData()
+                tableView.reloadRows(at: [IndexPath(row: 2, section: 1)], with: .fade)
             }
             
         case .deleted:

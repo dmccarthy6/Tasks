@@ -78,17 +78,15 @@ final class MenuCell: UITableViewCell {
     }
     
     //MARK: - Interface Functions
-    func configure(image: UIImage, cellLabelText: EditAllDataLabels) {
+
+    func configureCell(image: UIImage, titleLabelText: EditAllDataLabels) {
         self.iconImageView.image = image
-        self.titleLabel.text = cellLabelText.rawValue
+        self.titleLabel.text = titleLabelText.rawValue
     }
     
-    func configureValue(value: String?) {
-        self.valueLabel.text = value ?? "Tap to add"
-        
-        if let value = value {
-            setRedFontIfReminderIsPastDue(reminder: value)
-        }
+    func configureCellValues(valueText: String) {
+        self.valueLabel.text = valueText
+        setRedFontIfReminderIsPastDue(reminder: valueText)
     }
     
 }
