@@ -1,7 +1,7 @@
 # Tasks
 
-## Updates Coming In Version 2.0:
-* Adding NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
+## Updates In Version 2.0:
+* Added NSPersistentCloudKitContainer to improve the Core Data/CloudKit Sync.
 * Updated and simplified the User Interface to improve the User Experience.
 * Added today and share extensions to improve User Experience.
 * Added support for iOS 13.0 and Dark Mode!
@@ -23,7 +23,7 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 
 ***
 ## About This Project: 
-- **Why did I make Tasks?** I wanted a to-do list application that made it easier to stay on top of my tasks (don't we all?). I wanted the ability to add items to my calendar which would help me avoid snoozing items until I forgot about them. I also built this application to get a deeper dive into Core Data and CloudKit frameworks.  
+- **Why did I make Tasks?** I wanted a to-do list application that made it easier to stay on top of my tasks (don't we all?). I wanted the ability to add items to my calendar which would help me avoid snoozing items until I forgot about them. I also built this application to become more familiar with both the Core Data and CloudKit frameworks.  
 
 - **What have I learned so far?** With this update I refactored almost the entire application to better reflect what I've learned as a developer since I first released Tasks.
   * I have gained a greater understanding of planning out the App architecture and basic functionality from the start! 
@@ -33,8 +33,8 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
   * Moved my Core Data stack to a framework to access the stack from my main application and the today widget.
 
 - **Whats Next?** 
-  * UI! Currently working on updating the user interface to improve the look and feel of the application.
-  * Final refactoring to improve code stability.
+  * Planning for adding some additional features to Tasks.
+  * Continue to improve code.
 
 ***
 ## Screenshots:
@@ -50,6 +50,7 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 I am an iOS Developer from Northern CA. I focus on writing applications in Swift and Objective-C. To learn more about me, you can check out my [portfolio](https://dylanmccarthyios.com).
 ***
 ## *** Previous Version Screenshots: ***
+Some images of the previous version of Tasks. Version 2.0 is a great improvement in UI and Performance over the previous version. 
 ![Tasks Home With Added List](Images/HomeWithListAddedGithub.png) ![Tasks With Items Added](Images/TasksListWithItemsGithub.png)![Tasks Adding Reminder](Images/TasksAddingReminderGithub.png) 
 
 
