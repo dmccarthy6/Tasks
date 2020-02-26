@@ -71,6 +71,7 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
     }
     
     /* Checking here how this VC was opened. If by Widget, setting listTitle property by fetching via recordID. Else calling configureController which configures based on list segued in */
+    /// Checks how the AddItemsViewController was opened. If it was opened via the Today Widget setting the list, delegate, and reloading data.
     private func checkHowViewControllerWasOpened(if fromWidget: Bool) {
         if fromWidget {
             //Configure FetchedResultsController -- this came from Today Widget need to get and set listTitle here as well.

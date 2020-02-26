@@ -7,7 +7,11 @@ import CoreData
 import TasksFramework
 
 //typalias Database = ReadFromDatabase & WriteToDatabase --IN VC
-
+/// Protocol that contains methods for reading data from Core Data database.
+/// - Parameters:
+///     - listsFetchedResultsController: {  get set } This fetched results controller is 
+///     - itemsFetchedResultsController: {  get set }
+///     - completedItemsFetchedResultsController: {  get set }
 @objc protocol CanReadFromDatabase {
     var listsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? { get set }
     var itemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? { get set }
@@ -16,7 +20,7 @@ import TasksFramework
 
 extension CanReadFromDatabase {
     var managedObjectContext: NSManagedObjectContext {
-        get { return CoreDataManager.shared.mainThreadManagedObjectContext }
+        get { return CoreDataManager.context }
     }
     
     
