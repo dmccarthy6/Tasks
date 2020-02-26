@@ -51,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .providesAppNotificationSettings]) { (granted, error) in
                 if error == nil && granted {
                     DispatchQueue.main.async {
+                        application.applicationIconBadgeNumber = 0
                         application.registerForRemoteNotifications()
                     }
                 }

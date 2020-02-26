@@ -26,4 +26,11 @@ extension String {
         }
     }
     
+    func setDatePickerDateTo(currentReminderDate: String) -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM dd, yyyy h:mm a"
+        
+        let date = dateFormatter.date(from: currentReminderDate)
+        return date!
+    }
 }

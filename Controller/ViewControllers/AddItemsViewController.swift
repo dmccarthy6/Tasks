@@ -36,7 +36,10 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
         }
         return ItemsController(id: titleIDFromList)
     }()
-    
+    private lazy var emptyDataView: EmptyView = {
+        let view = EmptyView()
+        return view
+    }()
     
     //MARK: - Life Cycle
     override func viewDidLoad() {
@@ -68,6 +71,7 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
     }
     
     /* Checking here how this VC was opened. If by Widget, setting listTitle property by fetching via recordID. Else calling configureController which configures based on list segued in */
+    /// Checks how the AddItemsViewController was opened. If it was opened via the Today Widget setting the list, delegate, and reloading data.
     private func checkHowViewControllerWasOpened(if fromWidget: Bool) {
         if fromWidget {
             //Configure FetchedResultsController -- this came from Today Widget need to get and set listTitle here as well.
@@ -75,6 +79,7 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
                 itemsController = configureControllerOpenedByWidget(id: listTitleID)
                 itemsController.delegate = fetchedResultsControllerDelegate
                 listTitle = itemsController.fetchItems()[0].list
+                tableView.reloadData()
             }
         } //Configure FetchedResultsController Normally. Opened via Lists Segue
         else { configureController() }
@@ -146,7 +151,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
             }
         }
     }
-    
+    /* This method  */
     private func handleOnlyCompletedItemsRowsInSection(section: Int, items: [Items]) -> Int {
         switch section {
         case 0: return 1

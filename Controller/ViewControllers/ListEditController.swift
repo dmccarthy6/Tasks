@@ -101,8 +101,7 @@ extension EditListViewController: UITableViewDataSource {
         }
         if indexPath.section == 1 {
             let editListData = data[indexPath.row]
-            menuCell.configure(image: editListData.image,
-                               cellLabelText: editListData.labelText)
+            menuCell.configureCell(image: editListData.image, titleLabelText: editListData.labelText)
             return menuCell
         }
         return UITableViewCell()

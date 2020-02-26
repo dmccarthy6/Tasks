@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 import TasksFramework
 
-class ValidateTextField: NSObject, CanWriteToDatabase {
+final class ValidateTextField: NSObject, CanWriteToDatabase {
     
     public static let shared = ValidateTextField()
     
     func validateAndSave(_ viewController: UIViewController, textField: UITextField, title: String?, item: String?, list: List?, order: Int) {
         let validationResult = validateTextField(textField)
         if let errorMessage = validationResult.errorMessage {
-            Alerts.showAlert(viewController, message: errorMessage) {
+            Alerts.textFieldIsEmptyAlert(viewController, message: errorMessage) {
                 if let safeInputView = validationResult.inputView {
                     safeInputView.becomeFirstResponder()
                 }
@@ -26,17 +26,15 @@ class ValidateTextField: NSObject, CanWriteToDatabase {
         else {
             if let title = title {
                 saveObjectToCoreData(value: title, order: order, entity: .List, parent: nil)
-                //CoreDataManager.shared.saveTitleToCoreData(title: title!)
             }
             if let item = item, let list = list {
-                //CoreDataManager.shared.saveItemsToCoreData(item: item!)
                 saveObjectToCoreData(value: item, order: order, entity: .Items, parent: list)
             }
         }
     }
     
     private func validateTextField(_ textField: UITextField) -> (errorMessage: String?, inputView: UIView?) {
-        let errorMessage = "Text Field Can Not Be Empty"
+        let errorMessage = "Enter text to add a list title or item"
         guard let textFieldText = textField.text else {
             return (errorMessage, textField)
         }

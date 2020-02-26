@@ -1,12 +1,18 @@
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
-//
 
 import Foundation
 import CoreData
 import TasksFramework
 
-class ItemsController: NSObject, CanReadFromDatabase {
+/*
+    This class is the fetchedResultsController used by 'AddItemsViewController'. This class is called when objects are inserted/updated/changed in that VC. This gets the info from the Tableview and Datasource
+    then uses the 'ItemsFetchedResultsControllerDelegate' file to pass that data along.
+    * The delegate of this file is ItemsFetchedResultsControllerDelegate
+    * This class is responsible for handling changes in Sections (When Items are moved between open/closed sections). It uses the ControllerSectionInfo file to maintain the correct number of sections in the table.
+ */
+
+final class ItemsController: NSObject, CanReadFromDatabase {
     var listsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var itemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var completedItemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
@@ -33,11 +39,18 @@ class ItemsController: NSObject, CanReadFromDatabase {
     }
     
     //MARK: - Helpers
+    ///This method provides a list of fetched items from the FetchedResultsController.
+    /// - Returns: An array of Items values or an empty array if there are no vaues yet.
     func fetchItems() -> [Items] {
         let items = itemsController.fetchedObjects as? [Items]
         return items?.map{ $0 } ?? []
     }
     
+    /// Returns the item at the indexPath passed into this method.
+    /// - Parameters:
+    ///   - indexPath: Item text to display in the TableView Cell.
+    ///   - sections: Takes array of ControllerSectionInfo.
+    /// - Returns: The item at the specified index path.
     func itemsControllerItemAtIndexPath(indexPath: IndexPath, sections: [ControllerSectionInfo]) -> Items? {
         let sectionInfo = sections[indexPath.section]
         if let section = sectionInfo.fetchedIndex {
@@ -48,6 +61,8 @@ class ItemsController: NSObject, CanReadFromDatabase {
         return nil
     }
     
+    ///Checks if all items in a specified list are complete.
+    /// - Returns: Boolean value displaying the status of items.
     func allItemsAreComplete() -> Bool {
         let openItems = fetchItems().filter({ $0.isComplete == false }).count
         let closedItems = fetchItems().filter({ $0.isComplete }).count
@@ -58,6 +73,8 @@ class ItemsController: NSObject, CanReadFromDatabase {
         }
     }
     
+    ///Checks whether or not the Show Completed button should be displayed on screen. If there are any completed items in a list this button will be shown.
+    /// - Returns: This method returns an Int value 1 if the button should be shown and 0 if it should not.
     func showCompletedButton() -> Int {
         if fetchItems().filter({ $0.isComplete }).count > 0 {
             return 1
@@ -65,6 +82,8 @@ class ItemsController: NSObject, CanReadFromDatabase {
         else { return 0 }
     }
     
+    ///Checks whether or not the Show Completed button should be displayed on screen. If there are any completed items in a list this button will be shown.
+    /// - Returns: This method returns an Int value 1 if the button should be shown and 0 if it should not.
     func numberOfSectionsBasedOnItemStatus() -> Int {
         if fetchItems().filter({ $0.isComplete }).count > 0 {
             return 3
@@ -122,7 +141,7 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
             let displayedNewIndexPath = indexPath.flatMap{ displayedIndexPathForFetchedIndexPath($0, sections: sections ?? []) }
             delegate?.controller?(controller, didChange: item, at: displayedOldIndexPath, for: type, newIndexPath: displayedNewIndexPath)
             
-        case .move://Tap Complete button this hits
+        case .move:
             if let indexPath = indexPath, let newIndexPath = newIndexPath, let anObject = anObject as? Items {
                 handleMovingListItems(in: controller, indexPath: indexPath, newIndexPath: newIndexPath, object: anObject, type: type)
             }
@@ -139,6 +158,12 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
     }
     
     //MARK: - Helper functions
+    ///Since the FetchedResultsController sections and TableView sections don't match this method converts the sections received from the FRC to provide the correct number of sections for the TableView. There will always be one section in the TableView which contains the text field view.
+    /// - Description:
+    ///         - If the fetchedResultsController produces 0 for sections, we'll return 1 tableView section (open items only). If the fetchedResultsController produces 1 for section (2 sections) we'll produce 3 for the tableView sections since our tableView will have one section for open items, one section for closed items, one section for the 'showCompleted' button as well as section 0 showing the textField.
+    /// - Parameters:
+    ///     - controllerIndex: fetchedResultsController's section that's passed in.
+    /// - Returns: The converted Section Number as Int
     func getTableViewSection(from controllerIndex: Int) -> Int {
         switch controllerIndex {
         case 0:     return 1
@@ -148,6 +173,12 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
+    ///Updates the indexPath provided to return the indexPath with an updated section value.
+    /// - Description:
+    ///         - Takes in the indexPath provided from the Controller, updates the section to the appropriate tableView section so the delegate functions don't crash the tableView.
+    /// - Parameters:
+    ///     - controllerIndexPath: IndexPath provided
+    /// - Returns: IndexPath with the updated section value.
     func updateTableViewIndexPath(from controllerIndexPath: IndexPath) -> IndexPath {
         switch controllerIndexPath.section {
         case 0: return IndexPath(row: controllerIndexPath.row, section: 1)
@@ -157,9 +188,13 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
-    /*
-     
-     */
+    /// Handles moving an item within a list between sections when the item being moved is not the first or last item in a list.
+    /// - Parameters:
+    ///   - controller: FetchedResultsController that sent the message.
+    ///   - indexPath: IndexPath of changed object (nil for insertions).
+    ///   - newIndexPath: Destination indexPath of object for insertions or moved items (nil for deletions).
+    ///   - object: Object in controller's fetched results thats changed.
+    ///   - type: Type of change. -> NSFetchedResultsControllerChangeType.
     func handleMovingListItems(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
         if (getOpenItemsCount() == 0 && getClosedItemsCount() >= 1) || (getClosedItemsCount() == 0 && getOpenItemsCount() >= 1) {
             handleMovingLastItemOutOfSection(in: controller, indexPath: indexPath, newIndexPath: newIndexPath, object: object, type: type)
@@ -172,6 +207,13 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
+    /// Handles two possibilities: 1. moving the first item into a new section, either first item from open to closed OR first item from closed to open. 2. With a total of only 2 items in a list this handles when the first item is moved from open to closed or closed to open.
+    /// - Parameters:
+    ///   - controller: FetchedResultsController that sent the message.
+    ///   - indexPath: IndexPath of changed object (nil for insertions).
+    ///   - newIndexPath: Destination indexPath of object for insertions or moved items (nil for deletions).
+    ///   - object: Object in controller's fetched results thats changed.
+    ///   - type: Type of change. -> NSFetchedResultsControllerChangeType.
     private func handleMovingFirstItemIntoNewSection(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
         /* This method has two scenarios it handles. First is there are more than 2 items total in the list, and moving the first item into a new section (open -> closed OR closed -> open)
             When there are two items total && both are open || both are closed:
@@ -213,11 +255,14 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
-    /*
-     This method handles items moving between sections when it's not the first or last item in either section.
-     */
+    /// When an item is updated; Moved from one section to another when that item is not the first or last item in a section.
+    /// - Parameters:
+    ///   - controller: FetchedResultsController that sent the message.
+    ///   - indexPath: IndexPath of changed object (nil for insertions).
+    ///   - newIndexPath: Destination indexPath of object for insertions or moved items (nil for deletions).
+    ///   - object: Object in controller's fetched results thats changed.
+    ///   - type: Type of change. -> NSFetchedResultsControllerChangeType.
     private func handleTaskItemMoved(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
-        //Not the first or last item moved -- from either section.
         print("ItemsController - MOVING ITEM, NOT FIRST OR LAST")
         let tableIndexPath = updateTableViewIndexPath(from: indexPath)
         let tableNewIndexPath = updateTableViewIndexPath(from: newIndexPath)
@@ -225,9 +270,14 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         delegate?.controller?(controller, didChange: object, at: tableIndexPath, for: type, newIndexPath: tableNewIndexPath)
     }
     
-    /*
-     This method handles moving the last item out of a section (deleting the sections the items were removed from & handling either adding or deleting the 'showCompleted' button based on the item counts.
-     */
+    /// Method handles moving the last item out of a section. If moving the last completed item to open, this method will remove the completed items section along with the show completed button tableview section. If moving the last item from open to closed it will remove the open section
+    /// add the showCompleted button section along with the closed section.
+    /// - Parameters:
+    ///   - controller: FetchedResultsController that sent the message.
+    ///   - indexPath: IndexPath of changed object (nil for insertions).
+    ///   - newIndexPath: Destination indexPath of object for insertions or moved items (nil for deletions).
+    ///   - object: Object in controller's fetched results thats changed.
+    ///   - type: Type of change. -> NSFetchedResultsControllerChangeType.
     private func handleMovingLastItemOutOfSection(in controller: NSFetchedResultsController<NSFetchRequestResult>, indexPath: IndexPath, newIndexPath: IndexPath, object: Any, type: NSFetchedResultsChangeType) {
         let open = getOpenItemsCount()
         let closed = getClosedItemsCount()
@@ -249,6 +299,7 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
+    ///
     private func sectionsAreNotEqual() -> Bool {
         if let sections = sections {
             if oldSectionsDuringFetchUpdate.count != sections.count {
@@ -261,10 +312,14 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         return false
     }
     
+    /// This method uses 'filter' to filter all items to show only items where the isComplete property is false.
+    /// - Returns: Int value containing the number of items that are open.
     private func getOpenItemsCount() -> Int {
         return fetchItems().filter({ $0.isComplete == false }).count
     }
     
+    /// This method uses 'filter' to filter list of all items returning only items that have the isComplete property set to 'true'.
+    /// - Returns: Int value containing the number of closed items.
     func getClosedItemsCount() -> Int {
         return fetchItems().filter({ $0.isComplete }).count
     }
