@@ -1,13 +1,15 @@
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
-//
 
 import Foundation
 import CoreData
 import TasksFramework
 
 /*
- This class is 
+    This class is the fetchedResultsController used by 'AddItemsViewController'. This class is called when objects are inserted/updated/changed in that VC. This gets the info from the Tableview and Datasource
+    then uses the 'ItemsFetchedResultsControllerDelegate' file to pass that data along.
+    * The delegate of this file is ItemsFetchedResultsControllerDelegate
+    * This class is responsible for handling changes in Sections (When Items are moved between open/closed sections). It uses the ControllerSectionInfo file to maintain the correct number of sections in the table.
  */
 
 final class ItemsController: NSObject, CanReadFromDatabase {
@@ -37,13 +39,14 @@ final class ItemsController: NSObject, CanReadFromDatabase {
     }
     
     //MARK: - Helpers
-    /// - Description: This method provides a list of fetched items from the FetchedResultsController.
+    ///This method provides a list of fetched items from the FetchedResultsController.
     /// - Returns: An array of Items values or an empty array if there are no vaues yet.
     func fetchItems() -> [Items] {
         let items = itemsController.fetchedObjects as? [Items]
         return items?.map{ $0 } ?? []
     }
     
+    /// Returns the item at the indexPath passed into this method.
     /// - Parameters:
     ///   - indexPath: Item text to display in the TableView Cell.
     ///   - sections: Takes array of ControllerSectionInfo.
@@ -58,7 +61,7 @@ final class ItemsController: NSObject, CanReadFromDatabase {
         return nil
     }
     
-    /// - Description: Checks if all items in a specified list are complete.
+    ///Checks if all items in a specified list are complete.
     /// - Returns: Boolean value displaying the status of items.
     func allItemsAreComplete() -> Bool {
         let openItems = fetchItems().filter({ $0.isComplete == false }).count
@@ -70,7 +73,7 @@ final class ItemsController: NSObject, CanReadFromDatabase {
         }
     }
     
-    /// - Description: Method that checks whether or not the Show Completed button should be displayed on screen. If there are any completed items in a list this button will be shown.
+    ///Checks whether or not the Show Completed button should be displayed on screen. If there are any completed items in a list this button will be shown.
     /// - Returns: This method returns an Int value 1 if the button should be shown and 0 if it should not.
     func showCompletedButton() -> Int {
         if fetchItems().filter({ $0.isComplete }).count > 0 {
@@ -79,7 +82,7 @@ final class ItemsController: NSObject, CanReadFromDatabase {
         else { return 0 }
     }
     
-    /// - Description: Method that checks whether or not the Show Completed button should be displayed on screen. If there are any completed items in a list this button will be shown.
+    ///Checks whether or not the Show Completed button should be displayed on screen. If there are any completed items in a list this button will be shown.
     /// - Returns: This method returns an Int value 1 if the button should be shown and 0 if it should not.
     func numberOfSectionsBasedOnItemStatus() -> Int {
         if fetchItems().filter({ $0.isComplete }).count > 0 {
@@ -296,6 +299,7 @@ extension ItemsController: NSFetchedResultsControllerDelegate {
         }
     }
     
+    ///
     private func sectionsAreNotEqual() -> Bool {
         if let sections = sections {
             if oldSectionsDuringFetchUpdate.count != sections.count {

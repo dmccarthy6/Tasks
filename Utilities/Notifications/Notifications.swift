@@ -18,7 +18,11 @@ final class Notifications: NSObject {
     
     
     //MARK: Public Functions
-    /* This function is called when saving a reminder to an item. Called in WriteToDatabase. */
+    
+    ///Checks the user's UNUserNotificationCenter authorization status. If granted it calls 'createNotification' and performs the necessary procedures to create the notification. If the user denies authorization the method returns,
+    /// - Parameters:
+    ///     - date: Date user selected from the date picker. This is used to set the notification date/time.
+    ///     - item: Item that is
     func requestAuthorizationAndCreateNotification(date: Date, item: Items) {
         let center = UNUserNotificationCenter.current()
         
@@ -29,38 +33,16 @@ final class Notifications: NSObject {
             }
             else {
                 print("No Notification Access")
+                return
             }
         }
     }
     
-    
-    //MARK: - Private Functions
-    /* Functions that take in the Date and Item and create a Reminder Notification when the user adds a reminder to an Item */
-    private func checkNotificationCenterAuthorizationStatus(for viewController: UIViewController) {
-        let notificationCenter = UNUserNotificationCenter.current()
-        
-        notificationCenter.getNotificationSettings { (settings) in
-            switch settings.authorizationStatus {
-            case .authorized:
-                print("Notifications Are Authorized! (Notifications.swift)")
-                break
-            case .denied:
-                print("Notifications Denied - (Notifications.swift)")
-                Alerts.showSettingsAlert(viewController,
-                                         message: "Notifications are Disabled. Click Settings, Notifications, then click on Tasks and select Allow Notifications in order to receive notifications from this app.")
-            case .notDetermined:
-                print("Notification Center Not Determined - Not Set Up? (Notifications.swift)")
-                Alerts.showSettingsAlert(viewController,
-                                         message: "Notifications are Disabled. Click Settings, Notifications, then click on the Tasks icon and select Allow Notifications")
-            case .provisional:
-                print("Provisiional")
-            @unknown default:
-                Alerts.showSettingsAlert(viewController, message: "Unknwon Error")
-            }
-        }
-    }
-    
-    private func createNotification(from date: Date, item: Items) {
+    /// Create notification to set on the specified Item. Method handles setting the notification data and creating the notification in notification center.
+    /// - Parameters:
+    ///     - date: Date object the user selected from Date Picker. Used to set the notification time.
+    ///     - item: Item to set the reminder on
+    func createNotification(from date: Date, item: Items) {
         let center = UNUserNotificationCenter.current()
         //Calendar
         let calendar = Calendar(identifier: .gregorian)
@@ -108,6 +90,34 @@ final class Notifications: NSObject {
         registerCategories()
     }
     
+    //MARK: - Private Functions
+    /* Functions that take in the Date and Item and create a Reminder Notification when the user adds a reminder to an Item */
+    private func checkNotificationCenterAuthorizationStatus(for viewController: UIViewController) {
+        let notificationCenter = UNUserNotificationCenter.current()
+        
+        notificationCenter.getNotificationSettings { (settings) in
+            switch settings.authorizationStatus {
+            case .authorized:
+                print("Notifications Are Authorized! (Notifications.swift)")
+                break
+            case .denied:
+                print("Notifications Denied - (Notifications.swift)")
+                Alerts.showSettingsAlert(viewController,
+                                         message: "Notifications are Disabled. Click Settings, Notifications, then click on Tasks and select Allow Notifications in order to receive notifications from this app.")
+            case .notDetermined:
+                print("Notification Center Not Determined - Not Set Up? (Notifications.swift)")
+                Alerts.showSettingsAlert(viewController,
+                                         message: "Notifications are Disabled. Click Settings, Notifications, then click on the Tasks icon and select Allow Notifications")
+            case .provisional:
+                print("Provisiional")
+            @unknown default:
+                Alerts.showSettingsAlert(viewController, message: "Unknwon Error")
+            }
+        }
+    }
+    
+    
+    
     private func registerCategories() {
         let center = UNUserNotificationCenter.current()
         center.delegate = self
@@ -122,6 +132,9 @@ final class Notifications: NSObject {
         center.setNotificationCategories([categories])
     }
     
+    /// Snooze is set to 5 minutes.
+    /// - Parameters:
+    ///     - response: A UNNotification Response delivered by the system based on the user's selection on the notification.
     private func snoozeTask(response: UNNotificationResponse) {//CURRENTLY 5 MIN SNOOZE
         let center = UNUserNotificationCenter.current()
         let snoozeTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 300.0, repeats: false)
@@ -139,7 +152,7 @@ final class Notifications: NSObject {
 extension Notifications: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.alert])
+        completionHandler([.alert, .sound])
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {

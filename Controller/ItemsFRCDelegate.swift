@@ -1,17 +1,21 @@
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 
-import Foundation
 import UIKit
 import CoreData
 import TasksFramework
 
-class ItemsFetchedResultsControllerDelegate: NSObject, NSFetchedResultsControllerDelegate {
+/*
+    This file is the delegate of ItemsController. ItemsController takes data in from the Table, adjusts it accordingly and calls these delegate methods passing in the corrected data (updating tableView sections
+    based on the fetchedResultsController sections etc.).
+ */
+
+final class ItemsFetchedResultsControllerDelegate: NSObject, NSFetchedResultsControllerDelegate {
     //MARK: - Properties
     fileprivate var sectionsBeingAdded: [Int] = []
     fileprivate var sectionsBeingRemoved: [Int] = []
     fileprivate unowned let tableView: UITableView!
-    open var onUpdate: ((_ cell: UITableViewCell, _ object: AnyObject) -> Void)?
+    public var onUpdate: ((_ cell: UITableViewCell, _ object: AnyObject) -> Void)?
     
     
     
