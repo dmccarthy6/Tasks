@@ -39,7 +39,7 @@ A to-do list application that syncs to-do's across all your iOS Devices. Add rem
 ***
 ## Screenshots:
 
-![Tasks List Added](Images/ListAddedGitHub_Dark.png) ![Tasks With Items Showing](Images/ItemsShowingGitHub_Dark.png)![Tasks Adding To Calendar](Images/.png) ![Tasks Reminders Added](Images/RemondersAddedGitHub_Dark.png) 
+![Tasks List Added](Images/ListAddedGitHub_Dark.png) ![Tasks With Items Showing](Images/ItemsShowingGitHub_Dark.png)![Tasks Adding A Reminder](Images/SetReminderGitHub_Dark.png) ![Tasks Adding To Calendar](Images/AddToCalendarGitHub_Dark.png) ![Tasks Reminders Added](Images/RemindersAddedGitHub_Dark.png) 
 [![Download on App Store](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
 
 ***
