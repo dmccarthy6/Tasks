@@ -75,6 +75,9 @@
 		613600D023C7E1F0004393EC /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610669FF2396E9A000BCDF0D /* Images.swift */; };
 		613600D123C7E1F1004393EC /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610669FF2396E9A000BCDF0D /* Images.swift */; };
 		613600D223C7E435004393EC /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192BF7823971C060013DFD7 /* CoreDataManager.swift */; };
+		6136B2272408312100A486A6 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192BF7823971C060013DFD7 /* CoreDataManager.swift */; };
+		6136B2282408313700A486A6 /* DarwinNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */; };
+		6136B22A2408401A00A486A6 /* CoreDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6136B2292408401A00A486A6 /* CoreDataTests.swift */; };
 		613C90B723C0141F002C4CF2 /* ColorsAndImagesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613C90B623C0141F002C4CF2 /* ColorsAndImagesModel.swift */; };
 		613C90B923C01AC6002C4CF2 /* NSCollectionLayoutSectionExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613C90B823C01AC6002C4CF2 /* NSCollectionLayoutSectionExt.swift */; };
 		613C90C023C15988002C4CF2 /* UIFont+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613C90BF23C15988002C4CF2 /* UIFont+Additions.swift */; };
@@ -293,6 +296,7 @@
 		612E6D5423970B9C0054B65C /* ItemsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsController.swift; sourceTree = "<group>"; };
 		612E6D5623970BB40054B65C /* ItemsFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsFRCDelegate.swift; sourceTree = "<group>"; };
 		6131254023CEA1E3004C14E8 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		6136B2292408401A00A486A6 /* CoreDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTests.swift; sourceTree = "<group>"; };
 		613C90B623C0141F002C4CF2 /* ColorsAndImagesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsAndImagesModel.swift; sourceTree = "<group>"; };
 		613C90B823C01AC6002C4CF2 /* NSCollectionLayoutSectionExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionLayoutSectionExt.swift; sourceTree = "<group>"; };
 		613C90BF23C15988002C4CF2 /* UIFont+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Additions.swift"; sourceTree = "<group>"; };
@@ -432,6 +436,7 @@
 		610669592396D4C800BCDF0D /* TasksTests */ = {
 			isa = PBXGroup;
 			children = (
+				6136B22C2408418200A486A6 /* CoreDataTests */,
 				6106695A2396D4C800BCDF0D /* TasksTests.swift */,
 				6106695C2396D4C800BCDF0D /* Info.plist */,
 			);
@@ -699,6 +704,14 @@
 				612E6D5223970AC40054B65C /* CalendarManager.swift */,
 			);
 			path = Calendar;
+			sourceTree = "<group>";
+		};
+		6136B22C2408418200A486A6 /* CoreDataTests */ = {
+			isa = PBXGroup;
+			children = (
+				6136B2292408401A00A486A6 /* CoreDataTests.swift */,
+			);
+			path = CoreDataTests;
 			sourceTree = "<group>";
 		};
 		6192BF64239711000013DFD7 /* Views */ = {
@@ -1110,6 +1123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6136B22A2408401A00A486A6 /* CoreDataTests.swift in Sources */,
 				6106695B2396D4C800BCDF0D /* TasksTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1187,6 +1201,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6136B2272408312100A486A6 /* CoreDataManager.swift in Sources */,
+				6136B2282408313700A486A6 /* DarwinNotificationCenter.swift in Sources */,
 				612E6D442396FE8B0054B65C /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
