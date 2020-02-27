@@ -29,15 +29,16 @@ A To Do list application that sync's to-do's across all your iOS devices. Add re
   * I used programatic UI that helped me conform to MVC. 
   * Implemented a protocol for Core Data database functions to abstract the database functionality.
   * Used a framework to store my Core Data stack. Using the custom framework allowed me to access the Core Data in my Today Widget/Share Extension and the main application.
+  
 - **Whats Next?** 
-  * Revising the code as the first round was to get the concept in front of the client to see what they liked/didn't like. 
-  * Some UI Improvements and updates for iOS 13.
+  * Adding some new features... 
+  * Continuing to refactor and make the code even more reliable.
 
 ***
 ## Screenshots:
 ![Tasks List Added](Images/ListAddedGitHub_Dark.png) ![Tasks Items](Images/ItemsShowingGitHub_Dark.png) ![Tasks Adding Reminder](Images/SetReminderGitHub_Dark.png)![Tasks Adding Calendar Event](Images/AddToCalendarGitHub_Dark.png)![Tasks Reminder Added](Images/RemindersAddedGitHub_Dark.png)
 
-![App Store Link](Images/AppStoreBlackGithub.png(https://itunes.apple.com/us/app/tasks/id1378039351?mt=8))
+[![App Store Icon](Images/AppStoreBlackGithub.png)](https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
 ***
 ## Requirements:
 * iOS 13.0+
@@ -45,7 +46,6 @@ A To Do list application that sync's to-do's across all your iOS devices. Add re
 ***
 ## About The Developer:
 I am an iOS Developer from Northern CA. I focus on writing applications in Swift and Objective-C. To learn more about me, you can check out my [portfolio](https://dylanmccarthyios.com).
-***
 
 ***
 ## Previous Version Screenshots:
