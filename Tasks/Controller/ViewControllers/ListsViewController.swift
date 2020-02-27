@@ -28,7 +28,7 @@ class ListsViewController: UIViewController, CanWriteToDatabase, CanReadFromData
         let emptyView = EmptyView()
         return emptyView
     }()
-    private var lists = [List]()
+    //private var lists = [List]()
     
     
     
@@ -38,10 +38,6 @@ class ListsViewController: UIViewController, CanWriteToDatabase, CanReadFromData
         setUpView()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        tableView.reloadData()
-    }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         view.handleThemeChange()

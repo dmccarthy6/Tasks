@@ -32,6 +32,21 @@ class CoreDataTests: XCTestCase, CanWriteToDatabase {
         XCTAssertNoThrow(saveContext)
     }
     
+    
+    ///Test fetching
+    func testFetch() {
+        let fetchReq = NSFetchRequest<NSFetchRequestResult>(entityName: "List")
+        fetchReq.sortDescriptors = [NSSortDescriptor(key: "order", ascending: true)]
+        
+        do {
+            let results = try managedObjectContext.fetch(fetchReq)
+            XCTAssertNoThrow(results)
+        }
+        catch let error as NSError {
+            XCTAssertNil(error, "Error is Not Nil; Fetch failed")
+        }
+    }
+    
     ///Testing that the mock list value I've created has valid data. This value will not be saved to the MOC.
     func testListValue() {
         let listOneTitle = "My First List"
@@ -87,7 +102,7 @@ class CoreDataTests: XCTestCase, CanWriteToDatabase {
     
     
     //MARK: - Mock Core Data Values
-    ///These are not saved to the context so they will not affect Core Data values
+    ///These are not saved to the context so they will not affect Core Data values. Mocking a list and item to test that they are being created properly.
     
     func mockListValue(title: String) -> List {
         let list = NSEntityDescription.insertNewObject(forEntityName: "List", into: managedObjectContext) as! List

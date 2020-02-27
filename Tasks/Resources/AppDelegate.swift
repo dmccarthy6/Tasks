@@ -16,22 +16,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let mainListVC = ListsViewController()
+        let rootVC = ListsViewController()
         
-        let navigationController = UINavigationController(rootViewController: mainListVC)
+        let navigationController = UINavigationController(rootViewController: rootVC)
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         
-        let viewController = window?.visibleViewController()
         registerForPushNotifications(application: application)
-        checkCloudStatusFor(rootViewController: viewController!)
+        checkCloudStatusFor(rootViewController: rootVC)
         setNavigationBarColors()
         return true
     }
     
     //MARK: - Helper Methods
     /* Presents alert to user if they are not currently logged into CloudKit. Gives them option to open settings and log into iCloud to sync lists between devices. */
+    /// Checks 
     func checkCloudStatusFor(rootViewController: UIViewController) {
         CKContainer.default().accountStatus { (cloudStatus, error) in
             switch cloudStatus {
@@ -44,8 +44,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
         }
     }
     
-    //Reigster For Push Notifications
-    func registerForPushNotifications(application: UIApplication) {
+    ///Request user authorization to register for push notifications
+    /// - Description: Passes alert to user requesting authorization for Push Notifications. If user approves this method calles registerForRemoteNotifications()
+    /// - Parameters:
+    ///     - application: UI Application
+    private func registerForPushNotifications(application: UIApplication) {
         if application.isRegisteredForRemoteNotifications { return }
         else {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .providesAppNotificationSettings]) { (granted, error) in
@@ -56,14 +59,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
                     }
                 }
                 else {
+                    return
                     //Permission Denied
                 }
             }
         }
     }
     
-    //UI - Setting Navigation Bar Appearance
-    func setNavigationBarColors() {
+    /// Set Navigation Bar Tint Color & Text Color
+    private func setNavigationBarColors() {
         let navigationBarAppearance = UINavigationBar.appearance()
         navigationBarAppearance.tintColor = .white
         navigationBarAppearance.barTintColor = Colors.tasksRed
