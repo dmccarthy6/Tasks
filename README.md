@@ -37,7 +37,7 @@ A To Do list application that sync's to-do's across all your iOS devices. Add re
 ## Screenshots:
 ![Tasks List Added](images/ListAddedGitHub_Dark.png) ![Tasks Items](images/ItemsShowingGitHub_Dark.png) ![Tasks Adding Reminder](images/SetReminderGitHub_Dark.png)![Tasks Adding Calendar Event](images/AddToCalendarGitHub_Dark.png)![Tasks Reminder Added](images/RemindersAddedGitHub_Dark.png)
 
-![App Store Link](images/AppStoreBlackGithub.png)(https://itunes.apple.com/us/app/tasks/id1378039351?mt=8)
+![App Store Link](images/AppStoreBlackGithub.png(https://itunes.apple.com/us/app/tasks/id1378039351?mt=8))
 ***
 ## Requirements:
 * iOS 13.0+
@@ -49,8 +49,5 @@ I am an iOS Developer from Northern CA. I focus on writing applications in Swift
 
 ***
 ## Previous Version Screenshots:
-![Tasks List](images/HomeGithub.png) ![Beer List](images/BeersGithub.png) ![Food Map](images/MapGithub.png)
-
-![Ritual LogIn Screen](images/RitualGithub.png)
-
+![Tasks Home](images/TasksBlankHomeGithub.png) ![Tasks Items Added](images/TasksListWithItemsGithub.png) ![Tasks Adding Reminder](images/TasksAddingReminderGithub.png)
 
