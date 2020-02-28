@@ -103,70 +103,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "13A4C718-B799-477E-8BC5-C99C9759B1A9"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tasks/View/TableViewCells/ItemAddedCell.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "handleUserTapFlagOrFavoriteButtons(for:isFlagged:tableView:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "8CC26319-1EC2-461E-A016-EF8291C77953"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tasks/View/TableViewCells/ItemAddedCell.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
-            landmarkName = "handleUserTapFlagOrFavoriteButtons(for:isFlagged:tableView:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "8CC26319-1EC2-461E-A016-EF8291C77953 - 1771d48eda84e2ad"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Tasks.ItemAddedCell.handleUserTapFlagOrFavoriteButtons(for: TasksFramework.Items, isFlagged: Swift.Bool, tableView: __C.UITableView) -&gt; ()"
-                  moduleName = "Tasks"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/DylanUser/Desktop/Tasks/Tasks/View/TableViewCells/ItemAddedCell.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "96"
-                  endingLineNumber = "96"
-                  offsetFromSymbolStart = "355">
-               </Location>
-               <Location
-                  uuid = "8CC26319-1EC2-461E-A016-EF8291C77953 - 891a6f59c135dc3b"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #2 () -&gt; () in Tasks.ItemAddedCell.handleUserTapFlagOrFavoriteButtons(for: TasksFramework.Items, isFlagged: Swift.Bool, tableView: __C.UITableView) -&gt; ()"
-                  moduleName = "Tasks"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/DylanUser/Desktop/Tasks/Tasks/View/TableViewCells/ItemAddedCell.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "97"
-                  endingLineNumber = "97"
-                  offsetFromSymbolStart = "54">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "F65FEA34-42D8-491C-8DBB-26C5DF3EC055"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -176,8 +112,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "73"
             endingLineNumber = "73"
-            landmarkName = "ListsViewController"
-            landmarkType = "3">
+            landmarkName = "handleEmptyDataSource(number:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -192,23 +128,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "89"
             endingLineNumber = "89"
-            landmarkName = "ListsViewController"
-            landmarkType = "21">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "E5507F30-A1AF-4B72-A588-0561BC94D0E7"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Tasks/Controller/ViewControllers/AddItemsViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
-            landmarkName = "checkIfItemsAreAllComplete(items:)"
+            landmarkName = "tableView(_:numberOfRowsInSection:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -228,12 +148,12 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "F51261FF-2A72-4EF0-B60F-E83BDECB2A6E - 760561671652ede6"
+                  uuid = "F51261FF-2A72-4EF0-B60F-E83BDECB2A6E - 220ec878a6693c0"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(extension in TasksTodayWidget):__C.NSPersistentCloudKitContainer.viewContextDidSaveExternally() -&gt; ()"
-                  moduleName = "TasksTodayWidget"
+                  symbolName = "(extension in Tasks):__C.NSPersistentCloudKitContainer.viewContextDidSaveExternally() -&gt; ()"
+                  moduleName = "Tasks"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/DylanUser/Desktop/Tasks/TasksFramework/CoreData/CoreDataManager.swift"
                   startingColumnNumber = "9223372036854775807"
