@@ -11,7 +11,6 @@ import TasksFramework
     * The delegate of this file is ItemsFetchedResultsControllerDelegate
     * This class is responsible for handling changes in Sections (When Items are moved between open/closed sections). It uses the ControllerSectionInfo file to maintain the correct number of sections in the table.
  */
-
 final class ItemsController: NSObject, CanReadFromDatabase {
     var listsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     var itemsFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
@@ -38,6 +37,7 @@ final class ItemsController: NSObject, CanReadFromDatabase {
         openItemsBeforeChange = determineOpenItems()
     }
     
+    
     //MARK: - Helpers
     ///This method provides a list of fetched items from the FetchedResultsController.
     /// - Returns: An array of Items values or an empty array if there are no vaues yet.
@@ -61,6 +61,93 @@ final class ItemsController: NSObject, CanReadFromDatabase {
         return nil
     }
     
+    // MARK: - TableView Sections Methods. Obtain Items For Section for Open & Closed Items
+    
+    ///Returns the number of objects contained in the fetchedResultsController for Open & Closed Items
+    /// - Parameters:
+    ///     - section: ItemsSection value
+    /// - Returns: Int value for number of items in section
+    func openItemsFor(section: ItemsSection) -> Int {
+        let itemsCount = fetchItems().count
+        
+        if itemsCount > 0 {
+            if let sections = sections {
+                switch section {
+                case .ToDo:
+                    let openItemsSec = Int(section.rawValue)!
+                    return sections[openItemsSec].numberOfObjects
+                case .Completed:
+                    let completedItemSec = Int(section.rawValue)!
+                    return sections[completedItemSec].numberOfObjects
+                }
+            }
+        }
+       return 0
+    }
+    
+    ///Returns the number of completed items for the specified section.
+    /// - Parameters:
+    ///     - section: UITableView section value.
+    /// - Returns: Int value for number of completed items in the section.
+    func completedItemsFor(section: Int) -> Int {
+        var items = 0
+        let itemsCount = fetchItems().count
+        if itemsCount > 0 {
+            if let sections = sections {
+                items = sections[0].numberOfObjects
+            }
+        }
+        return items
+    }
+    
+    //SECTIONS COUNT
+    /// Uses the itemsController sections property to return the correctnumber of UITableView sections to display.
+    /// - Returns: Int value containing the number of sections for the TableView.
+    func getSectionsCount() -> Int? {
+        let sectionsCount = sections?.count ?? 1
+        if allItemsAreComplete() { return 3 }
+        else {
+            switch sectionsCount {
+            case 0: return 1
+            case 1: return numberOfSectionsBasedOnItemStatus()
+            case 2: return 4
+            default: return 1
+            }
+        }
+    }
+    
+    // NUMBER OF ROWSIN SEC
+    /// Gets the number of rows for section value passed in.
+    /// - Parameters:
+    ///     - section: UITableView section passed in
+    /// - Returns: Int value with number of rows for the section.
+    func getNumberOfRowsIn(section: Int) -> Int {
+        if allItemsAreComplete() { return handleOnlyCompletedItemsRowsIn(section: section) }
+        else {
+            switch section {
+            case 0: return 1
+            case 1: return openItemsFor(section: .ToDo)
+            case 2: return showCompletedButton()
+            case 3: return openItemsFor(section: .Completed)
+            default:  return 1
+            }
+        }
+    }
+    
+    ///Handles a situation where the list only contains closed items.
+    /// - Parameters:
+    ///     - section: Section passed in by the UITableView.
+    /// - Returns: Int value representing the number of completed rows in section.
+    func handleOnlyCompletedItemsRowsIn(section: Int) -> Int {
+        switch section {
+        case 0: return 1
+        case 1: return 1
+        case 2: return completedItemsFor(section: section)
+        default: return 4
+        }
+    }
+    
+    
     ///Checks if all items in a specified list are complete.
     /// - Returns: Boolean value displaying the status of items.
     func allItemsAreComplete() -> Bool {
@@ -68,22 +155,19 @@ final class ItemsController: NSObject, CanReadFromDatabase {
         let closedItems = fetchItems().filter({ $0.isComplete }).count
         
         if openItems == 0 && closedItems > 0 { return true }
-        else {
-            return false
-        }
+        else { return false }
     }
     
     ///Checks whether or not the Show Completed button should be displayed on screen. If there are any completed items in a list this button will be shown.
     /// - Returns: This method returns an Int value 1 if the button should be shown and 0 if it should not.
     func showCompletedButton() -> Int {
-        if fetchItems().filter({ $0.isComplete }).count > 0 {
-            return 1
-        }
+        let closedCount = fetchItems().filter({ $0.isComplete }).count
+        if closedCount > 0 { return 1 }
         else { return 0 }
     }
     
-    ///Checks whether or not the Show Completed button should be displayed on screen. If there are any completed items in a list this button will be shown.
-    /// - Returns: This method returns an Int value 1 if the button should be shown and 0 if it should not.
+    ///Returns a number of sections for UITableView based on the status of items. If there are more than 1 completed item returns 3 else returns 2.
+    /// - Returns: Int value representing number of UITableView sections. If completetd items > 0 returns 3 sections else returns 2 sections..
     func numberOfSectionsBasedOnItemStatus() -> Int {
         if fetchItems().filter({ $0.isComplete }).count > 0 {
             return 3

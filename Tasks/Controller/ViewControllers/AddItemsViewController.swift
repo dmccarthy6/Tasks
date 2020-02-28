@@ -101,14 +101,14 @@ final class AddItemsToListViewController: UIViewController, CanReadFromDatabase,
 extension AddItemsToListViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        if let numberOfSections = getSectionsCount() {
+        if let numberOfSections = itemsController.getSectionsCount() {
             return numberOfSections
         }
         else { return 1 }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return getNumberOfRowsForSection(section: section)
+        return itemsController.getNumberOfRowsIn(section: section)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -116,78 +116,9 @@ extension AddItemsToListViewController: UITableViewDataSource {
     }
     
     //MARK: - TableView Helper Functions -- Sections
-    private func checkIfItemsAreAllComplete(items: [Items]) -> Bool {
-        let openItemsCount = items.filter({ $0.isComplete == false }).count
-        let closedItemsCount = items.filter({ $0.isComplete }).count
-        
-        if openItemsCount == 0 && closedItemsCount > 0 {
-            return true
-        }
-        else { return false }
-    }
-    
-    private func getNumberOfRowsForSection(section: Int) -> Int {
-        //Check if we only have completed items, if so, adjust sections accordingly.
-        if itemsController.allItemsAreComplete() { return handleOnlyCompletedItemsRowsInSection(section: section, items: itemsController.fetchItems()) }
-        else {
-            switch section {
-            case 0: return 1
-            case 1: return openItemsFor(section: .ToDo)
-            case 2: return itemsController.showCompletedButton()
-            case 3: return openItemsFor(section: .Completed)
-            default: return 0
-            }
-        }
-    }
-    
-    private func getSectionsCount() -> Int? {
-        if itemsController.allItemsAreComplete() { return 3 }
-        else {
-            switch self.itemsSectionCount() {
-            case 0: return 1
-            case 1: return itemsController.numberOfSectionsBasedOnItemStatus()
-            case 2: return 4
-            default: return 1
-            }
-        }
-    }
-    /* This method  */
-    private func handleOnlyCompletedItemsRowsInSection(section: Int, items: [Items]) -> Int {
-        switch section {
-        case 0: return 1
-        case 1: return 1
-        case 2: return completedItemsFor(section: section)
-        default: return 4
-        }
-    }
-    
-    private func openItemsFor(section: ItemsSection) -> Int {
-        if itemsController.fetchItems().count > 0 {
-            if let sections = itemsController.sections {
-                switch section {
-                case .ToDo:
-                    let todoSection = Int(section.rawValue)
-                    return sections[todoSection!].numberOfObjects
-                case .Completed:
-                    let completedSection = Int(section.rawValue)
-                    return sections[completedSection!].numberOfObjects
-                }
-            }
-        }
-        return 0
-    }
-    
-    private func completedItemsFor(section: Int) -> Int {
-        var items = 0
-        if itemsController.fetchItems().count > 0 {
-            if let sections = itemsController.sections {
-                //FRC Section will be 0  here, only closed Items when this gets called.
-                items = sections[0].numberOfObjects
-            }
-        }
-        return items
-    }
-    
+
+    /// Gets number of sections from the itemsController 'sections' property.
+    /// - Returns: Int value with number of sections
     private func itemsSectionCount() -> Int {
         if let sections = itemsController.sections {
             return sections.count
@@ -195,14 +126,18 @@ extension AddItemsToListViewController: UITableViewDataSource {
         return 1
     }
     //MARK: - Tableview Helper Functions -- Rows
+    ///Populates the number of rows in the tableView.
+    /// - Parameters:
+    ///     - indexPath: IndexPath from the tableView
+    /// - Returns: UITableViewCell
     private func populateNumberOfRowsInTableSection(indexPath: IndexPath) -> UITableViewCell {
         if itemsController.allItemsAreComplete() { return populateOnlyCompletedRowsInTable(tvIndexPath: indexPath) }
-        if indexPath.section == 0 {
+        if indexPath.section == 0 { // Text Field Cell
             let textFieldCell: TextFieldCell = tableView.dequeueReusableCell(for: indexPath)
             textFieldCell.configure(placeholder: .Item, delegate: self)
             return textFieldCell
         }
-        if indexPath.section == 1 {
+        if indexPath.section == 1 { // Open Items Cells
             let openItemsCell: ItemAddedCell = tableView.dequeueReusableCell(for: indexPath)
             let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.ToDo.rawValue)!)
             if let sections = itemsController.sections, let itemAtIndex = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
@@ -243,6 +178,10 @@ extension AddItemsToListViewController: UITableViewDataSource {
     }
     
     //If All Items Are Completed; Need to adjust Sections here, FRC will have 1 section '0' and TV will have 3 sections.
+    /// Populates the cells in the tableview when all items are closed. Will be called when there are no open items currently.
+    /// - Parameters:
+    ///     - tvIndexPath: The tableView indexPath passed in
+    /// - Returns: A UITableViewCell
     private func populateOnlyCompletedRowsInTable(tvIndexPath: IndexPath) -> UITableViewCell {
         switch tvIndexPath.section {
         case 0:
@@ -266,7 +205,7 @@ extension AddItemsToListViewController: UITableViewDataSource {
                     completedItemsCell.whenCompletedButtonTapped {
                         completedItemsCell.userTappedComplete(item: itemAtIndexPath)
                     }
-                    handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: itemAtIndexPath)
+                   handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: itemAtIndexPath)
                 }
                 return completedItemsCell
             } else {
@@ -277,6 +216,9 @@ extension AddItemsToListViewController: UITableViewDataSource {
     }
     
     //MARK: - Cell Button Helpers - Toggle Show Completed
+    ///Handles the operations when user hits the 'showCompleted' button. Changes the button title based on the status and toggles the isCompletedShowing variable.
+    /// - Parameters:
+    ///     - cell: Completed Button Cell
     private func handleShowCompletedTapped(for cell: CompletedButtonCell) {
         cell.whenShowCompletedTapped { [unowned self] in
             self.isCompletedShowing.toggle()
@@ -290,9 +232,11 @@ extension AddItemsToListViewController: UITableViewDataSource {
         }
     }
     
-    ///
+    ///Sets the isCompleted variable to false when we move the last item out of the closed section this way when user adds the first item to closed the items won't show unless
+    ///they hit the 'showCompleted' button.
     /// - Parameters:
-    ///     - completedCell: 
+    ///     - completedCell: a Complleted Item cell that the user hit the closed button on
+    ///     - item: Item value contained in the cell.
     private func handleCompletedItemsCompletedButtonTapoedFor(completedCell: CompletedItemsCell, item: Items) {
         completedCell.whenCompletedButtonTapped { [unowned self] in
             self.setItemCompletedStatus(item: item)
@@ -311,7 +255,7 @@ extension AddItemsToListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 { return }
         //Stops selection of the button cell from segueing when all items are closed (if all items are closed, this cell becomes section 1)
-        if indexPath.section == 1 && checkIfItemsAreAllComplete(items: itemsController.fetchItems()) { return }
+        if indexPath.section == 1 && itemsController.allItemsAreComplete() { return }
         if indexPath.section == 1 {
             let frcSection = Int(ItemsSection.ToDo.rawValue)!
             let fetchedIndexPath = IndexPath(row: indexPath.row, section: frcSection)
