@@ -73,6 +73,11 @@ final class ListTitleCell: UITableViewCell {
     }
     
     //MARK: - Interface Methods
+    
+    ///Set the List title on the label and the itemsCount for the itemsCount label on the right side of the cell.
+    /// - Parameters:
+    ///     - listTitle: String list title value
+    ///     - itemsCount: Count of the items contained in the list.
     func configure(listTitle: String, itemsCount: Int) {
         let itemsCount = String(describing: itemsCount)
         titleLabel.text = listTitle
@@ -80,6 +85,13 @@ final class ListTitleCell: UITableViewCell {
     }
     
     //Let user set the image for the list label?
+    
+    
+    //Currently unused,
+    ///
+    /// - Parameters:
+    ///     - image:
+    ///     - tintColor:
     func configureListImage(image: UIImage, tintColor: UIColor) {
         listImageView.image = image
         listImageView.tintColor = tintColor

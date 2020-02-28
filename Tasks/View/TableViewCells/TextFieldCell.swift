@@ -87,16 +87,25 @@ final class TextFieldCell: UITableViewCell {
     }
     
     //MARK: - Interface
+    
+    ///Sets the placeholder for the textField and the delegate to respond to user interactions on the textfield.
+    /// - Parameters:
+    ///     - placeholder: Enum value setting the text
+    ///     - delegate: Setting the textfield delegate
     func configure(placeholder: CellPlaceholder, delegate: UITextFieldDelegate?) {
         self.cellTextField.placeholder = placeholder.rawValue
         self.cellTextField.delegate = delegate
     }
     
+    ///Sets the textField text to the Item or List being edited.
+    /// - Parameters:
+    ///     - listTitle: String value of the edited
     func setTextFieldText(listTitle: String) {
         self.cellTextField.text = listTitle
     }
 }
 
+/// Enum that sets the placeholder text for the text field.
 enum CellPlaceholder: String {
     case Title = "A New List"
     case Item = "A New Item"
