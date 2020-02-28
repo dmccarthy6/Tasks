@@ -92,10 +92,7 @@ extension EditItemViewController: UITableViewDataSource {
             switch indexPath.row {
             case 0:
                 labelCell.configureCell(image: SystemImages.BellReminderIcon!, titleLabelText: EditAllDataLabels.reminder)
-                
-                if let item = itemBeingEdited, let reminderDate = item.reminderDate {
-                    labelCell.configureCellValues(valueText: reminderDate)
-                }
+                labelCell.configureCellValues(valueText: itemBeingEdited?.reminderDate)
                 return labelCell
             case 1:
                 //Date Picker
@@ -104,10 +101,7 @@ extension EditItemViewController: UITableViewDataSource {
                 return datePickerCell
             case 2:
                 labelCell.configureCell(image: SystemImages.CalendarIcon!, titleLabelText: EditAllDataLabels.dueDate)
-                
-                if let dueDate = itemBeingEdited?.dueDate {
-                    labelCell.configureCellValues(valueText: dueDate)
-                }
+                labelCell.configureCellValues(valueText: itemBeingEdited?.dueDate)
             default: return UITableViewCell()
             }
         }

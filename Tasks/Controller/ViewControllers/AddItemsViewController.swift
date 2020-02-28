@@ -207,9 +207,12 @@ extension AddItemsToListViewController: UITableViewDataSource {
             let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.ToDo.rawValue)!)
             if let sections = itemsController.sections, let itemAtIndex = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
                 openItemsCell.configureCell(item: itemAtIndex)
-                openItemsCell.handleUserTapFlagOrFavoriteButtons(for: itemAtIndex,
-                                                                 isFlagged: itemAtIndex.isFlagged,
-                                                                 tableView: tableView)
+                openItemsCell.whenFlaggedButtonTapped {
+                    openItemsCell.userTappedFlaggedButton(item: itemAtIndex, isFlagged: itemAtIndex.isFlagged, tableView: self.tableView)
+                }
+                openItemsCell.whenCompletedButtonTapped {
+                    openItemsCell.userTappedCompletedButton(item: itemAtIndex)
+                }
             }
             return openItemsCell
         }
@@ -225,9 +228,12 @@ extension AddItemsToListViewController: UITableViewDataSource {
                 let frcIndexPath = IndexPath(row: indexPath.row, section: Int(ItemsSection.Completed.rawValue)!)
                 if let sections = itemsController.sections, let closedItemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath, sections: sections) {
                     completedItemsCell.configure(item: closedItemAtIndexPath)
-                    completedItemsCell.handleUserTapCompletedOrFavorite(for: closedItemAtIndexPath,
-                                                                        isFlagged: closedItemAtIndexPath.isFlagged,
-                                                                        tableView: tableView)
+                    completedItemsCell.whenFlaggedButtonTapped {
+                        completedItemsCell.userChangedFlagged(item: closedItemAtIndexPath, isFlagged: closedItemAtIndexPath.isFlagged, tableView: self.tableView)
+                    }
+                    completedItemsCell.whenCompletedButtonTapped {
+                        completedItemsCell.userTappedComplete(item: closedItemAtIndexPath)
+                    }
                     handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: closedItemAtIndexPath)
                 }
                 return completedItemsCell
@@ -254,9 +260,12 @@ extension AddItemsToListViewController: UITableViewDataSource {
                 if let sections = itemsController.sections, let itemAtIndexPath = itemsController.itemsControllerItemAtIndexPath(indexPath: frcIndexPath,
                                                                                                                                  sections: sections) {
                     completedItemsCell.configure(item: itemAtIndexPath)
-                    completedItemsCell.handleUserTapCompletedOrFavorite(for: itemAtIndexPath,
-                                                                        isFlagged: itemAtIndexPath.isFlagged,
-                                                                        tableView: tableView)
+                    completedItemsCell.whenFlaggedButtonTapped {
+                        completedItemsCell.userChangedFlagged(item: itemAtIndexPath, isFlagged: itemAtIndexPath.isFlagged, tableView: self.tableView)
+                    }
+                    completedItemsCell.whenCompletedButtonTapped {
+                        completedItemsCell.userTappedComplete(item: itemAtIndexPath)
+                    }
                     handleCompletedItemsCompletedButtonTapoedFor(completedCell: completedItemsCell, item: itemAtIndexPath)
                 }
                 return completedItemsCell
@@ -281,6 +290,9 @@ extension AddItemsToListViewController: UITableViewDataSource {
         }
     }
     
+    ///
+    /// - Parameters:
+    ///     - completedCell: 
     private func handleCompletedItemsCompletedButtonTapoedFor(completedCell: CompletedItemsCell, item: Items) {
         completedCell.whenCompletedButtonTapped { [unowned self] in
             self.setItemCompletedStatus(item: item)
