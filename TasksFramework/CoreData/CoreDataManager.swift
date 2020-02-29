@@ -9,7 +9,6 @@ final class CoreDataManager {
     static let shared = CoreDataManager()
     /// 'Tasks' PersistentCloudKitContainer.
     private lazy var persistentCloudKitContainer: NSPersistentCloudKitContainer = {
-        /// NSPersistentCKContainer 'name' needs to be the same name as the .xcdatamodeld file in Xcode!
         let cloudKitContainer = NSPersistentCloudKitContainer(name: "Tasks")
         let storeURL = URL.storeURL(for: .appGroup, databaseName: .name)
         let storeDescription = NSPersistentStoreDescription(url: storeURL)

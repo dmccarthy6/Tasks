@@ -78,6 +78,7 @@
 		614B8C8223DA7721003B212B /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614B8C8123DA7720003B212B /* EmptyView.swift */; };
 		616F2C76240892B700E07935 /* CoreDataTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616F2C75240892B700E07935 /* CoreDataTest.swift */; };
 		616F2C7A24089D9800E07935 /* EditListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616F2C7924089D9800E07935 /* EditListModel.swift */; };
+		616F2C7D240B00D000E07935 /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616F2C7C240B00D000E07935 /* NoteView.swift */; };
 		618A5E6D240076800062F612 /* DarwinNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */; };
 		618A5E6E24007C470062F612 /* DarwinNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */; };
 		618A5E6F24007C480062F612 /* DarwinNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */; };
@@ -295,6 +296,7 @@
 		614B8C8123DA7720003B212B /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
 		616F2C75240892B700E07935 /* CoreDataTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTest.swift; sourceTree = "<group>"; };
 		616F2C7924089D9800E07935 /* EditListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditListModel.swift; sourceTree = "<group>"; };
+		616F2C7C240B00D000E07935 /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarwinNotificationCenter.swift; sourceTree = "<group>"; };
 		6192BF66239711310013DFD7 /* WidgetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCell.swift; sourceTree = "<group>"; };
 		6192BF6A239711700013DFD7 /* WidgetFetchedResultsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFetchedResultsController.swift; sourceTree = "<group>"; };
@@ -483,6 +485,7 @@
 				61066A0A2396EB6A00BCDF0D /* MenuTableCells */,
 				61066A032396EA5100BCDF0D /* TableViewCells */,
 				614B8C8123DA7720003B212B /* EmptyView.swift */,
+				616F2C7C240B00D000E07935 /* NoteView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -743,10 +746,10 @@
 		61CB610A23F0B7A100902F4C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				61CB611723F0B7A100902F4C /* Tasks.xcdatamodeld */,
 				6192BF7823971C060013DFD7 /* CoreDataManager.swift */,
 				61CB610C23F0B7A100902F4C /* FetchedResultsControllers */,
 				61CB611023F0B7A100902F4C /* ManagedObjSubclass */,
-				61CB611723F0B7A100902F4C /* Tasks.xcdatamodeld */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1089,6 +1092,7 @@
 				612E6D5723970BB40054B65C /* ItemsFRCDelegate.swift in Sources */,
 				612E6D262396F8B60054B65C /* EditItemCell.swift in Sources */,
 				618A5E6F24007C480062F612 /* DarwinNotificationCenter.swift in Sources */,
+				616F2C7D240B00D000E07935 /* NoteView.swift in Sources */,
 				610669DA2396E03D00BCDF0D /* Enums_Menu.swift in Sources */,
 				610669DD2396E05200BCDF0D /* Alerts.swift in Sources */,
 				61CE467423D8BD3800D1EA64 /* ArrayExtension.swift in Sources */,
