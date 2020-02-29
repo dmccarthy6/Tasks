@@ -20,7 +20,7 @@ import TasksFramework
 
 extension CanReadFromDatabase {
     var managedObjectContext: NSManagedObjectContext {
-        get { return CoreDataManager.context }
+        get { return CoreDataManager.shared.ckContainerContext }
     }
     
     

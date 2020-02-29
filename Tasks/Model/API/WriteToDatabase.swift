@@ -16,7 +16,7 @@ extension CanWriteToDatabase {
     
     var managedObjectContext: NSManagedObjectContext {
         get {
-            return CoreDataManager.context
+            return CoreDataManager.shared.ckContainerContext
         }
     }
     

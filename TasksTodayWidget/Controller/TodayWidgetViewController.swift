@@ -9,7 +9,7 @@ import TasksFramework
 
 class TodayWidgetViewController: UIViewController, NCWidgetProviding {
     //MARK: - Properties
-    private var widgetMangedContext = CoreDataManager.context
+    private var widgetMangedContext = CoreDataManager.shared.ckContainerContext
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
         tableView.translatesAutoresizingMaskIntoConstraints = false
