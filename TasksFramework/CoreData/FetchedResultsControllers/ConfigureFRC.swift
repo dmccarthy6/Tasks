@@ -1,7 +1,3 @@
-//
-//  ConfigureFRC.swift
-//  Tasks
-//
 //  Created by Dylan  on 12/3/19.
 //  Copyright © 2019 Dylan . All rights reserved.
 //
@@ -29,7 +25,7 @@ class ConfigureFetchedResultsController {
         let sortOrder = NSSortDescriptor(key: "order", ascending: true)
         fetchRequest.sortDescriptors = [sortOrder]
         fetchRequest.predicate = predicate
-        let managedObjectContext = CoreDataManager.context
+        let managedObjectContext = CoreDataManager.shared.ckContainerContext
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         
@@ -43,9 +39,4 @@ class ConfigureFetchedResultsController {
         return nil
     }
     
-    
-    
-    
-    
-    
-}//
+}

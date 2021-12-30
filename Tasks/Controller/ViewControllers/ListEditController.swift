@@ -52,6 +52,7 @@ final class EditListViewController: UIViewController, CanWriteToDatabase {
     
     
     //MARK: - Helpers
+    /// Helper function that adds the tableview to the subview, sets the constraints and then creates the navigation bar.
     private func createView() {
         view.addSubview(tableView)
         view.backgroundColor = .systemBackground
@@ -63,6 +64,7 @@ final class EditListViewController: UIViewController, CanWriteToDatabase {
         saveButton(isEnabled: false)
     }
     
+    ///
     private func saveButton(isEnabled: Bool) {
         self.navigationItem.rightBarButtonItem?.isEnabled = isEnabled
     }

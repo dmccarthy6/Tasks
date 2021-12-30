@@ -78,15 +78,24 @@ final class MenuCell: UITableViewCell {
     }
     
     //MARK: - Interface Functions
-
+    
+    ///Sets the cell image and text for the title labels.
+    /// - Parameters:
+    ///     - image: UIImage for icon in the cell
+    ///     - titleLabelText: Enum value that sets the
     func configureCell(image: UIImage, titleLabelText: EditAllDataLabels) {
         self.iconImageView.image = image
         self.titleLabel.text = titleLabelText.rawValue
     }
     
-    func configureCellValues(valueText: String) {
+    ///Configure the value label in the cell with the Reminder date or Due date selected by the user.
+    /// - Parameters:
+    ///     - valueText: String value representing the Due Date and Reminder Date
+    func configureCellValues(valueText: String?) {
         self.valueLabel.text = valueText
-        setRedFontIfReminderIsPastDue(reminder: valueText)
+        if let value = valueText {
+            setRedFontIfReminderIsPastDue(reminder: value)
+        }
     }
     
 }

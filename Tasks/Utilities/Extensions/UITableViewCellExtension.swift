@@ -55,6 +55,9 @@ extension UITableView {
     }
    
     
+    ///Sets the constraints of the tableview to the view's anchors. 
+    /// - Parameters:
+    ///     - view: The UIView that the tableview sits in
     func setFullScreenTableViewConstraints(in view: UIView) {
         NSLayoutConstraint.activate([
             topAnchor.constraint(equalTo: view.topAnchor),

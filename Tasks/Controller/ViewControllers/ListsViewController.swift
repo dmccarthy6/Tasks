@@ -28,7 +28,6 @@ class ListsViewController: UIViewController, CanWriteToDatabase, CanReadFromData
         let emptyView = EmptyView()
         return emptyView
     }()
-    //private var lists = [List]()
     
     
     

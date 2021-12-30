@@ -13,8 +13,8 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
     var window: UIWindow?
     var notificationCenter: NotificationCenter?
-
-
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let rootVC = ListsViewController()
         
@@ -31,7 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
     
     //MARK: - Helper Methods
     /* Presents alert to user if they are not currently logged into CloudKit. Gives them option to open settings and log into iCloud to sync lists between devices. */
-    /// Checks 
+    /// Checks if the user is logged into CloudKit. If not, alert is set to the user requesting them to log in. If they're logged in, the alert will not show again.
+    /// - Parameters:
+    ///     - rootViewController: View Controller to present alert controller on
     func checkCloudStatusFor(rootViewController: UIViewController) {
         CKContainer.default().accountStatus { (cloudStatus, error) in
             switch cloudStatus {
@@ -48,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
     /// - Description: Passes alert to user requesting authorization for Push Notifications. If user approves this method calles registerForRemoteNotifications()
     /// - Parameters:
     ///     - application: UI Application
-    private func registerForPushNotifications(application: UIApplication) {
+    func registerForPushNotifications(application: UIApplication) {
         if application.isRegisteredForRemoteNotifications { return }
         else {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .providesAppNotificationSettings]) { (granted, error) in
@@ -66,8 +68,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
         }
     }
     
-    /// Set Navigation Bar Tint Color & Text Color
-    private func setNavigationBarColors() {
+    /// Set the navigation color to TasksRed and set the text to white.
+    func setNavigationBarColors() {
         let navigationBarAppearance = UINavigationBar.appearance()
         navigationBarAppearance.tintColor = .white
         navigationBarAppearance.barTintColor = Colors.tasksRed
@@ -82,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
     }
     
     //MARK: - Today Widget - called when user taps item in Today Widgetm this opens the correct ItemsController.
-    /*Function used when user opens the application from the Today Widget */
+    /// Called when user opens the application from the Today Widget
     open func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         if url.scheme == "tasksopen" {
             
@@ -105,7 +107,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
         print("AppDelegate = SourceApplication = \(sendingAppID ?? "AppDel, Unknown Source App"), url: \(url)")
         return true
     }
-  
+    
+    /// Helper method that is called if
+    /// - Parameters:
+    ///     - listID: Title ID passed in from the Widget.
     func openItemsController(for listID: String) {
         let navigationController = UINavigationController()
         let rootVC = ListsViewController()
@@ -115,5 +120,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CanWriteToDatabase {
         window?.rootViewController = navigationController
         
     }
-
+    
 }

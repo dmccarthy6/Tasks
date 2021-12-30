@@ -48,24 +48,6 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - Set Up Completed Cell And Completed Button
-//    private func createCompletedTasksCell() {
-//        if #available(iOS 13.0, *) {
-//            completedButton.tintColor = Colors.tasksRed
-//            completedButton.backgroundColor = .systemBackground
-//            itemLabel.backgroundColor = .systemBackground
-//        }
-//        else {
-//            completedButton.setImage(Images.CompletedTasksIcon, for: .normal)
-//            completedButton.tintColor = Colors.tasksRed
-//            completedButton.backgroundColor = .clear
-//            itemLabel.backgroundColor = .clear
-//        }
-//        selectionStyle = .none
-//
-//        setupLayout()
-//    }
-
     //MARK: - Set Cell Constraints
     private func setupLayout() {
         selectionStyle = .none
@@ -103,18 +85,24 @@ final class CompletedItemsCell: UITableViewCell, CanWriteToDatabase {
         self.flaggedButton.tintColor = item.isFlagged ? .systemYellow : Colors.tasksRed
     }
     
-    func handleUserTapCompletedOrFavorite(for item: Items, isFlagged: Bool, tableView: UITableView) {
-        
-        whenFlaggedButtonTapped { [unowned self] in
-            self.setItemAsFlagged(item: item, status: !isFlagged)
-            self.flaggedButton.setImage((isFlagged ? SystemImages.Star : SystemImages.StarFill), for: .normal)
-            self.flaggedButton.tintColor = isFlagged ? Colors.tasksRed : .systemYellow
-            tableView.reloadData()
-        }
-        whenCompletedButtonTapped { [unowned self] in
-            self.setItemCompletedStatus(item: item)
-            tableView.reloadData()
-        }
+    
+    ///Toggle the isFavorite status on the item when user taps the button in cell.
+    /// - Parameters:
+    ///     - item: Item setting flagged status on
+    ///     - isFlagged: Current isFlagged status
+    ///     - tableView: Tableview where the cell is
+    func userChangedFlagged(item: Items, isFlagged: Bool, tableView: UITableView) {
+        self.setItemAsFlagged(item: item, status: !isFlagged)
+        self.flaggedButton.setImage((isFlagged ? SystemImages.Star : SystemImages.StarFill), for: .normal)
+        self.flaggedButton.tintColor = isFlagged ? Colors.tasksRed : .systemYellow
+        tableView.reloadData()
+    }
+    
+    ///Sets the isComplete status in Core Data.
+    /// - Parameters:
+    ///     - item: Item being set as complete.
+    func userTappedComplete(item: Items) {
+        self.setItemCompletedStatus(item: item)
     }
     
     private func strikeThroughTextFor(_ item: String?) -> NSAttributedString {

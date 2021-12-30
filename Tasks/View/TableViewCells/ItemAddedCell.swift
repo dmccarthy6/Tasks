@@ -89,19 +89,24 @@ class ItemAddedCell: UITableViewCell, CanWriteToDatabase {
         self.flaggedButton.tintColor = item.isFlagged ? .systemYellow : Colors.tasksRed
         
     }
+
+    ///Changes the flagged status in Core Data.
+    /// - Parameters:
+    ///     - item: Item chaning the flagged status on
+    ///     - isFlagged: Current item 'isFlagged' status
+    ///     - tableView: The tableView the cell sits in
+    func userTappedFlaggedButton(item: Items, isFlagged: Bool, tableView: UITableView) {
+        self.setItemAsFlagged(item: item, status: !isFlagged)
+        self.flaggedButton.setImage((isFlagged ? SystemImages.StarFill : SystemImages.Star), for: .normal)
+        self.flaggedButton.tintColor = isFlagged ? .systemYellow : Colors.tasksRed
+        tableView.reloadData()
+    }
     
-    func handleUserTapFlagOrFavoriteButtons(for item: Items, isFlagged: Bool, tableView: UITableView) {
-        
-        whenFlaggedButtonTapped {
-            self.setItemAsFlagged(item: item, status: !isFlagged)
-            self.flaggedButton.setImage((isFlagged ? SystemImages.StarFill : SystemImages.Star), for: .normal)
-            self.flaggedButton.tintColor = isFlagged ? .systemYellow : Colors.tasksRed
-            tableView.reloadData()
-        }
-        whenCompletedButtonTapped {
-            self.setItemCompletedStatus(item: item)
-            tableView.reloadData()
-        }
+    ///Sets the item as completed in Core Data.
+    /// - Parameters:
+    ///     - item: Item setting as completed
+    func userTappedCompletedButton(item: Items) {
+        self.setItemCompletedStatus(item: item)
     }
     
     //MARK: - Button Functions

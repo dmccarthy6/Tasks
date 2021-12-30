@@ -18,7 +18,6 @@
 		610669922396D7DB00BCDF0D /* TasksFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 610669822396D7DB00BCDF0D /* TasksFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		610669952396D7DB00BCDF0D /* TasksFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 610669802396D7DB00BCDF0D /* TasksFramework.framework */; };
 		610669962396D7DB00BCDF0D /* TasksFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 610669802396D7DB00BCDF0D /* TasksFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		610669BA2396DC8E00BCDF0D /* EditListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610669B92396DC8E00BCDF0D /* EditListModel.swift */; };
 		610669D72396DFDB00BCDF0D /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 610669D62396DFDB00BCDF0D /* CloudKit.framework */; };
 		610669DA2396E03D00BCDF0D /* Enums_Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610669D92396E03D00BCDF0D /* Enums_Menu.swift */; };
 		610669DD2396E05200BCDF0D /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610669DC2396E05200BCDF0D /* Alerts.swift */; };
@@ -39,7 +38,6 @@
 		61066A092396EB2F00BCDF0D /* ReminderPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61066A082396EB2F00BCDF0D /* ReminderPickerCell.swift */; };
 		61066A0C2396EB8F00BCDF0D /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61066A0B2396EB8F00BCDF0D /* TextFieldCell.swift */; };
 		61066A102396EC3300BCDF0D /* ListTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61066A0F2396EC3300BCDF0D /* ListTitleCell.swift */; };
-		61066A132396ECCB00BCDF0D /* TasksTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61066A122396ECCB00BCDF0D /* TasksTabBarController.swift */; };
 		61066A152396ECFE00BCDF0D /* ItemAddedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61066A142396ECFE00BCDF0D /* ItemAddedCell.swift */; };
 		61066A172396ED7100BCDF0D /* CompletedItemsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61066A162396ED7100BCDF0D /* CompletedItemsCell.swift */; };
 		61066A192396EDBB00BCDF0D /* CompletedButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61066A182396EDBB00BCDF0D /* CompletedButtonCell.swift */; };
@@ -75,16 +73,12 @@
 		613600D023C7E1F0004393EC /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610669FF2396E9A000BCDF0D /* Images.swift */; };
 		613600D123C7E1F1004393EC /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610669FF2396E9A000BCDF0D /* Images.swift */; };
 		613600D223C7E435004393EC /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192BF7823971C060013DFD7 /* CoreDataManager.swift */; };
-<<<<<<< HEAD
-		6136B2272408312100A486A6 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6192BF7823971C060013DFD7 /* CoreDataManager.swift */; };
-		6136B2282408313700A486A6 /* DarwinNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */; };
-		6136B22A2408401A00A486A6 /* CoreDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6136B2292408401A00A486A6 /* CoreDataTests.swift */; };
-=======
->>>>>>> parent of 2df8cf8... Delete project.pbxproj
-		613C90B723C0141F002C4CF2 /* ColorsAndImagesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613C90B623C0141F002C4CF2 /* ColorsAndImagesModel.swift */; };
 		613C90B923C01AC6002C4CF2 /* NSCollectionLayoutSectionExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613C90B823C01AC6002C4CF2 /* NSCollectionLayoutSectionExt.swift */; };
 		613C90C023C15988002C4CF2 /* UIFont+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 613C90BF23C15988002C4CF2 /* UIFont+Additions.swift */; };
 		614B8C8223DA7721003B212B /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614B8C8123DA7720003B212B /* EmptyView.swift */; };
+		616F2C76240892B700E07935 /* CoreDataTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616F2C75240892B700E07935 /* CoreDataTest.swift */; };
+		616F2C7A24089D9800E07935 /* EditListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616F2C7924089D9800E07935 /* EditListModel.swift */; };
+		616F2C7D240B00D000E07935 /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616F2C7C240B00D000E07935 /* NoteView.swift */; };
 		618A5E6D240076800062F612 /* DarwinNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */; };
 		618A5E6E24007C470062F612 /* DarwinNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */; };
 		618A5E6F24007C480062F612 /* DarwinNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */; };
@@ -242,7 +236,6 @@
 		610669882396D7DB00BCDF0D /* TasksFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TasksFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6106698F2396D7DB00BCDF0D /* TasksFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksFrameworkTests.swift; sourceTree = "<group>"; };
 		610669912396D7DB00BCDF0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		610669B92396DC8E00BCDF0D /* EditListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditListModel.swift; sourceTree = "<group>"; };
 		610669D42396DFD600BCDF0D /* Tasks.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tasks.entitlements; sourceTree = "<group>"; };
 		610669D62396DFDB00BCDF0D /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		610669D92396E03D00BCDF0D /* Enums_Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums_Menu.swift; sourceTree = "<group>"; };
@@ -264,7 +257,6 @@
 		61066A082396EB2F00BCDF0D /* ReminderPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPickerCell.swift; sourceTree = "<group>"; };
 		61066A0B2396EB8F00BCDF0D /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		61066A0F2396EC3300BCDF0D /* ListTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTitleCell.swift; sourceTree = "<group>"; };
-		61066A122396ECCB00BCDF0D /* TasksTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksTabBarController.swift; sourceTree = "<group>"; };
 		61066A142396ECFE00BCDF0D /* ItemAddedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemAddedCell.swift; sourceTree = "<group>"; };
 		61066A162396ED7100BCDF0D /* CompletedItemsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedItemsCell.swift; sourceTree = "<group>"; };
 		61066A182396EDBB00BCDF0D /* CompletedButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedButtonCell.swift; sourceTree = "<group>"; };
@@ -299,14 +291,12 @@
 		612E6D5423970B9C0054B65C /* ItemsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsController.swift; sourceTree = "<group>"; };
 		612E6D5623970BB40054B65C /* ItemsFRCDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsFRCDelegate.swift; sourceTree = "<group>"; };
 		6131254023CEA1E3004C14E8 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-<<<<<<< HEAD
-		6136B2292408401A00A486A6 /* CoreDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTests.swift; sourceTree = "<group>"; };
-=======
->>>>>>> parent of 2df8cf8... Delete project.pbxproj
-		613C90B623C0141F002C4CF2 /* ColorsAndImagesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsAndImagesModel.swift; sourceTree = "<group>"; };
 		613C90B823C01AC6002C4CF2 /* NSCollectionLayoutSectionExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSCollectionLayoutSectionExt.swift; sourceTree = "<group>"; };
 		613C90BF23C15988002C4CF2 /* UIFont+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Additions.swift"; sourceTree = "<group>"; };
 		614B8C8123DA7720003B212B /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
+		616F2C75240892B700E07935 /* CoreDataTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTest.swift; sourceTree = "<group>"; };
+		616F2C7924089D9800E07935 /* EditListModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditListModel.swift; sourceTree = "<group>"; };
+		616F2C7C240B00D000E07935 /* NoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		618A5E6C240076800062F612 /* DarwinNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DarwinNotificationCenter.swift; sourceTree = "<group>"; };
 		6192BF66239711310013DFD7 /* WidgetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetCell.swift; sourceTree = "<group>"; };
 		6192BF6A239711700013DFD7 /* WidgetFetchedResultsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetFetchedResultsController.swift; sourceTree = "<group>"; };
@@ -442,10 +432,7 @@
 		610669592396D4C800BCDF0D /* TasksTests */ = {
 			isa = PBXGroup;
 			children = (
-<<<<<<< HEAD
-				6136B22C2408418200A486A6 /* CoreDataTests */,
-=======
->>>>>>> parent of 2df8cf8... Delete project.pbxproj
+				616F2C742408929D00E07935 /* CoreDataTests */,
 				6106695A2396D4C800BCDF0D /* TasksTests.swift */,
 				6106695C2396D4C800BCDF0D /* Info.plist */,
 			);
@@ -486,9 +473,8 @@
 		6106699E2396D99F00BCDF0D /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				616F2C7924089D9800E07935 /* EditListModel.swift */,
 				61B9F3C72406DBEC002093ED /* API */,
-				610669B92396DC8E00BCDF0D /* EditListModel.swift */,
-				613C90B623C0141F002C4CF2 /* ColorsAndImagesModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -496,10 +482,10 @@
 		6106699F2396D9A700BCDF0D /* View */ = {
 			isa = PBXGroup;
 			children = (
-				61066A112396ECBA00BCDF0D /* TabBarController */,
 				61066A0A2396EB6A00BCDF0D /* MenuTableCells */,
 				61066A032396EA5100BCDF0D /* TableViewCells */,
 				614B8C8123DA7720003B212B /* EmptyView.swift */,
+				616F2C7C240B00D000E07935 /* NoteView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -628,14 +614,6 @@
 			path = MenuTableCells;
 			sourceTree = "<group>";
 		};
-		61066A112396ECBA00BCDF0D /* TabBarController */ = {
-			isa = PBXGroup;
-			children = (
-				61066A122396ECCB00BCDF0D /* TasksTabBarController.swift */,
-			);
-			path = TabBarController;
-			sourceTree = "<group>";
-		};
 		61066A1A2396EF9600BCDF0D /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -715,17 +693,14 @@
 			path = Calendar;
 			sourceTree = "<group>";
 		};
-<<<<<<< HEAD
-		6136B22C2408418200A486A6 /* CoreDataTests */ = {
+		616F2C742408929D00E07935 /* CoreDataTests */ = {
 			isa = PBXGroup;
 			children = (
-				6136B2292408401A00A486A6 /* CoreDataTests.swift */,
+				616F2C75240892B700E07935 /* CoreDataTest.swift */,
 			);
 			path = CoreDataTests;
 			sourceTree = "<group>";
 		};
-=======
->>>>>>> parent of 2df8cf8... Delete project.pbxproj
 		6192BF64239711000013DFD7 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -771,10 +746,10 @@
 		61CB610A23F0B7A100902F4C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				61CB611723F0B7A100902F4C /* Tasks.xcdatamodeld */,
 				6192BF7823971C060013DFD7 /* CoreDataManager.swift */,
 				61CB610C23F0B7A100902F4C /* FetchedResultsControllers */,
 				61CB611023F0B7A100902F4C /* ManagedObjSubclass */,
-				61CB611723F0B7A100902F4C /* Tasks.xcdatamodeld */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -1080,6 +1055,7 @@
 				613C90C023C15988002C4CF2 /* UIFont+Additions.swift in Sources */,
 				610669FC2396E92C00BCDF0D /* CloudKitAlert.swift in Sources */,
 				610669E62396E3E600BCDF0D /* TextFieldValidation.swift in Sources */,
+				616F2C7A24089D9800E07935 /* EditListModel.swift in Sources */,
 				61066A1E2396EFCB00BCDF0D /* AddItemsViewController.swift in Sources */,
 				614B8C8223DA7721003B212B /* EmptyView.swift in Sources */,
 				610669F62396E74200BCDF0D /* UITextField.swift in Sources */,
@@ -1096,13 +1072,11 @@
 				61066A172396ED7100BCDF0D /* CompletedItemsCell.swift in Sources */,
 				61066A102396EC3300BCDF0D /* ListTitleCell.swift in Sources */,
 				61066A192396EDBB00BCDF0D /* CompletedButtonCell.swift in Sources */,
-				61066A132396ECCB00BCDF0D /* TasksTabBarController.swift in Sources */,
 				61066A202396F00000BCDF0D /* ItemsControllerSection.swift in Sources */,
 				613C90B923C01AC6002C4CF2 /* NSCollectionLayoutSectionExt.swift in Sources */,
 				61066A272396F15300BCDF0D /* UILabel.swift in Sources */,
 				6192BF832397230F0013DFD7 /* String.swift in Sources */,
 				611F43FE23B540DB00DC1513 /* UITableViewCellExtension.swift in Sources */,
-				610669BA2396DC8E00BCDF0D /* EditListModel.swift in Sources */,
 				61CB612623F0C1D700902F4C /* ListsFRC.swift in Sources */,
 				61066A252396F11100BCDF0D /* DarkModeNotification.swift in Sources */,
 				61066A2B2396F1B400BCDF0D /* TableThemeSettings.swift in Sources */,
@@ -1111,7 +1085,6 @@
 				6192BF7B23971C110013DFD7 /* CoreDataManager.swift in Sources */,
 				6131254123CEA1E3004C14E8 /* Errors.swift in Sources */,
 				61066A2D2396F25F00BCDF0D /* OpenShareExtension.swift in Sources */,
-				613C90B723C0141F002C4CF2 /* ColorsAndImagesModel.swift in Sources */,
 				61CB612723F0C53D00902F4C /* Tasks.xcdatamodeld in Sources */,
 				612E6D212396F7A00054B65C /* ListEditController.swift in Sources */,
 				61066A322396F31B00BCDF0D /* TasksActivity.swift in Sources */,
@@ -1119,6 +1092,7 @@
 				612E6D5723970BB40054B65C /* ItemsFRCDelegate.swift in Sources */,
 				612E6D262396F8B60054B65C /* EditItemCell.swift in Sources */,
 				618A5E6F24007C480062F612 /* DarwinNotificationCenter.swift in Sources */,
+				616F2C7D240B00D000E07935 /* NoteView.swift in Sources */,
 				610669DA2396E03D00BCDF0D /* Enums_Menu.swift in Sources */,
 				610669DD2396E05200BCDF0D /* Alerts.swift in Sources */,
 				61CE467423D8BD3800D1EA64 /* ArrayExtension.swift in Sources */,
@@ -1135,10 +1109,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< HEAD
-				6136B22A2408401A00A486A6 /* CoreDataTests.swift in Sources */,
-=======
->>>>>>> parent of 2df8cf8... Delete project.pbxproj
+				616F2C76240892B700E07935 /* CoreDataTest.swift in Sources */,
 				6106695B2396D4C800BCDF0D /* TasksTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1216,11 +1187,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-<<<<<<< HEAD
-				6136B2272408312100A486A6 /* CoreDataManager.swift in Sources */,
-				6136B2282408313700A486A6 /* DarwinNotificationCenter.swift in Sources */,
-=======
->>>>>>> parent of 2df8cf8... Delete project.pbxproj
 				612E6D442396FE8B0054B65C /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
